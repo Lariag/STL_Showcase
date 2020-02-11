@@ -1,0 +1,24 @@
+﻿<ui:ContentDialog
+    x:Class="STL_Showcase.Presentation.UI.LoadingDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    xmlns:local="clr-namespace:STL_Showcase.Presentation.UI"
+    mc:Ignorable="d"
+    d:DesignHeight="756"
+    d:DesignWidth="548"
+    x:Name="dialog"
+    Title="Title"
+    PrimaryButtonText="Yes"
+    SecondaryButtonText="No"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary"
+    CloseButtonClick="dialog_CloseButtonClick">
+    <DockPanel>
+        <ui:ProgressRing IsActive="True" Width="60" Height="60" DockPanel.Dock="Bottom" VerticalAlignment="Top" Margin="0 10 0 10"/>
+        <TextBlock  Name="Message" Text="" TextWrapping="WrapWithOverflow"/>
+    </DockPanel>
+</ui:ContentDialog>
+

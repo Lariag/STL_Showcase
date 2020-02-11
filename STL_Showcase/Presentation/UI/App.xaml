@@ -1,0 +1,22 @@
+﻿<Application x:Class="STL_Showcase.Presentation.UI.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:STL_Showcase.Presentation.UI"
+             StartupUri="MainWindow.xaml"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:designTime="clr-namespace:STL_Showcase.Presentation.UI.DesignTime">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <designTime:IntellisenseResources Source="/Presentation/UI/Styles/ResourceKeys.xaml" />
+                <ui:ThemeResources />
+                <ui:XamlControlsResources />
+                <ResourceDictionary Source="/Presentation/UI/Styles/StyleBorder.xaml"/>
+                <ResourceDictionary Source="/Presentation/UI/Styles/StyleScrollbars.xaml"/>
+                <ResourceDictionary Source="/Presentation/UI/Styles/StyleButtons.xaml"/>
+                <ResourceDictionary Source="/Presentation/UI/Styles/StyleDockPanel.xaml"/>
+                <ResourceDictionary Source="/Presentation/UI/Styles/StyleWindows.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
