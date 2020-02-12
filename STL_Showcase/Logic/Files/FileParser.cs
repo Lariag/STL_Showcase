@@ -90,12 +90,11 @@ namespace STL_Showcase.Logic.Files
                 return null;
 
             SegmentedArray<int> triangles = new SegmentedArray<int>(triangleAmount * 3);
-            SegmentedArray<Half> vertices = new SegmentedArray<Half>(triangleAmount * 3 * 3);
-            Half[] facetNormals = new Half[triangleAmount * 3];
+            SegmentedArray<Mesh3D.Vertexh> vertices = new SegmentedArray<Mesh3D.Vertexh>(triangleAmount * 3);
 
             try
             {
-                for (int i = 0, j = 0; i < triangles.Length;)
+                for (int i = 0; i < triangles.Length;)
                 {
                     // Skip reading the facet normal.
                     index += 4 * 3;
@@ -105,19 +104,25 @@ namespace STL_Showcase.Logic.Files
                         fileData.ReadBytes(byteBuffer, index, 0, byteBuffer.Length); byteBufferIndex = 0;
                         index += 4 * 9;
 
-                        vertices[j++] = (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
-                        vertices[j++] = (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
-                        vertices[j++] = (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
+                        vertices[i] = new Mesh3D.Vertexh(
+                            (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex),
+                            (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex += 4),
+                            (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex += 4)
+                            );
                         triangles[i] = i++;
 
-                        vertices[j++] = (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
-                        vertices[j++] = (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
-                        vertices[j++] = (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
+                        vertices[i] = new Mesh3D.Vertexh(
+                            (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex += 4),
+                            (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex += 4),
+                            (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex += 4)
+                            );
                         triangles[i] = i++;
 
-                        vertices[j++] = (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
-                        vertices[j++] = (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
-                        vertices[j++] = (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
+                        vertices[i] = new Mesh3D.Vertexh(
+                            (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex += 4),
+                            (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex += 4),
+                            (Half)System.BitConverter.ToSingle(byteBuffer, byteBufferIndex += 4)
+                            );
                         triangles[i] = i++;
                     }
 
@@ -125,83 +130,6 @@ namespace STL_Showcase.Logic.Files
                     index += 2;
                 }
 
-                return new Mesh3D(vertices, triangles, facetNormals);
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-
-        static Mesh3D ParseSTLBinaryOptimizedVerts(ModelFileData fileData)
-        {
-            // STL Binary Format: https://en.wikipedia.org/wiki/STL_(file_format)#Binary_STL
-
-            if (!fileData.HasBytes())
-                return null;
-
-            byte[] byteBuffer = new byte[4 * 9];
-            int index = 80;
-            int byteBufferIndex = 0;
-
-            fileData.ReadBytes(byteBuffer, index, 0, 4);
-            int triangleAmount = (int)System.BitConverter.ToUInt32(byteBuffer, 0); index += 4;
-
-            if (triangleAmount <= 0 || fileData.BytesLength < 80 + triangleAmount * 50)
-                return null;
-
-            SegmentedArray<int> triangles = new SegmentedArray<int>(triangleAmount * 3);
-            SegmentedArray<Half> vertices; // = new SegmentedArray<Half>(triangleAmount * 3 * 3);
-            Dictionary<Point3D, int> optimized = new Dictionary<Point3D, int>(triangleAmount * 3 * 3);
-            int triangleIndex = 0;
-            try
-            {
-                for (int i = 0, j = 0; i < triangles.Length;)
-                {
-                    // Skip reading the facet normal.
-                    index += 4 * 3;
-
-                    // Read the buffer
-                    fileData.ReadBytes(byteBuffer, index, 0, byteBuffer.Length);
-                    byteBufferIndex = 0;
-
-                    // Triangle vertices
-                    {
-                        index += 4 * 9;
-
-                        for (int k = 0; k < 3; k++)
-                        {
-                            float v1 = System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
-                            float v2 = System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
-                            float v3 = System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
-                            Point3D point = new Point3D(v1, v2, v3);
-
-                            if (optimized.TryGetValue(point, out int existingTriangle))
-                            {
-                                triangles[i++] = existingTriangle;
-                            }
-                            else
-                            {
-                                optimized.Add(point, triangleIndex);
-                                triangles[i++] = triangleIndex++;
-                            }
-                        }
-
-                    }
-
-                    // Skip the remaining bytes.
-                    index += 2;
-                }
-                vertices = new SegmentedArray<Half>(optimized.Count * 3);
-                {
-                    int i = 0;
-                    foreach (var point in optimized)
-                    {
-                        vertices[i++] = (Half)point.Key.X;
-                        vertices[i++] = (Half)point.Key.Y;
-                        vertices[i++] = (Half)point.Key.Z;
-                    }
-                }
                 return new Mesh3D(vertices, triangles);
             }
             catch (Exception e)
@@ -209,6 +137,83 @@ namespace STL_Showcase.Logic.Files
                 return null;
             }
         }
+
+        //static Mesh3D ParseSTLBinaryOptimizedVerts(ModelFileData fileData)
+        //{
+        //    // STL Binary Format: https://en.wikipedia.org/wiki/STL_(file_format)#Binary_STL
+
+        //    if (!fileData.HasBytes())
+        //        return null;
+
+        //    byte[] byteBuffer = new byte[4 * 9];
+        //    int index = 80;
+        //    int byteBufferIndex = 0;
+
+        //    fileData.ReadBytes(byteBuffer, index, 0, 4);
+        //    int triangleAmount = (int)System.BitConverter.ToUInt32(byteBuffer, 0); index += 4;
+
+        //    if (triangleAmount <= 0 || fileData.BytesLength < 80 + triangleAmount * 50)
+        //        return null;
+
+        //    SegmentedArray<int> triangles = new SegmentedArray<int>(triangleAmount * 3);
+        //    SegmentedArray<Half> vertices; // = new SegmentedArray<Half>(triangleAmount * 3 * 3);
+        //    Dictionary<Point3D, int> optimized = new Dictionary<Point3D, int>(triangleAmount * 3 * 3);
+        //    int triangleIndex = 0;
+        //    try
+        //    {
+        //        for (int i = 0, j = 0; i < triangles.Length;)
+        //        {
+        //            // Skip reading the facet normal.
+        //            index += 4 * 3;
+
+        //            // Read the buffer
+        //            fileData.ReadBytes(byteBuffer, index, 0, byteBuffer.Length);
+        //            byteBufferIndex = 0;
+
+        //            // Triangle vertices
+        //            {
+        //                index += 4 * 9;
+
+        //                for (int k = 0; k < 3; k++)
+        //                {
+        //                    float v1 = System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
+        //                    float v2 = System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
+        //                    float v3 = System.BitConverter.ToSingle(byteBuffer, byteBufferIndex); byteBufferIndex += 4;
+        //                    Point3D point = new Point3D(v1, v2, v3);
+
+        //                    if (optimized.TryGetValue(point, out int existingTriangle))
+        //                    {
+        //                        triangles[i++] = existingTriangle;
+        //                    }
+        //                    else
+        //                    {
+        //                        optimized.Add(point, triangleIndex);
+        //                        triangles[i++] = triangleIndex++;
+        //                    }
+        //                }
+
+        //            }
+
+        //            // Skip the remaining bytes.
+        //            index += 2;
+        //        }
+        //        vertices = new SegmentedArray<Half>(optimized.Count * 3);
+        //        {
+        //            int i = 0;
+        //            foreach (var point in optimized)
+        //            {
+        //                vertices[i++] = (Half)point.Key.X;
+        //                vertices[i++] = (Half)point.Key.Y;
+        //                vertices[i++] = (Half)point.Key.Z;
+        //            }
+        //        }
+        //        return new Mesh3D(vertices, triangles);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return null;
+        //    }
+        //}
         static Mesh3D ParseSTLASCII(ModelFileData fileData)
         {
             // STL ASCII Format: https://en.wikipedia.org/wiki/STL_(file_format)#Binary_STL
@@ -216,7 +221,7 @@ namespace STL_Showcase.Logic.Files
             if (!fileData.HasBytes())
                 return null;
 
-            List<Half> vertices = new List<Half>();
+            List<Mesh3D.Vertexh> vertices = new List<Mesh3D.Vertexh>();
 
             try
             {
@@ -231,9 +236,11 @@ namespace STL_Showcase.Logic.Files
                     for (int i = 0; i < 3; i++)
                     {
                         var matches = Regex.Matches(line, FloatStringPattern);
-                        vertices.Add(Half.Parse(matches[0].Value));
-                        vertices.Add(Half.Parse(matches[1].Value));
-                        vertices.Add(Half.Parse(matches[2].Value));
+                        vertices.Add(new Mesh3D.Vertexh(
+                            Half.Parse(matches[0].Value),
+                            Half.Parse(matches[1].Value),
+                            Half.Parse(matches[2].Value)
+                            ));
                         line = reader.ReadLine().TrimStart();
                     }
 
@@ -244,14 +251,13 @@ namespace STL_Showcase.Logic.Files
                 return null;
             }
 
-            SegmentedArray<Half> verticesArray = new SegmentedArray<Half>(vertices.Count);
-            SegmentedArray<int> trianglesArray = new SegmentedArray<int>(vertices.Count / 3);
+            SegmentedArray<Mesh3D.Vertexh> verticesArray = new SegmentedArray<Mesh3D.Vertexh>(vertices.Count);
+            SegmentedArray<int> trianglesArray = new SegmentedArray<int>(vertices.Count);
             for (int i = 0; i < vertices.Count; i++)
+            {
                 verticesArray[i] = vertices[i];
-
-            for (int i = 0; i < trianglesArray.Length; i++)
                 trianglesArray[i] = i;
-
+            }
             return new Mesh3D(verticesArray, trianglesArray);
         }
 
@@ -261,7 +267,7 @@ namespace STL_Showcase.Logic.Files
             if (!fileData.HasBytes())
                 return null;
 
-            List<Half> vertices = new List<Half>();
+            List<Mesh3D.Vertexh> vertices = new List<Mesh3D.Vertexh>();
             List<int> triangles = new List<int>();
             try
             {
@@ -278,15 +284,19 @@ namespace STL_Showcase.Logic.Files
                         var matches = Regex.Matches(line, FloatStringPattern);
                         if (matches.Count >= 6)
                         {   // Dodge the vertex color (or is it supposed to come after x y z? Wikipedia is not clear about it).
-                            vertices.Add(Half.Parse(matches[0].Value));
-                            vertices.Add(Half.Parse(matches[2].Value));
-                            vertices.Add(Half.Parse(matches[4].Value));
+                            vertices.Add(new Mesh3D.Vertexh(
+                                Half.Parse(matches[0].Value),
+                                Half.Parse(matches[2].Value),
+                                Half.Parse(matches[4].Value)
+                                ));
                         }
                         else
                         {
-                            vertices.Add(Half.Parse(matches[0].Value));
-                            vertices.Add(Half.Parse(matches[1].Value));
-                            vertices.Add(Half.Parse(matches[2].Value));
+                            vertices.Add(new Mesh3D.Vertexh(
+                                Half.Parse(matches[0].Value),
+                                Half.Parse(matches[1].Value),
+                                Half.Parse(matches[2].Value)
+                                ));
                         }
                     }
                     else if (line.StartsWith("f"))
@@ -316,7 +326,7 @@ namespace STL_Showcase.Logic.Files
                 return null;
             }
 
-            SegmentedArray<Half> verticesArray = new SegmentedArray<Half>(vertices.Count);
+            SegmentedArray<Mesh3D.Vertexh> verticesArray = new SegmentedArray<Mesh3D.Vertexh>(vertices.Count);
             SegmentedArray<int> trianglesArray = new SegmentedArray<int>(triangles.Count);
             for (int i = 0; i < vertices.Count; i++)
                 verticesArray[i] = vertices[i];

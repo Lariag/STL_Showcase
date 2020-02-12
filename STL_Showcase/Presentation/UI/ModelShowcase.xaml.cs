@@ -464,6 +464,10 @@ namespace STL_Showcase.Presentation.UI
             }
         }
 
+        private void RenderTypeScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            RenderTypeScrollViewer.ScrollToHorizontalOffset(RenderTypeScrollViewer.HorizontalOffset + e.Delta); // Add or substract... not an easy choice.
+        }
         private void ModelListTextFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
 
@@ -768,6 +772,7 @@ namespace STL_Showcase.Presentation.UI
             view3d.OptionRenderStyle = (RenderAspectEnum)renderAspectInt;
             view3d.UpdateLights();
         }
+
     }
 
     #region Converters

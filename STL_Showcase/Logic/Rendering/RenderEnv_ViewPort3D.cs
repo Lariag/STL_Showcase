@@ -126,9 +126,9 @@ namespace STL_Showcase.Logic.Rendering
 
             try
             {
-                for (int i = 0; i < mesh.Vertices.Length; i += 3)
+                for (int i = 0; i < mesh.Vertices.Length; i++)
                 {
-                    myPositionCollection.Add(new Point3D(mesh.Vertices[i], mesh.Vertices[i + 1], mesh.Vertices[i + 2]));
+                    myPositionCollection.Add(new Point3D(mesh.Vertices[i].x, mesh.Vertices[i].y, mesh.Vertices[i].z));
                 }
                 myTriangleIndicesCollection = new Int32Collection(mesh.Triangles);
             }

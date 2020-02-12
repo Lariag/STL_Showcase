@@ -492,7 +492,7 @@
                             </UniformGrid>
                             <Border Margin="4 -4 4 -4" DockPanel.Dock="Left" Style="{StaticResource BorderSeparatorStyleVertical}" HorizontalAlignment="Center"/>
 
-                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0 0 0 -8">
+                            <ScrollViewer x:Name="RenderTypeScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0 0 0 -8" PreviewMouseWheel="RenderTypeScrollViewer_PreviewMouseWheel">
                                 <ItemsControl x:Name="RenderTypeScrollItemContainer" ItemsSource="{Binding RenderAspectList}" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>

@@ -63,7 +63,7 @@ namespace STL_Showcase.Logic.Rendering
             window.Visible = false;
             window.MakeCurrent();
 
-            modelViewMatrix = Matrix4.LookAt(2f, 2f, 2.75f, 0, 0, 0.5f, 0, 0.0f, -1.0f);
+            modelViewMatrix = Matrix4.LookAt(2f, 2f, 2f, 0, 0, 0f, 0, 0.0f, -1.0f);
             projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(0.60f, 1f, 0.01f, 10f);
 
             GL.Enable(EnableCap.DepthTest);
@@ -101,8 +101,7 @@ namespace STL_Showcase.Logic.Rendering
             {
                 GL.GenBuffers(1, out modelVertexBuffer);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, modelVertexBuffer);
-                //GL.BufferData(BufferTarget.ArrayBuffer, (mesh.Vertices.Length * 2) * Shared.Extensions.Half.SizeInBytes, mesh.GetVertexArray(), BufferUsageHint.StaticDraw);
-                GL.BufferData(BufferTarget.ArrayBuffer, mesh.Vertices.Length * Shared.Extensions.Half.SizeInBytes, mesh.Vertices.ToArray(), BufferUsageHint.StaticDraw);
+                GL.BufferData(BufferTarget.ArrayBuffer, mesh.Vertices.Length * Mesh3D.Vertexh.SizeInBytes, mesh.Vertices.ToArray(), BufferUsageHint.StaticDraw);
 
                 GL.GenBuffers(1, out modelIndexBuffer);
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, modelIndexBuffer);
@@ -113,9 +112,6 @@ namespace STL_Showcase.Logic.Rendering
                 GL.BindBuffer(BufferTarget.ArrayBuffer, modelNormalBuffer);
                 GL.BufferData(BufferTarget.ArrayBuffer, mesh.vertexNormals.Length * Shared.Extensions.Half.SizeInBytes, mesh.vertexNormals, BufferUsageHint.StaticDraw);
                 GL.NormalPointer(NormalPointerType.HalfFloat, 0, new IntPtr(0));
-
-                //GL.VertexPointer(3, VertexPointerType.HalfFloat, Shared.Extensions.Half.SizeInBytes * 6, new IntPtr(0));
-                //GL.NormalPointer(NormalPointerType.HalfFloat, Shared.Extensions.Half.SizeInBytes * 6, new IntPtr(Shared.Extensions.Half.SizeInBytes * 3));
             }
         }
         public void RemoveModel()
@@ -128,10 +124,6 @@ namespace STL_Showcase.Logic.Rendering
 
             // Initialize Render
             {
-                //window.Size = new System.Drawing.Size(sizeInPixels, sizeInPixels);
-                //window.ClientRectangle = new Rectangle(0, 0, sizeInPixels, sizeInPixels);
-                //GL.Viewport(window.ClientRectangle);
-
                 GL.ClearColor(1.0f, 1.0f, 1.0f, 0.0f);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
@@ -143,7 +135,7 @@ namespace STL_Showcase.Logic.Rendering
 
                 GL.Enable(EnableCap.RescaleNormal);
 
-                GL.Translate(-mesh.OffsetX * mesh.Scale, mesh.OffsetY * mesh.Scale, -mesh.OffsetZ * mesh.Scale);
+                GL.Translate(-mesh.OffsetX * mesh.Scale, mesh.OffsetY * mesh.Scale, -mesh.OffsetZCentered * mesh.Scale);
                 GL.Scale(mesh.Scale, -mesh.Scale, mesh.Scale);
 
                 GL.EnableClientState(ArrayCap.VertexArray);
