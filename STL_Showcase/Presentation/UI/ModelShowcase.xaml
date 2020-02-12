@@ -30,7 +30,8 @@
 
         <DockPanel Grid.Row="0">
             <ui:SimpleStackPanel Spacing="10" DockPanel.Dock="Left" Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Top" Margin="20 0 18 0" Text="STL Showcase" FontSize="38" Style="{StaticResource HeaderTextBlockStyle}" />
+                <Image Source="Styles/Resources/STLShowcaseLogoFaded.png" Height="40" Margin="15 0 0 5" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"/>
+                <TextBlock VerticalAlignment="Top" Margin="0 0 18 0" Text="STL Showcase" FontSize="38" Style="{StaticResource HeaderTextBlockStyle}" />
                 <Menu>
                     <MenuItem Header="Load Directory" Click="LoadDirectory_Click"/>
                     <MenuItem Header="Configuration" Name="MenuItemConfiguration" Click="MenuItemConfiguration_Click"/>
@@ -104,7 +105,7 @@
 
                     </Grid>
                     <Grid x:Name="ProgressBarControlContainer" Height="16" DockPanel.Dock="Top" Margin="-3 0 -3 0" Visibility="{Binding Path=IsLoading, Mode=OneWay, Converter={StaticResource boolToVisibleHiddenConverter}}">
-                        <ProgressBar x:Name="ProgressBarControl" Height="16" Value="{Binding Path=CurrentProgressPercent, Mode=OneWay}"  Maximum="100"
+                        <ProgressBar x:Name="ProgressBarControl" Height="16" Value="{Binding Path=CurrentProgressPercent, Mode=OneWay}"  Maximum="100" VerticalAlignment="Stretch"
                                      FlowDirection="RightToLeft" Foreground="#AF000000" BorderThickness="0">
                             <ProgressBar.Effect>
                                 <DropShadowEffect Direction="0" Color="Gray" BlurRadius="5" ShadowDepth="0"/>
