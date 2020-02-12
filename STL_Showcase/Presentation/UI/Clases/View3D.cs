@@ -89,6 +89,12 @@ namespace STL_Showcase.Presentation.UI.Clases
             for (int i = 0; i + 2 < vertices.Length; i += 3)
                 yield return new Point3D(vertices[i], vertices[i + 1], vertices[i + 2]);
         }
+        private IEnumerable<Point3D> Point3DFromLinearCoordinates(SegmentedArray<STL_Showcase.Logic.Rendering.Mesh3D.Vertexh> vertices)
+        {
+            for (int i = 0; i < vertices.Length; i++)
+                yield return new Point3D(vertices[i].x, vertices[i].y, vertices[i].z);
+        }
+
         private static Material GetMaterial()//(RenderAspectEnum renderAspect)
         {
             //if (renderAspect == RenderAspectEnum.AllGreen)

@@ -22,10 +22,12 @@ namespace STL_Showcase.Logic.Rendering
         public float OffsetX { get; protected set; }
         public float OffsetY { get; protected set; }
         public float OffsetZ { get; protected set; }
+        public float OffsetZCentered { get; protected set; }
+
         protected bool _centered = false;
 
-        private SegmentedArray<Half> _Vertices;
-        public SegmentedArray<Half> Vertices {
+        private SegmentedArray<Vertexh> _Vertices;
+        public SegmentedArray<Vertexh> Vertices {
             get { return _Vertices; }
             set
             {
@@ -50,7 +52,7 @@ namespace STL_Showcase.Logic.Rendering
             get { return vertexNormals != null; }
         }
 
-        public Mesh3D(SegmentedArray<Half> vertices, SegmentedArray<int> triangles, Half[] faceNormals = null)
+        public Mesh3D(SegmentedArray<Vertexh> vertices, SegmentedArray<int> triangles, Half[] faceNormals = null)
         {
             this.Vertices = vertices;
             this.Triangles = triangles;
@@ -73,50 +75,24 @@ namespace STL_Showcase.Logic.Rendering
             float minX = float.MaxValue, minY = float.MaxValue, minZ = float.MaxValue, maxX = float.MinValue, maxY = float.MinValue, maxZ = float.MinValue;
 
             int triangleSkip = (TriangleCount > _RepresentativeSalmpleTriangles ? TriangleCount / _RepresentativeSalmpleTriangles : 0);
-            //for (int i = 0; i < TriangleCount; i += 9)
-            //{
-            //    if (_Vertices[i] < minX) minX = _Vertices[i];
-            //    if (_Vertices[i] > maxX) maxX = _Vertices[i];
-            //    if (_Vertices[i + 1] < minY) minY = _Vertices[i + 1];
-            //    if (_Vertices[i + 1] > maxY) maxY = _Vertices[i + 1];
-            //    if (_Vertices[i + 2] < minZ) minZ = _Vertices[i + 2];
-            //    if (_Vertices[i + 2] > maxZ) maxZ = _Vertices[i + 2];
-
-            //    if (_Vertices[i + 3] < minX) minX = _Vertices[i + 3];
-            //    if (_Vertices[i + 3] > maxX) maxX = _Vertices[i + 3];
-            //    if (_Vertices[i + 4] < minY) minY = _Vertices[i + 4];
-            //    if (_Vertices[i + 4] > maxY) maxY = _Vertices[i + 4];
-            //    if (_Vertices[i + 5] < minZ) minZ = _Vertices[i + 5];
-            //    if (_Vertices[i + 5] > maxZ) maxZ = _Vertices[i + 5];
-
-            //    if (_Vertices[i + 6] < minX) minX = _Vertices[i + 6];
-            //    if (_Vertices[i + 6] > maxX) maxX = _Vertices[i + 6];
-            //    if (_Vertices[i + 7] < minY) minY = _Vertices[i + 7];
-            //    if (_Vertices[i + 7] > maxY) maxY = _Vertices[i + 7];
-            //    if (_Vertices[i + 8] < minZ) minZ = _Vertices[i + 8];
-            //    if (_Vertices[i + 8] > maxZ) maxZ = _Vertices[i + 8];
-
-            //    i += triangleSkip * 9;
-            //}
-
-            for (int i = 0; i < Triangles.Length - 2; i++)
+            
+            for (int i = 0; i < Triangles.Length; i++)
             {
-                if (_Vertices[Triangles[i] * 3] < minX) minX = _Vertices[Triangles[i] * 3];
-                if (_Vertices[Triangles[i] * 3] > maxX) maxX = _Vertices[Triangles[i] * 3];
-                if (_Vertices[Triangles[i] * 3 + 1] < minY) minY = _Vertices[Triangles[i] * 3 + 1];
-                if (_Vertices[Triangles[i] * 3 + 1] > maxY) maxY = _Vertices[Triangles[i] * 3 + 1];
-                if (_Vertices[Triangles[i] * 3 + 2] < minZ) minZ = _Vertices[Triangles[i] * 3 + 2];
-                if (_Vertices[Triangles[i] * 3 + 2] > maxZ) maxZ = _Vertices[Triangles[i] * 3 + 2];
+                if (_Vertices[Triangles[i]].x < minX) minX = _Vertices[Triangles[i]].x;
+                if (_Vertices[Triangles[i]].x > maxX) maxX = _Vertices[Triangles[i]].x;
+                if (_Vertices[Triangles[i]].y < minY) minY = _Vertices[Triangles[i]].y;
+                if (_Vertices[Triangles[i]].y > maxY) maxY = _Vertices[Triangles[i]].y;
+                if (_Vertices[Triangles[i]].z < minZ) minZ = _Vertices[Triangles[i]].z;
+                if (_Vertices[Triangles[i]].z > maxZ) maxZ = _Vertices[Triangles[i]].z;
 
-                Console.WriteLine(_Vertices[Triangles[i]] + " " + _Vertices[Triangles[i] + 1] + " " + _Vertices[Triangles[i] + 2]);
                 i += triangleSkip * 9;
             }
 
             Scale = _ScaleFactor / Distance(minX, minY, minZ, maxX, maxY, maxZ);
             OffsetX = (maxX + minX) / 2f;
-            OffsetY = (maxY + minY) / 2f; // minY + (maxY - minY) / 2f
+            OffsetY = (maxY + minY) / 2f;
             OffsetZ = minZ; // Set on the floor (Z = 0).
-
+            OffsetZCentered = (maxZ + minZ) / 2f; // Set center of the object on the floor.
             _centered = true;
         }
 
@@ -153,12 +129,12 @@ namespace STL_Showcase.Logic.Rendering
         {
             if (!HasFaceNormals || forceRecalculation)
             {
-                vertexNormals = new Half[this.Vertices.Length];
+                vertexNormals = new Half[this.Vertices.Length * 3];
                 int x = 0;
                 int y = 1;
                 int z = 2;
-                Half[] v1 = new Half[3];
-                Half[] v2 = new Half[3];
+                Vertexh v1;
+                Vertexh v2;
 
                 int tri1;
                 int tri2;
@@ -168,76 +144,32 @@ namespace STL_Showcase.Logic.Rendering
 
                 for (int i = 0; i < Triangles.Length; i += 3)
                 {
-                    tri1 = Triangles[i] * 3;
-                    tri2 = Triangles[i + 1] * 3;
-                    tri3 = Triangles[i + 2] * 3;
+                    tri1 = Triangles[i];
+                    tri2 = Triangles[i + 1];
+                    tri3 = Triangles[i + 2];
 
-                    v1[x] = Vertices[tri1 + x] - Vertices[tri2 + x];
-                    v1[y] = Vertices[tri1 + y] - Vertices[tri2 + y];
-                    v1[z] = Vertices[tri1 + z] - Vertices[tri2 + z];
+                    v1 = new Vertexh(
+                         Vertices[tri1].x - Vertices[tri2].x,
+                         Vertices[tri1].y - Vertices[tri2].y,
+                         Vertices[tri1].z - Vertices[tri2].z
+                        );
 
-                    v2[x] = Vertices[tri2 + x] - Vertices[tri3 + x];
-                    v2[y] = Vertices[tri2 + y] - Vertices[tri3 + y];
-                    v2[z] = Vertices[tri2 + z] - Vertices[tri3 + z];
+                    v2 = new Vertexh(
+                        Vertices[tri2].x - Vertices[tri3].x,
+                        Vertices[tri2].y - Vertices[tri3].y,
+                        Vertices[tri2].z - Vertices[tri3].z
+                        );
 
-                    vx = v1[y] * v2[z] - v1[z] * v2[y];
-                    vy = v1[z] * v2[x] - v1[x] * v2[z];
-                    vz = v1[x] * v2[y] - v1[y] * v2[x];
+                    vx = v1.y * v2.z - v1.z * v2.y;
+                    vy = v1.z * v2.x - v1.x * v2.z;
+                    vz = v1.x * v2.y - v1.y * v2.x;
                     NormalizeVector(ref vx, ref vy, ref vz);
 
-                    vertexNormals[tri1 + x] = vertexNormals[tri2 + x] = vertexNormals[tri3 + x] = (Half)vx;
-                    vertexNormals[tri1 + y] = vertexNormals[tri2 + y] = vertexNormals[tri3 + y] = (Half)vy;
-                    vertexNormals[tri1 + z] = vertexNormals[tri2 + z] = vertexNormals[tri3 + z] = (Half)vz;
+                    vertexNormals[tri1 * 3 + x] = vertexNormals[tri2 * 3 + x] = vertexNormals[tri3 * 3 + x] = (Half)vx;
+                    vertexNormals[tri1 * 3 + y] = vertexNormals[tri2 * 3 + y] = vertexNormals[tri3 * 3 + y] = (Half)vy;
+                    vertexNormals[tri1 * 3 + z] = vertexNormals[tri2 * 3 + z] = vertexNormals[tri3 * 3 + z] = (Half)vz;
                 }
             }
-        }
-
-        public Half[] GetVertexArray()
-        {
-            Half[] v = new Half[this.Vertices.Length * 2];
-
-            int x = 0;
-            int y = 1;
-            int z = 2;
-
-            Half[] v1 = new Half[3];
-            Half[] v2 = new Half[3];
-
-            for (int i = 0, j = 0; i < Vertices.Length; i += 9, j += 18)
-            {
-                v[j] = Vertices[i];
-                v[j + 1] = Vertices[i + 1];
-                v[j + 2] = Vertices[i + 2];
-
-                v[j + 6] = Vertices[i + 3];
-                v[j + 7] = Vertices[i + 4];
-                v[j + 8] = Vertices[i + 5];
-
-                v[j + 12] = Vertices[i + 6];
-                v[j + 13] = Vertices[i + 7];
-                v[j + 14] = Vertices[i + 8];
-
-
-
-                v1[x] = v[j + 0] - v[j + 6];
-                v1[y] = v[j + 1] - v[j + 7];
-                v1[z] = v[j + 2] - v[j + 8];
-
-                v2[x] = v[j + 6] - v[j + 12];
-                v2[y] = v[j + 7] - v[j + 13];
-                v2[z] = v[j + 8] - v[j + 14];
-
-                OpenTK.Vector3 v3 = new OpenTK.Vector3(v1[y] * v2[z] - v1[z] * v2[y], v1[z] * v2[x] - v1[x] * v2[z], v1[x] * v2[y] - v1[y] * v2[x]);
-                v3.Normalize();
-
-                v[j + 3] = v[j + 9] = v[j + 15] = (Half)v3.X;// v1[y] * v2[z] - v1[z] * v2[y];
-                v[j + 4] = v[j + 10] = v[j + 16] = (Half)v3.Y;//v1[z] * v2[x] - v1[x] * v2[z];
-                v[j + 5] = v[j + 11] = v[j + 17] = (Half)v3.Z;//v1[x] * v2[y] - v1[y] * v2[x];
-
-
-
-            }
-            return v;
         }
 
         private static void NormalizeVector(ref float x, ref float y, ref float z)
@@ -247,17 +179,45 @@ namespace STL_Showcase.Logic.Rendering
             y = y / distance;
             z = z / distance;
         }
-        private static void NormalizeVector(ref Half x, ref Half y, ref Half z)
-        {
-            Half distance = (Half)Math.Sqrt(x * x + y * y + z * z);
-            x = x / distance;
-            y = y / distance;
-            z = z / distance;
-        }
+
         private static float Distance(float x1, float y1, float z1, float x2, float y2, float z2)
         {
             return (float)Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2));
         }
+
+        #region Structures
+
+        public struct Vertexf
+        {
+            public Vertexf(float x, float y, float z)
+            {
+                this.x = x;
+                this.y = y;
+                this.z = z;
+            }
+            public float x;
+            public float y;
+            public float z;
+
+            public const int SizeInBytes = 12;
+        }
+
+        public struct Vertexh
+        {
+            public Vertexh(Half x, Half y, Half z)
+            {
+                this.x = x;
+                this.y = y;
+                this.z = z;
+            }
+            public Half x;
+            public Half y;
+            public Half z;
+
+            public const int SizeInBytes = 6;
+        }
+
+        #endregion Structures
 
         //public bool OptimizeTriangleCount(int maxTriangles)
         //{
