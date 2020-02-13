@@ -32,6 +32,8 @@ using ModernWpf.Controls;
 using STL_Showcase.Data.Config;
 using STL_Showcase.Logic.FilePrcessing;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media.Animation;
+using STL_Showcase.Presentation.UI.Clases.Utility;
 
 namespace STL_Showcase.Presentation.UI
 {
@@ -74,6 +76,7 @@ namespace STL_Showcase.Presentation.UI
 
             _ModelItemListData = new ModelItemListData();
             _ModelItemListData.ZoomLevelChanged += (sender, e) => ModelListItem.SetImageSizeFor(_ModelItemListData.ModelListItemContentSize);
+            //_ModelItemListData.ZoomLevelChanged += (sender, e) => SetSelectedListItemVisible;
             ImageListZoomSliderControl.DataContext = _ModelItemListData;
             ImageListControl.DataContext = _ModelItemListData;
             ImageTreeControl.DataContext = _ModelItemListData;
@@ -459,9 +462,23 @@ namespace STL_Showcase.Presentation.UI
         {
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
+                double scrollHeight = ModelItemListScrollPanel.ScrollableHeight;
+                double scrollPosition = ModelItemListScrollPanel.VerticalOffset;
+
                 _ModelItemListData.ChangeZoomLevel(e.Delta < 0 ? -1 : 1);
-                e.Handled = true;
+                ((MainWindow)System.Windows.Application.Current.MainWindow).UpdateLayout();
+
+                if (scrollHeight > 0)
+                {
+                    ((MainWindow)System.Windows.Application.Current.MainWindow).UpdateLayout();
+                    ModelItemListScrollPanel.ScrollToVerticalOffset(scrollPosition / scrollHeight * ModelItemListScrollPanel.ScrollableHeight);
+                }
             }
+            else
+            {
+                ModelItemListScrollPanel.ScrollToVerticalOffset(ModelItemListScrollPanel.VerticalOffset - e.Delta * 3);
+            }
+            e.Handled = true;
         }
 
         private void RenderTypeScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -773,8 +790,120 @@ namespace STL_Showcase.Presentation.UI
             view3d.UpdateLights();
         }
 
-    }
+        bool[] modeEnabled = { true, true, true };
+        int modePowered = 1;
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string btnTag = (sender as Button).Tag as string;
 
+
+            ColumnDefinition[] columns = { ColumnItemTree, ColumnItemList, Column3DView };
+
+            bool[] modeEnabledNew = new bool[modeEnabled.Length];
+            int modePoweredNew = modePowered;
+            modeEnabled.CopyTo(modeEnabledNew, 0);
+
+            int selectedMode = int.Parse(btnTag[0].ToString());
+            int selectedColumn = int.Parse(btnTag[1].ToString());
+
+            if (selectedMode == 0)
+            { // Enable/Disable
+                modeEnabledNew[selectedColumn] = !modeEnabledNew[selectedColumn];
+                if (!modeEnabledNew[selectedColumn] && modePoweredNew == selectedColumn)
+                    modePoweredNew = -1;
+            }
+            else if (selectedMode == 1)
+            { // Set/unset powered
+                modePoweredNew = modePoweredNew == selectedColumn ? -1 : selectedColumn;
+
+                if (!modeEnabled[selectedColumn] && modePoweredNew == selectedColumn)
+                    modeEnabledNew[selectedColumn] = true;
+            }
+            else
+            {
+                for(int i = 0; i < modeEnabledNew.Length; i++)
+                {
+                    modeEnabledNew[i] = true;
+                }
+                modePoweredNew = -1;
+            }
+
+
+            double[] defaultColumnSizes = { 2f, 4f, 3f };
+            double[] defaultColumnMinSizes = { 350f, 450f, 0f };
+
+            double totalDefaultSize = defaultColumnSizes.Sum();
+            double animationDuration = 200f;
+
+            double columnsTotalSize = columns.Sum(c => c.Width.Value);
+
+            // Normalize column sizes to fit totalSize.
+            for (int i = 0; i < columns.Length; i++)
+            {
+                columns[i].MinWidth = 0;
+                if (columnsTotalSize == 0 || totalDefaultSize == 0)
+                    columns[i].Width = new GridLength(0);
+                else
+                    columns[i].Width = new GridLength(totalDefaultSize / columnsTotalSize * columns[i].Width.Value, GridUnitType.Star);
+            }
+
+            var test1 = columns[0].Width.Value;
+            var test2 = columns[1].Width.Value;
+            var test3 = columns[2].Width.Value;
+
+
+
+            double[] columnsNewSize = new double[3];
+            for (int i = 0; i < columnsNewSize.Length; i++)
+            {
+                columnsNewSize[i] = modeEnabledNew[i] ? (defaultColumnSizes[i] * (modePoweredNew == i ? 3f : 1f)) : 0f;
+            };
+
+            // Animate columns whose enabled or powered state changes.
+            for (int i = 0; i < columnsNewSize.Length; i++)
+            {
+                //if ((modeEnabled[i] != modeEnabledNew[i]) ||
+                //    (modePowered != i && modePoweredNew == i) ||
+                //    (modePowered == i && modePoweredNew != i))
+                if (modeEnabled[i] || modeEnabledNew[i])
+                {
+                    var col = columns[i];
+                    double newSize = columnsNewSize[i];
+                    GridLengthAnimation animation = new GridLengthAnimation();
+                    animation.From = col.Width;
+                    animation.To = new GridLength(newSize, GridUnitType.Star);
+                    animation.Duration = new Duration(TimeSpan.FromMilliseconds(animationDuration));
+                    animation.FillBehavior = FillBehavior.Stop; // Fixes GridSplitter not working after animation (first comment of https://stackoverflow.com/a/16844818/8577979)
+                    animation.Completed += (s, _) =>
+                    {
+                        col.Width = new GridLength(newSize, GridUnitType.Star);
+                    };
+
+                    if (modeEnabled[i] != modeEnabledNew[i] && defaultColumnMinSizes[i] > 0f)
+                    {
+                        DoubleAnimation minSizeAnimation = new DoubleAnimation(
+                            modeEnabledNew[i] ? defaultColumnMinSizes[i] : 0f,
+                            new Duration(TimeSpan.FromMilliseconds(animationDuration)));
+                        col.BeginAnimation(ColumnDefinition.MinWidthProperty, minSizeAnimation);
+                    }
+
+
+                    col.BeginAnimation(ColumnDefinition.WidthProperty, animation);
+
+                }
+            }
+            modeEnabled = modeEnabledNew;
+            modePowered = modePoweredNew;
+
+            ColumnGridSplitterLeft.Visibility = (modeEnabled[0] && (modeEnabled[1] || modeEnabled[2])) ? Visibility.Visible : Visibility.Collapsed;
+            ColumnGridSplitterRight.Visibility = (modeEnabled[2] && modeEnabled[1]) ? Visibility.Visible : Visibility.Collapsed;
+
+            //for (int i = 0; i < columns.Length; i++)
+            //{
+            //    columns[i].Width = new GridLength(0, GridUnitType.Auto);
+            //}
+        }
+    }
     #region Converters
 
     public class RadioBoolToStringConverter : IValueConverter

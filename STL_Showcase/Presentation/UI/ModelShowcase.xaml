@@ -50,6 +50,16 @@
                     </MenuItem>
                     <MenuItem Name="MenuAbout" Header="About" Click="MenuAbout_Click"/>
                 </Menu>
+                <Button Click="Button_Click" Tag="00">C1ENB</Button>
+                <Button Click="Button_Click" Tag="10">C1PWR</Button>
+
+                <Button Click="Button_Click" Tag="01">C1ENB</Button>
+                <Button Click="Button_Click" Tag="11">C1PWR</Button>
+
+                <Button Click="Button_Click" Tag="02">C1ENB</Button>
+                <Button Click="Button_Click" Tag="12">C1PWR</Button>
+
+                <Button Click="Button_Click" Style="{StaticResource AccentButtonStyle}" Tag="99">Reset C</Button>
             </ui:SimpleStackPanel>
 
             <!--<StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
@@ -63,15 +73,15 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" MinWidth="350"/>
-                <ColumnDefinition Width="3"/>
-                <ColumnDefinition Width="3*" MinWidth="400"/>
-                <ColumnDefinition Width="3"/>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*" MinWidth="350" x:Name="ColumnItemTree"/>
+                <ColumnDefinition Width="3" x:Name="ColumnSeparator1"/>
+                <ColumnDefinition Width="3*" MinWidth="400" x:Name="ColumnItemList"/>
+                <ColumnDefinition Width="3" x:Name="ColumnSeparator2"/>
+                <ColumnDefinition Width="3*" x:Name="Column3DView"/>
             </Grid.ColumnDefinitions>
 
-            <GridSplitter Grid.Column="1" Width="2" Foreground="White" Background="White" HorizontalAlignment="Stretch" />
-            <GridSplitter Grid.Column="3" Width="2" Foreground="White" Background="White" HorizontalAlignment="Stretch" />
+            <GridSplitter x:Name="ColumnGridSplitterLeft" Grid.Column="1" Width="2" Foreground="White" Background="White" HorizontalAlignment="Stretch" />
+            <GridSplitter x:Name="ColumnGridSplitterRight" Grid.Column="3" Width="2" Foreground="White" Background="White" HorizontalAlignment="Stretch" />
 
 
             <!-- Listado de ficheros -->

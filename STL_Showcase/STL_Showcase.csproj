@@ -158,6 +158,7 @@
     <Compile Include="Presentation\UI\Clases\ModelProgressBarData.cs" />
     <Compile Include="Presentation\UI\Clases\ModelTreeItem.cs" />
     <Compile Include="Presentation\UI\Clases\ProgresBarAnimateBehavior.cs" />
+    <Compile Include="Presentation\UI\Clases\Utility\GridLengthAnimation.cs" />
     <Compile Include="Presentation\UI\Clases\View3D.cs" />
     <Compile Include="Presentation\UI\ConfigurationWindow.xaml.cs">
       <DependentUpon>ConfigurationWindow.xaml</DependentUpon>

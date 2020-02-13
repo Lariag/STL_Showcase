@@ -14,6 +14,7 @@
     PrimaryButtonText="Yes"
     SecondaryButtonText="No"
     CloseButtonText="Cancel"
+    IsShadowEnabled="True"
     DefaultButton="Primary">
     <ui:SimpleStackPanel
         Spacing="12"
