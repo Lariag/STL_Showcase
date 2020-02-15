@@ -146,7 +146,7 @@ namespace STL_Showcase.Logic.Rendering
             // Enable Lighting
             {
                 GL.Enable(EnableCap.Lighting);
-                GL.ShadeModel(ShadingModel.Flat);
+                GL.ShadeModel(ShadingModel.Smooth);
 
                 if (mat_diffuse1 != null)
                 {

@@ -38,7 +38,8 @@ namespace STL_Showcase.Presentation.UI.Clases
                   (string.IsNullOrWhiteSpace(ModelListTextFilter) || m.FileData.FileName.IndexOf(ModelListTextFilter, 0, StringComparison.InvariantCultureIgnoreCase) >= 0) &&
                   (string.IsNullOrWhiteSpace(ModelListDirectoryFilter) || m.FileData.FileFullPath.Contains(ModelListDirectoryFilter)) &&
                     ((FileTypeFilterSTL && m.FileData.FileName.EndsWith(".stl", StringComparison.InvariantCultureIgnoreCase) ||
-                    (FileTypeFilterOBJ && m.FileData.FileName.EndsWith(".obj", StringComparison.InvariantCultureIgnoreCase)))
+                    (FileTypeFilterOBJ && m.FileData.FileName.EndsWith(".obj", StringComparison.InvariantCultureIgnoreCase)) ||
+                    (FileTypeFilterOBJ && m.FileData.FileName.EndsWith(".3mf", StringComparison.InvariantCultureIgnoreCase)))
                   )));
             }
         }
@@ -71,6 +72,8 @@ namespace STL_Showcase.Presentation.UI.Clases
         public bool FileTypeFilterSTL { get { return _FileTypeFilterSTL; } set { _FileTypeFilterSTL = value; NotifyPropertyChanged(nameof(FileTypeFilterSTL)); } }
         private bool _FileTypeFilterOBJ;
         public bool FileTypeFilterOBJ { get { return _FileTypeFilterOBJ; } set { _FileTypeFilterOBJ = value; NotifyPropertyChanged(nameof(FileTypeFilterOBJ)); } }
+        private bool _FileTypeFilter3MF;
+        public bool FileTypeFilter3MF { get { return _FileTypeFilter3MF; } set { _FileTypeFilter3MF = value; NotifyPropertyChanged(nameof(FileTypeFilter3MF)); } }
 
         private bool _ModelListDirectionOrder = true;
         private string _ModelListTextOrder = "Directory";
@@ -123,7 +126,8 @@ namespace STL_Showcase.Presentation.UI.Clases
                 if (child.HasData)
                 {
                     child.IsVisible = (this.FileTypeFilterSTL && child.Text.EndsWith(".stl", StringComparison.InvariantCultureIgnoreCase) ||
-                        this.FileTypeFilterOBJ && child.Text.EndsWith(".obj", StringComparison.InvariantCultureIgnoreCase));
+                        this.FileTypeFilterOBJ && child.Text.EndsWith(".obj", StringComparison.InvariantCultureIgnoreCase) ||
+                        this.FileTypeFilter3MF && child.Text.EndsWith(".3mf", StringComparison.InvariantCultureIgnoreCase));
                     visible = visible || child.IsVisible;
                 }
                 else
@@ -140,6 +144,7 @@ namespace STL_Showcase.Presentation.UI.Clases
             this.SelectedListItem = null;
             this.FileTypeFilterSTL = true;
             this.FileTypeFilterOBJ = true;
+            this.FileTypeFilter3MF = true;
             this.ModelList = new ObservableCollection<ModelListItem>();
             this.ModelTreeRoot = new ObservableCollection<ModelTreeItem>();
             this._ModelListTextOrder = "Directory";
