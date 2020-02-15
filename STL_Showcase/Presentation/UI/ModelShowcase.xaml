@@ -34,6 +34,17 @@
                 <TextBlock VerticalAlignment="Top" Margin="0 0 18 0" Text="STL Showcase" FontSize="38" Style="{StaticResource HeaderTextBlockStyle}" />
                 <Menu>
                     <MenuItem Header="Load Directory" Click="LoadDirectory_Click"/>
+                    <MenuItem Name="MenuColumnsMain" Header="View">
+                        <MenuItem Tag="00" Name="MenuColumnsShowDirectoryTree" Header="Show Directory Tree" IsCheckable="True" StaysOpenOnClick="True" Click="ColumnVisibilityOption_Click"/>
+                        <MenuItem Tag="01" Name="MenuColumnsShowModelList" Header="Show Model List" IsCheckable="True" StaysOpenOnClick="True" Click="ColumnVisibilityOption_Click"/>
+                        <MenuItem Tag="02" Name="MenuColumnsShow3DView" Header="Show 3D View" IsCheckable="True" StaysOpenOnClick="True" Click="ColumnVisibilityOption_Click"/>
+                        <Separator></Separator>
+                        <MenuItem Tag="10" Name="MenuColumnsPowerDirectoryTree" Header="Expand Directory Tree" IsCheckable="True" StaysOpenOnClick="False" Click="ColumnVisibilityOption_Click"/>
+                        <MenuItem Tag="11" Name="MenuColumnsPowerModelList" Header="Expand Model List View" IsCheckable="True" StaysOpenOnClick="False" Click="ColumnVisibilityOption_Click"/>
+                        <MenuItem Tag="12" Name="MenuColumnsPower3DView" Header="Expand 3D View" IsCheckable="True" StaysOpenOnClick="False" Click="ColumnVisibilityOption_Click"/>
+                        <Separator></Separator>
+                        <MenuItem Tag="29" Name="MenuColumnsResetVisibility" Header="Reset Visibility" IsCheckable="False" StaysOpenOnClick="False" Click="ColumnVisibilityOption_Click"/>
+                    </MenuItem>
                     <MenuItem Header="Configuration" Name="MenuItemConfiguration" Click="MenuItemConfiguration_Click"/>
                     <MenuItem Name="MenuCacheMain" Header="Cache" Click="MenuCacheMain_Click" SubmenuOpened="MenuCacheMain_Click">
                         <MenuItem Name="MenuCacheAbout" Header="What is the cache?" Click="MenuCacheAbout_Click"/>
@@ -50,16 +61,6 @@
                     </MenuItem>
                     <MenuItem Name="MenuAbout" Header="About" Click="MenuAbout_Click"/>
                 </Menu>
-                <Button Click="Button_Click" Tag="00">C1ENB</Button>
-                <Button Click="Button_Click" Tag="10">C1PWR</Button>
-
-                <Button Click="Button_Click" Tag="01">C1ENB</Button>
-                <Button Click="Button_Click" Tag="11">C1PWR</Button>
-
-                <Button Click="Button_Click" Tag="02">C1ENB</Button>
-                <Button Click="Button_Click" Tag="12">C1PWR</Button>
-
-                <Button Click="Button_Click" Style="{StaticResource AccentButtonStyle}" Tag="99">Reset C</Button>
             </ui:SimpleStackPanel>
 
             <!--<StackPanel DockPanel.Dock="Left" Orientation="Horizontal">

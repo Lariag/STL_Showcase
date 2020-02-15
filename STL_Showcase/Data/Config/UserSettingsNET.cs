@@ -36,14 +36,33 @@ namespace STL_Showcase.Data.Config
                     return Properties.Settings.Default.RenderAspect;
                 case UserSettingEnum.CurrentView3DAspect:
                     return Properties.Settings.Default.CurrentView3DAspect;
+                case UserSettingEnum.MainColumnsPoweredIndex:
+                    return Properties.Settings.Default.MainColumnsPoweredIndex;
                 default:
                     return 0;
             }
         }
+
+        public bool GetSettingBool(UserSettingEnum setting)
+        {
+            switch (setting)
+            {
+                case UserSettingEnum.MainColumnsVisibilityDirectoryTree:
+                    return Properties.Settings.Default.MainColumnsVisibilityDirectoryTree;
+                case UserSettingEnum.MainColumnsVisibilityModelList:
+                    return Properties.Settings.Default.MainColumnsVisibilityModelList;
+                case UserSettingEnum.MainColumnsVisibility3DView:
+                    return Properties.Settings.Default.MainColumnsVisibility3DView;
+                default:
+                    return false;
+            }
+        }
+
         public float GetSettingFloat(UserSettingEnum setting)
         {
-            return 0f;
+            throw new NotImplementedException("Float setting not implemented yet.");
         }
+
         public void SetSettingString(UserSettingEnum setting, string val)
         {
             switch (setting)
@@ -63,11 +82,29 @@ namespace STL_Showcase.Data.Config
                     Properties.Settings.Default.RenderAspect = val; break;
                 case UserSettingEnum.CurrentView3DAspect:
                     Properties.Settings.Default.CurrentView3DAspect = val; break;
+                case UserSettingEnum.MainColumnsPoweredIndex:
+                    Properties.Settings.Default.MainColumnsPoweredIndex = val; break;
             }
             Properties.Settings.Default.Save();
         }
+
+        public void SetSettingBool(UserSettingEnum setting, bool val)
+        {
+            switch (setting)
+            {
+                case UserSettingEnum.MainColumnsVisibilityDirectoryTree:
+                    Properties.Settings.Default.MainColumnsVisibilityDirectoryTree = val; break;
+                case UserSettingEnum.MainColumnsVisibilityModelList:
+                    Properties.Settings.Default.MainColumnsVisibilityModelList = val; break;
+                case UserSettingEnum.MainColumnsVisibility3DView:
+                    Properties.Settings.Default.MainColumnsVisibility3DView = val; break;
+            }
+            Properties.Settings.Default.Save();
+        }
+
         public void SetSettingFloat(UserSettingEnum setting, float val)
         {
+            throw new NotImplementedException("Float setting not implemented yet.");
             Properties.Settings.Default.Save();
         }
     }
