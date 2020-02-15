@@ -74,10 +74,8 @@ namespace STL_Showcase.Presentation.UI
 
             userSettings = DefaultFactory.GetDefaultUserSettings();
 
-            ColumnModeManager = new ModelColumnsStates(new ColumnDefinition[] { ColumnItemTree, ColumnItemList, Column3DView },
-                new double[] { 2f, 4f, 3f },
-                new double[] { 350f, 450f, 0f },
-                200f);
+            InitializeVisibilityMenuItemsCheckedState();
+            UpdateVisibilityMenuItemsCheckedState();
 
             _ModelItemListData = new ModelItemListData();
             _ModelItemListData.ZoomLevelChanged += (sender, e) => ModelListItem.SetImageSizeFor(_ModelItemListData.ModelListItemContentSize);
@@ -796,18 +794,61 @@ namespace STL_Showcase.Presentation.UI
         }
 
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ColumnVisibilityOption_Click(object sender, RoutedEventArgs e)
         {
-            string btnTag = (sender as Button).Tag as string;
+            string btnTag = (sender as Control).Tag as string;
             ModelColumnsStates.ColumnState selectedMode = (ModelColumnsStates.ColumnState)int.Parse(btnTag[0].ToString());
             int selectedColumn = int.Parse(btnTag[1].ToString());
 
-            ColumnModeManager.SetNewState(selectedColumn, selectedMode);
+            ColumnModeManager.SetNewState(selectedColumn, selectedMode, true);
+
+            UpdateVisibilityMenuItemsCheckedState();
+        }
+
+        private void InitializeVisibilityMenuItemsCheckedState()
+        {
+            ColumnModeManager = new ModelColumnsStates(new ColumnDefinition[] { ColumnItemTree, ColumnItemList, Column3DView },
+                new double[] { 2f, 4f, 3f },
+                new double[] { 350f, 450f, 0f },
+                200f);
+
+            bool[] columnVisibility = {
+                this.userSettings.GetSettingBool(UserSettingEnum.MainColumnsVisibilityDirectoryTree),
+                this.userSettings.GetSettingBool(UserSettingEnum.MainColumnsVisibilityModelList),
+                this.userSettings.GetSettingBool(UserSettingEnum.MainColumnsVisibility3DView)
+            };
+            int poweredColumnIndex = this.userSettings.GetSettingInt(UserSettingEnum.MainColumnsPoweredIndex);
+
+            for (int i = 0; i < columnVisibility.Length; i++)
+            {
+                if (!columnVisibility[i])
+                    ColumnModeManager.SetNewState(i, ModelColumnsStates.ColumnState.Visibility, false);
+                else if (poweredColumnIndex == i)
+                    ColumnModeManager.SetNewState(i, ModelColumnsStates.ColumnState.Powered, false);
+            }
+
+            UpdateVisibilityMenuItemsCheckedState();
+        }
+        private void UpdateVisibilityMenuItemsCheckedState()
+        {
+            MenuColumnsShowDirectoryTree.IsChecked = ColumnModeManager.IsColumnEnabled(0);
+            MenuColumnsShowModelList.IsChecked = ColumnModeManager.IsColumnEnabled(1);
+            MenuColumnsShow3DView.IsChecked = ColumnModeManager.IsColumnEnabled(2);
+
+            MenuColumnsPowerDirectoryTree.IsChecked = ColumnModeManager.IsColumnPowered(0);
+            MenuColumnsPowerModelList.IsChecked = ColumnModeManager.IsColumnPowered(1);
+            MenuColumnsPower3DView.IsChecked = ColumnModeManager.IsColumnPowered(2);
 
             ColumnGridSplitterLeft.Visibility = ColumnModeManager.IsColumnEnabled(0) && ColumnModeManager.IsColumnEnabled(1) ? Visibility.Visible : Visibility.Collapsed;
             ColumnGridSplitterRight.Visibility = ColumnModeManager.IsColumnEnabled(2) && ColumnModeManager.IsColumnEnabled(1) ? Visibility.Visible : Visibility.Collapsed;
+
+            userSettings.SetSettingBool(UserSettingEnum.MainColumnsVisibilityDirectoryTree, ColumnModeManager.IsColumnEnabled(0));
+            userSettings.SetSettingBool(UserSettingEnum.MainColumnsVisibilityModelList, ColumnModeManager.IsColumnEnabled(1));
+            userSettings.SetSettingBool(UserSettingEnum.MainColumnsVisibility3DView, ColumnModeManager.IsColumnEnabled(2));
+            userSettings.SetSettingInt(UserSettingEnum.MainColumnsPoweredIndex, ColumnModeManager.GetColumnPowered());
         }
     }
+
     #region Converters
 
     public class RadioBoolToStringConverter : IValueConverter

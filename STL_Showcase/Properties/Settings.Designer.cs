@@ -12,7 +12,7 @@ namespace STL_Showcase.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -68,6 +68,54 @@ namespace STL_Showcase.Properties {
             }
             set {
                 this["CurrentView3DAspect"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MainColumnsVisibilityDirectoryTree {
+            get {
+                return ((bool)(this["MainColumnsVisibilityDirectoryTree"]));
+            }
+            set {
+                this["MainColumnsVisibilityDirectoryTree"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MainColumnsVisibilityModelList {
+            get {
+                return ((bool)(this["MainColumnsVisibilityModelList"]));
+            }
+            set {
+                this["MainColumnsVisibilityModelList"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MainColumnsVisibility3DView {
+            get {
+                return ((bool)(this["MainColumnsVisibility3DView"]));
+            }
+            set {
+                this["MainColumnsVisibility3DView"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int MainColumnsPoweredIndex {
+            get {
+                return ((int)(this["MainColumnsPoweredIndex"]));
+            }
+            set {
+                this["MainColumnsPoweredIndex"] = value;
             }
         }
     }

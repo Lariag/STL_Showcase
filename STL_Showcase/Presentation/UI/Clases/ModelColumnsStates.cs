@@ -48,7 +48,10 @@ namespace STL_Showcase.Presentation.UI.Clases
         {
             return modePowered == columnIndex;
         }
-
+        public int GetColumnPowered()
+        {
+            return modePowered;
+        }
         public enum ColumnState
         {
             Visibility = 0,
@@ -56,7 +59,7 @@ namespace STL_Showcase.Presentation.UI.Clases
             Reset = 2
         }
 
-        public void SetNewState(int columnIndex, ColumnState stateAffected)
+        public void SetNewState(int columnIndex, ColumnState stateAffected, bool useAnimation)
         {
 
             bool[] modeEnabledNew = new bool[modeEnabled.Length];
@@ -112,26 +115,33 @@ namespace STL_Showcase.Presentation.UI.Clases
                 {
                     var col = columns[i];
                     double newSize = columnsNewSize[i];
-                    GridLengthAnimation animation = new GridLengthAnimation();
-                    animation.From = col.Width;
-                    animation.To = new GridLength(newSize, GridUnitType.Star);
-                    animation.Duration = new Duration(TimeSpan.FromMilliseconds(animationDuration));
-                    animation.FillBehavior = FillBehavior.Stop; // Fixes GridSplitter not working after animation (first comment of https://stackoverflow.com/a/16844818/8577979)
-                    animation.Completed += (s, _) =>
-                    {
-                        col.Width = new GridLength(newSize, GridUnitType.Star);
-                    };
 
-                    if (modeEnabled[i] != modeEnabledNew[i] && defaultColumnMinSizes[i] > 0f)
+                    if (useAnimation)
                     {
-                        DoubleAnimation minSizeAnimation = new DoubleAnimation(
-                            modeEnabledNew[i] ? defaultColumnMinSizes[i] : 0f,
-                            new Duration(TimeSpan.FromMilliseconds(animationDuration)));
-                        col.BeginAnimation(ColumnDefinition.MinWidthProperty, minSizeAnimation);
+                        GridLengthAnimation animation = new GridLengthAnimation();
+                        animation.From = col.Width;
+                        animation.To = new GridLength(newSize, GridUnitType.Star);
+                        animation.Duration = new Duration(TimeSpan.FromMilliseconds(animationDuration));
+                        animation.FillBehavior = FillBehavior.Stop; // Fixes GridSplitter not working after animation (first comment of https://stackoverflow.com/a/16844818/8577979)
+                        animation.Completed += (s, _) =>
+                        {
+                            col.Width = new GridLength(newSize, GridUnitType.Star);
+                        };
+
+                        if (modeEnabled[i] != modeEnabledNew[i] && defaultColumnMinSizes[i] > 0f)
+                        {
+                            DoubleAnimation minSizeAnimation = new DoubleAnimation(
+                                modeEnabledNew[i] ? defaultColumnMinSizes[i] : 0f,
+                                new Duration(TimeSpan.FromMilliseconds(animationDuration)));
+                            col.BeginAnimation(ColumnDefinition.MinWidthProperty, minSizeAnimation);
+                        }
+                        col.BeginAnimation(ColumnDefinition.WidthProperty, animation);
                     }
-
-
-                    col.BeginAnimation(ColumnDefinition.WidthProperty, animation);
+                    else
+                    {
+                        col.MinWidth = modeEnabledNew[i] ? defaultColumnMinSizes[i] : 0f;
+                        col.Width = new GridLength(newSize, GridUnitType.Star);
+                    }
 
                 }
             }

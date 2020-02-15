@@ -13,6 +13,10 @@ namespace STL_Showcase.Shared.Enums
         , LastDirectory
         , RenderAspect
         , CurrentView3DAspect
+        , MainColumnsVisibilityDirectoryTree
+        , MainColumnsVisibilityModelList
+        , MainColumnsVisibility3DView
+        , MainColumnsPoweredIndex
     }
 
 }
