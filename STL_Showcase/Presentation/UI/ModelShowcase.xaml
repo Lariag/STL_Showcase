@@ -108,6 +108,8 @@
                                 IsChecked="{Binding Path=DataContext.FileTypeFilterSTL, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}">STL</ToggleButton>
                             <ToggleButton FontSize="12" Style="{StaticResource ToggleButtonStyle}" Click="FileTypeFilterToggleButton_Click"
                                 IsChecked="{Binding Path=DataContext.FileTypeFilterOBJ, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}">OBJ</ToggleButton>
+                            <ToggleButton FontSize="12" Style="{StaticResource ToggleButtonStyle}" Click="FileTypeFilterToggleButton_Click"
+                                IsChecked="{Binding Path=DataContext.FileTypeFilter3MF, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}">3MF</ToggleButton>
                             <!--<TextBlock Style="{StaticResource TagButtonStyle}" Content="File Name" IsChecked="True" GroupName="ImageListOrder"/>
                             <TextBlock Style="{StaticResource TagButtonStyle}" Content="Directory" GroupName="ImageListOrder"/>
                             <TextBlock Style="{StaticResource TagButtonStyle}" Content="Date Modified" GroupName="ImageListOrder"/>-->

@@ -38,7 +38,7 @@ namespace STL_Showcase.Logic.FilePrcessing
         private int[] thumbnailImagesSizes;
         private int FilesReady = 0;
 
-        private readonly string[] SupportedExtensionsFilter = { "*.STL", "*.OBJ" };
+        private readonly string[] SupportedExtensionsFilter = { "*.STL", "*.OBJ", "*.3MF" };
 
         public Action ProcessCanceledEvent;
         public Action<ModelFileData, BitmapSource[], LoadResultEnum> FileReadyEvent;
@@ -252,7 +252,7 @@ namespace STL_Showcase.Logic.FilePrcessing
                         if (nextFile.ParseFile())
                         {
                             nextFile.ReleaseData(true, false);
-                            nextFile.Mesh.CalculateFaceNormals(true);
+                            nextFile.Mesh.CalculateFaceNormals(false);
                             this.CleanMemory();
                             if (this.cancellationToken.IsCancellationRequested) return;
                             ReadyToRenderList.Enqueue(nextFile);

@@ -11,7 +11,7 @@ namespace STL_Showcase.Shared.Enums
         Unsuportted = 0,
         STL_Binary,
         STL_ASCII,
-        M3F,
+        _3MF,
         OBJ
     };
     public enum SupportedCompressedFiles
