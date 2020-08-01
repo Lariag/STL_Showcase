@@ -125,153 +125,7 @@ namespace STL_Showcase.Presentation.UI
             DefaultImageErrorModel = new BitmapImage(new Uri("pack://application:,,,/Presentation/UI/Styles/Resources/STL_Error.png", UriKind.Absolute));
             DefaultImageLoading = new BitmapImage(new Uri("pack://application:,,,/Presentation/UI/Styles/Resources/STL_Loading.png", UriKind.Absolute));
         }
-        public void TestFileLoading_2()
-        {
-
-
-
-
-            try
-            {
-                mainLogger.Debug("TestFileLoading_2");
-
-                var renderEnv = DefaultFactory.GetDefaultRenderEnviorement(512);
-                var cache = DefaultFactory.GetDefaultThumbnailCache();
-
-
-                var cacheSize = cache.CacheSize();
-                int[] cacheSizes = { 32, 256 };
-                RenderAspectEnum renderAspect = RenderAspectEnum.PerNormal;
-                renderEnv.SetEnviorementOptions(renderAspect);
-
-                //string[] stlFiles = Directory.EnumerateFiles( @"I:\STL_Showcase\STLs", "*.stl", SearchOption.AllDirectories ).ToArray();
-                string[] stlFiles = Directory.EnumerateFiles(@"C:\Users\Alriac\Downloads\", "*.stl", SearchOption.AllDirectories).ToArray();
-                // string[] stlFiles = Directory.EnumerateFiles( @"D:\Torrent\STLs\", "*.stl", SearchOption.AllDirectories ).ToArray();
-                //string[] stlFiles = Directory.EnumerateFiles( @"G:\Proyectos\3DPrinting\", "*.stl", SearchOption.AllDirectories ).ToArray();
-
-                //string[] stlFiles = Directory.EnumerateFiles( @"D:\TestSTL", "*.stl", SearchOption.AllDirectories ).ToArray();
-
-                //string[] stlFiles =
-                //{
-                //    @"G:\Proyectos\3DPrinting\dodecaedro.stl",
-                //    @"G:\Proyectos\3DPrinting\botella.stl",
-                //    @"C:\Users\Alriac\Downloads\old\3DBenchy.stl",
-                //    @"C:\Users\Alriac\Downloads\old\xyzCalibration_cube.stl"
-                //};
-
-                double[] times = new double[stlFiles.Length];
-                //var res = Parallel.ForEach( stlFiles, (path) => {
-
-                var newModelList = new List<ModelListItem>();
-
-                foreach (string path in stlFiles)
-                {
-                    DateTime currentTime = DateTime.Now;
-                    bool fileTooBig = false;
-
-                    var fileData = new ModelFileData(path);
-                    fileData.LoadBasicFileData();
-                    var modelListItem = new ModelListItem();
-                    modelListItem.FileData = fileData;
-
-                    // continue;
-
-                    List<Tuple<int, BitmapSource>> cacheImages = new List<Tuple<int, BitmapSource>>(cache.GetThumbnailsImages(System.IO.Path.GetDirectoryName(path), System.IO.Path.GetFileName(path), renderAspect));
-
-
-                    if (cacheSizes.Length != cacheImages.Count())
-                    {
-                        if (fileData.LoadFileBytes(true) && fileData.ParseFile())
-                        {
-                            fileData.ReleaseData(true, false);
-                            GC.Collect();
-                            renderEnv.SetModel(fileData.Mesh);
-
-                            foreach (var imageSize in cacheSizes)
-                            {
-                                if (cacheImages.Any(c => c.Item1 == imageSize))
-                                    continue;
-
-                                BitmapSource image = renderEnv.RenderImage();
-                                cache.UpdateThumnail(System.IO.Path.GetDirectoryName(path), System.IO.Path.GetFileName(path), renderAspect, imageSize, image);
-                                cacheImages.Add(new Tuple<int, BitmapSource>(imageSize, image));
-                            }
-                            renderEnv.RemoveModel();
-                            //using(Stream stm = File.Create( System.IO.Path.Combine( @"G:\Proyectos\3DPrinting\TestRenderer", fileData.FileName + ".png" ) )) {
-                            //    stm.Write( image, 0, image.Length );
-                            //}
-                        }
-                        else
-                        {
-                            foreach (var imageSize in cacheSizes)
-                            {
-                                if (cacheImages.Any(c => c.Item1 == imageSize))
-                                    continue;
-                                BitmapSource image = DefaultImageErrorModel;
-                                //if (fileTooBig)
-                                //{
-                                //    image = DefaultImageModelTooBig;
-                                //}
-                                //else
-                                //{
-                                //    image = DefaultImageErrorModel;
-                                //}
-                                // cache.UpdateThumnail( System.IO.Path.GetDirectoryName( path ), System.IO.Path.GetFileName( path ), renderAspect, imageSize, image ); // Dont add to the cache!
-                                cacheImages.Add(new Tuple<int, BitmapSource>(imageSize, image));
-                            }
-                        }
-                    }
-
-                    //if(cacheImages.Count > 0) {
-                    //    string cachePath = cache.GetThumbnailsPaths( System.IO.Path.GetDirectoryName( path ), System.IO.Path.GetFileName( path ), renderAspect ).FirstOrDefault()?.Item2 ?? "";
-                    //    modelListItem.ImagePath = cachePath;
-                    //    modelListItem.imagesAllLevels = cacheImages.OrderBy( c => c.Item1 ).Select( c => c.Item2 ).ToArray();
-                    //    ModelList.Add( modelListItem );
-                    //}
-
-                    if (cacheImages.Count > 0)
-                    {
-                        modelListItem.SetImages(cacheImages.OrderBy(c => c.Item1).Select(c => c.Item2).ToArray());
-                        newModelList.Add(modelListItem);
-                    }
-
-                    //Console.WriteLine( ( DateTime.Now - currentTime ).TotalSeconds.ToString( "f3" ) + " file: " + fileData.FileName );
-                    fileData.ReleaseData(true, true);
-                    GC.Collect();
-                }
-
-                // List View
-                {
-                    _ModelItemListData.ModelList = new ObservableCollection<ModelListItem>(newModelList);
-                    ImageListControl.ItemsSource = _ModelItemListData.ModelListFiltered;
-                }
-
-                // Tree View
-                {
-                    IEnumerable<Tuple<string[], object>> tuples = newModelList.OrderBy(m => m.FileData.FileName).OrderBy(m => m.FileData.FilePath).Select(m => new Tuple<string[], object>((m.FileData.FileFullPath).Split(System.IO.Path.DirectorySeparatorChar), m));
-
-                    ModelTreeItem treeRoot = new ModelTreeItem(1, tuples.FirstOrDefault().Item1[0], null, (mfd) =>
-                   {
-                       return ((ModelListItem)mfd).ImageSmallest;
-                   });
-
-                    treeRoot.BuildTreeRecursive(tuples);
-                    var trimmedTree = treeRoot.Trim();
-                    // treeRoot.DebugListTree();
-
-                    foreach (var node in trimmedTree)
-                        node.IsExpanded = true;
-
-                    _ModelItemListData.ModelTreeRoot = trimmedTree;
-                    ImageTreeControl.ItemsSource = _ModelItemListData.ModelTreeRoot;
-                }
-            }
-            catch (Exception ex)
-            {
-                var test = ex.ToString();
-            }
-        }
-
+       
         private void InitializeDirectoryLoading()
         {
             try
@@ -422,8 +276,6 @@ namespace STL_Showcase.Presentation.UI
         private void FileTypeFilterToggleButton_Click(object sender, RoutedEventArgs e)
         {
             this._ModelItemListData.ApplyFilterToTree();
-
-            //ImageTreeControl.ItemsSource = this._ModelItemListData.ModelTreeRoot;
             ImageListControl.ItemsSource = this._ModelItemListData.ModelListFiltered;
         }
         #endregion
@@ -560,7 +412,6 @@ namespace STL_Showcase.Presentation.UI
 
         private void LoadDirectoryWithDialog()
         {
-
             VistaFolderBrowserDialog folderDialog = new VistaFolderBrowserDialog();
             folderDialog.RootFolder = Environment.SpecialFolder.MyComputer;
             var result = folderDialog.ShowDialog();
