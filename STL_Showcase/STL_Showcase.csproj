@@ -60,7 +60,7 @@
     <StartupObject>STL_Showcase.Presentation.UI.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>STLShowcaseIconFaded.ico</ApplicationIcon>
+    <ApplicationIcon>STLShowcaseIconFadedMix.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>C82449568335B7CA522C03F04D040D2ADEA29DCB</ManifestCertificateThumbprint>
@@ -131,11 +131,11 @@
       <HintPath>..\packages\HelixToolkit.Wpf.2.12.0\lib\net45\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="ModernWpf, Version=0.7.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ModernWpfUI.0.7.4\lib\net45\ModernWpf.dll</HintPath>
+    <Reference Include="ModernWpf, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ModernWpfUI.0.9.1\lib\net462\ModernWpf.dll</HintPath>
     </Reference>
-    <Reference Include="ModernWpf.Controls, Version=0.7.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ModernWpfUI.0.7.4\lib\net45\ModernWpf.Controls.dll</HintPath>
+    <Reference Include="ModernWpf.Controls, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ModernWpfUI.0.9.1\lib\net462\ModernWpf.Controls.dll</HintPath>
     </Reference>
     <Reference Include="MoreLinq, Version=3.3.2.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
       <HintPath>..\packages\morelinq.3.3.2\lib\net451\MoreLinq.dll</HintPath>
@@ -301,6 +301,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="STLShowcaseIconFadedMix.ico" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseLogoFaded.png" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseLogo.png" />
     <Resource Include="Presentation\UI\Styles\Resources\RenderModes\RenderMode5.png" />

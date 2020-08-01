@@ -41,7 +41,7 @@ namespace STL_Showcase.Presentation.UI
     /// <summary>
     /// Interaction logic for ModelShowcase.xaml
     /// </summary>
-    public partial class ModelShowcase : Page
+    public partial class ModelShowcase : System.Windows.Controls.Page
     {
         #region Variables
 
