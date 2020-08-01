@@ -39,7 +39,7 @@ namespace STL_Showcase.Presentation.UI.Clases
                   (string.IsNullOrWhiteSpace(ModelListDirectoryFilter) || m.FileData.FileFullPath.Contains(ModelListDirectoryFilter)) &&
                     ((FileTypeFilterSTL && m.FileData.FileName.EndsWith(".stl", StringComparison.InvariantCultureIgnoreCase) ||
                     (FileTypeFilterOBJ && m.FileData.FileName.EndsWith(".obj", StringComparison.InvariantCultureIgnoreCase)) ||
-                    (FileTypeFilterOBJ && m.FileData.FileName.EndsWith(".3mf", StringComparison.InvariantCultureIgnoreCase)))
+                    (FileTypeFilter3MF && m.FileData.FileName.EndsWith(".3mf", StringComparison.InvariantCultureIgnoreCase)))
                   )));
             }
         }
