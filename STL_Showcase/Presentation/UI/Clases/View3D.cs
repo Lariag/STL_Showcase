@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -20,6 +22,9 @@ namespace STL_Showcase.Presentation.UI.Clases
     /// </summary>
     public class View3D
     {
+        public double ZoomSensivity = 0.1d;
+        double minZoom = 30d;
+        double maxZoom = 200d;
 
         public HelixViewport3D Viewport { get; private set; }
         ModelFileData ModelData;
@@ -27,6 +32,7 @@ namespace STL_Showcase.Presentation.UI.Clases
         ModelVisual3D CurrentLightsVisual;
         RotateTransform3D transformObjectRotation;
         AxisAngleRotation3D CurrentAxisRotation;
+        AxisAngleRotation3D LightsAxisRotationZ;
 
         bool ModelAutoRotationEnabled;
 
@@ -58,6 +64,8 @@ namespace STL_Showcase.Presentation.UI.Clases
             Viewport.FixedRotationPoint = new Point3D(0f, 0f, 30f);
             Viewport.IsZoomEnabled = false;
 
+            Viewport.MouseWheel += Viewport_MouseWheel;
+            Viewport.CameraChanged += Viewport_CameraChanged;
 
             Viewport.IsMoveEnabled = false;
             Viewport.IsPanEnabled = false;
@@ -84,6 +92,22 @@ namespace STL_Showcase.Presentation.UI.Clases
 
         }
 
+        private void Viewport_CameraChanged(object sender, RoutedEventArgs e)
+        {
+            Vector3D cameraPosition = Viewport.Camera.Position.ToVector3D();
+            cameraPosition.Normalize();
+            LightsAxisRotationZ.SetValue(AxisAngleRotation3D.AngleProperty, Math.Atan2(cameraPosition.X, -cameraPosition.Y) * (180d / Math.PI) -45d);
+        }
+
+        private void Viewport_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            double currentCameraDistance = Viewport.Camera.Position.DistanceTo(new Point3D());
+            if ((currentCameraDistance > minZoom && e.Delta > 0) || (currentCameraDistance < maxZoom && e.Delta < 0))
+            {
+                Point3D newCameraPosition = Viewport.Camera.Position.Multiply(1d + Math.Sign(e.Delta) * -ZoomSensivity);
+                Viewport.Camera.AnimateTo(newCameraPosition, Viewport.Camera.LookDirection, Viewport.Camera.UpDirection, 50d);
+            }
+        }
         private IEnumerable<Point3D> Point3DFromLinearCoordinates(SegmentedArray<Half> vertices)
         {
             for (int i = 0; i + 2 < vertices.Length; i += 3)
@@ -95,11 +119,8 @@ namespace STL_Showcase.Presentation.UI.Clases
                 yield return new Point3D(vertices[i].x, vertices[i].y, vertices[i].z);
         }
 
-        private static Material GetMaterial()//(RenderAspectEnum renderAspect)
+        private static Material GetMaterial()
         {
-            //if (renderAspect == RenderAspectEnum.AllGreen)
-            //    return new DiffuseMaterial(new SolidColorBrush(Colors.LimeGreen));
-            //else
             return new DiffuseMaterial(new SolidColorBrush(Colors.White));
         }
         private static IEnumerable<Light> GetLights(RenderAspectEnum renderAspect)
@@ -244,8 +265,11 @@ namespace STL_Showcase.Presentation.UI.Clases
                     nomalizedOriginalPosition.Normalize();
                     _modelCameraPosition = new Point3D(nomalizedOriginalPosition.X / modelScale * modelScaleMultiply, nomalizedOriginalPosition.Y / modelScale * modelScaleMultiply, nomalizedOriginalPosition.Z / modelScale * modelScaleMultiply);
 
-                    Viewport.Camera.AnimateTo(new Point3D(normalizedPosition.X / modelScale * modelScaleMultiply, normalizedPosition.Y / modelScale * modelScaleMultiply, normalizedPosition.Z / modelScale * modelScaleMultiply)
-                    , Viewport.Camera.LookDirection, Viewport.Camera.UpDirection, 500d);
+                    Point3D targetCameraPosition = new Point3D(normalizedPosition.X / modelScale * modelScaleMultiply, normalizedPosition.Y / modelScale * modelScaleMultiply, normalizedPosition.Z / modelScale * modelScaleMultiply);
+                    Viewport.Camera.AnimateTo(targetCameraPosition, Viewport.Camera.LookDirection, Viewport.Camera.UpDirection, 500d);
+
+                    minZoom = targetCameraPosition.Multiply(0.5d).DistanceTo(new Point3D());
+                    maxZoom = minZoom * 4d;
 
                     this.CurrentAxisRotation = axisRotation;
                     modelVisual.Transform = transforms;
@@ -267,12 +291,11 @@ namespace STL_Showcase.Presentation.UI.Clases
             if (modelData == null)
             {
                 _modelCameraPosition = _originalCameraPosition;
-                ResetCamera();
+                ResetCamera(true);
                 LoadModelInfoAvailableEvent?.Invoke("", 0, 0, 0);
             }
             GC.Collect();
         }
-
 
         public void UpdateLights()
         {
@@ -290,12 +313,22 @@ namespace STL_Showcase.Presentation.UI.Clases
             // Add lights.
             modelVisual.Content = modelGroup;
             this.Viewport.Children.Add(modelVisual);
+            Transform3DGroup transformGroup = new Transform3DGroup();
+
+            LightsAxisRotationZ = new AxisAngleRotation3D(new Vector3D(0d, 0d, 1d), Math.Atan2(Viewport.Camera.Position.X, -Viewport.Camera.Position.Y) * (180d / Math.PI) - 45d);
+
+            RotateTransform3D transformLightsRotationZ = new RotateTransform3D(LightsAxisRotationZ);
+
+            transformGroup.Children.Add(transformLightsRotationZ);
+            modelVisual.Transform = transformGroup;
             CurrentLightsVisual = modelVisual;
         }
 
-        public void ResetCamera()
+        public void ResetCamera(bool lockZoom = false)
         {
             Viewport.Camera.AnimateTo(_modelCameraPosition, new Vector3D(-1, 1, -1), new Vector3D(0, 0, 1), 500d);
+            if (CurrentModelVisual == null)
+                minZoom = maxZoom = _modelCameraPosition.DistanceTo(new Point3D());
         }
         public void SetCameraRotationMode(bool enableAutoRotation)
         {
