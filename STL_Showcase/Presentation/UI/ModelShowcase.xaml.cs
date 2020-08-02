@@ -34,6 +34,7 @@ using STL_Showcase.Logic.FilePrcessing;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
 using STL_Showcase.Presentation.UI.Clases.Utility;
+using STL_Showcase.Logic.Localization;
 
 namespace STL_Showcase.Presentation.UI
 {
@@ -117,6 +118,8 @@ namespace STL_Showcase.Presentation.UI
             this._w = w;
             _w.ClosingEvent += UnloadDirectory;
             InitializeResources();
+            SetUILanguage();
+            Loc.Ins.OnLanguageChanged += SetUILanguage;
             InitializeDirectoryLoading();
         }
         public void InitializeResources()
@@ -125,7 +128,7 @@ namespace STL_Showcase.Presentation.UI
             DefaultImageErrorModel = new BitmapImage(new Uri("pack://application:,,,/Presentation/UI/Styles/Resources/STL_Error.png", UriKind.Absolute));
             DefaultImageLoading = new BitmapImage(new Uri("pack://application:,,,/Presentation/UI/Styles/Resources/STL_Loading.png", UriKind.Absolute));
         }
-       
+
         private void InitializeDirectoryLoading()
         {
             try
@@ -140,6 +143,51 @@ namespace STL_Showcase.Presentation.UI
             {
                 userSettings.SetSettingString(UserSettingEnum.LastDirectory, "");
             }
+        }
+
+        private void SetUILanguage(string newLanguage = "")
+        {
+            tbAppTitle.Text = Loc.GetText("AppName");
+
+            // Main menu
+            {
+                MenuColumnsLoadDirectory.Header = Loc.GetText("LoadDirectory");
+                MenuColumnsShowDirectoryTree.Header = Loc.GetText("View");
+
+                MenuColumnsShowDirectoryTree.Header = Loc.GetText("ShowDirectoryTree");
+                MenuColumnsShowModelList.Header = Loc.GetText("ShowModelList");
+                MenuColumnsShow3DView.Header = Loc.GetText("Show3DView");
+                MenuColumnsPowerDirectoryTree.Header = Loc.GetText("ExpandDirectoryTree");
+                MenuColumnsPowerModelList.Header = Loc.GetText("ExpandModelListView");
+                MenuColumnsPower3DView.Header = Loc.GetText("Expand3DView");
+                MenuColumnsResetVisibility.Header = Loc.GetText("ResetVisibility");
+
+                MenuItemConfiguration.Header = Loc.GetText("Configuration");
+
+                MenuCacheMain.Header = Loc.GetText("Cache");
+                MenuCacheAbout.Header = Loc.GetText("CacheWhatIsIt");
+
+                MenuAbout.Header = Loc.GetText("About");
+
+            }
+
+            // File tree panel
+            {
+                DirectoryUnloadAll.Content = Loc.GetText("UnloadAll");
+                DirectoryReloadAll.Content = Loc.GetText("ReloadAll");
+                TreeExpandAll.Content = Loc.GetText("ExpandAll");
+                TreeContractAll.Content = Loc.GetText("ContractAll");
+
+                tbFilesProcessed.Text = Loc.GetText("FilesProcessed:");
+            }
+
+            // Image list panel
+            {
+                tbFilter.Text = Loc.GetText("Filter");
+                tbOrder.Text = Loc.GetText("Order");
+            }
+
+            this.UpdateLayout();
         }
 
         #endregion
@@ -182,35 +230,35 @@ namespace STL_Showcase.Presentation.UI
 
         private async void MenuCacheDelete_Click(object sender, RoutedEventArgs e)
         {
-            string deleteTitle = "Delete Cache Files";
-            string deleteQuestion = "The cache folder and all its contents will be deleted.\nContinue?";
-            string deleteConfirmation = "All cache images were successfully deleted.";
-            string deleteError = "All cache images were successfully deleted.";
+            string deleteTitle = Loc.GetText("DeleteCacheFiles");
+            string deleteQuestion = Loc.GetText("DeleteCacheFilesMessage");
+            string deleteConfirmation = Loc.GetText("DeleteCacheFilesConfirmation");
+            string deleteError = Loc.GetText("DeleteCacheFilesError");
 
-            if ((await new MessageDialog(deleteQuestion, deleteTitle, "Confirm", "", "Cancel").ShowAsync()) == ContentDialogResult.Primary)
+            if ((await new MessageDialog(deleteQuestion, deleteTitle, Loc.GetText("Confirm"), "", Loc.GetText("Cancel")).ShowAsync()) == ContentDialogResult.Primary)
             {
                 var cache = DefaultFactory.GetDefaultThumbnailCache();
                 if (cache.ClearCache())
                 {
-                    await new MessageDialog(deleteConfirmation, deleteTitle, "OK", "", "").ShowAsync();
+                    await new MessageDialog(deleteConfirmation, deleteTitle, Loc.GetText("OK"), "", "").ShowAsync();
                 }
                 else
                 {
-                    await new MessageDialog(deleteError, deleteTitle, "OK", "", "").ShowAsync();
+                    await new MessageDialog(deleteError, deleteTitle, Loc.GetText("OK"), "", "").ShowAsync();
                 }
             }
         }
 
         private async void MenuCacheAbout_Click(object sender, RoutedEventArgs e)
         {
-            string message = "The cache folder contains the auto-generated images of your 3D models.\nThose images are generated when a new model is loaded, so the next time a image of the model is needed, it won't be necessary to read all the geometry and render it.\n\nImages will be generated in different sizes and colors depending on your settings.";
-            ContentDialog dialog = new MessageDialog(message, "About the Cache...", "OK", "", "");
+            string message = Loc.GetText("AboutWindowMessage");
+            ContentDialog dialog = new MessageDialog(message, Loc.GetText("AboutTheCache"), Loc.GetText("OK"), "", "");
             await dialog.ShowAsync();
         }
         private async void MenuAbout_Click(object sender, RoutedEventArgs e)
         {
-            string message = "Information about the program...";
-            ContentDialog dialog = new MessageDialog(message, "About STL Showcase", "OK", "", "");
+            string message = Loc.GetText("InformationAboutTheProgram");
+            ContentDialog dialog = new MessageDialog(message, $"{Loc.GetText("About")} {Loc.GetText("AppName")}", Loc.GetText("OK"), "", "");
             await dialog.ShowAsync();
         }
         #endregion
@@ -267,6 +315,11 @@ namespace STL_Showcase.Presentation.UI
         private void DirectoryUnloadAll_Click(object sender, RoutedEventArgs e)
         {
             UnloadDirectory();
+        }
+
+        private void DirectoryReloadAll_Click(object sender, RoutedEventArgs e)
+        {
+            ReloadDirectories();
         }
 
         private void DirectoryAddOneMore_Click(object sender, RoutedEventArgs e)
@@ -433,6 +486,24 @@ namespace STL_Showcase.Presentation.UI
             ImageTreeControl.ItemsSource = _ModelItemListData.ModelTreeRoot;
             GC.Collect();
         }
+
+        private void ReloadDirectories()
+        {
+            if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
+                CurrentDirectoryLoader.CancelOperation();
+            _ModelItemListData.Reset();
+            ImageListControl.ItemsSource = _ModelItemListData.ModelListFiltered;
+            ImageTreeControl.ItemsSource = _ModelItemListData.ModelTreeRoot;
+
+
+            // TODO: Implement  reload all directories
+            // CurrentDirectoryLoader.LoadDirectory();
+
+
+
+            GC.Collect();
+        }
+
         private void LoadDirectoryFileReady(ModelFileData modelFile, BitmapSource[] cacheImages, LoadResultEnum result)
         {
             try
@@ -491,11 +562,12 @@ namespace STL_Showcase.Presentation.UI
         {
             CancellationTokenSource source = new CancellationTokenSource();
 
-            LoadingDialog loading = new LoadingDialog($"Looking for files at '{dir}'...", "Load Directory", "Cancel", () => source.Cancel(false));
+            LoadingDialog loading = new LoadingDialog(string.Format(Loc.GetText("LookingForFilesAtDir"), dir), Loc.GetText("LoadDirectory"), Loc.GetText("Cancel"), () => source.Cancel(false));
             Task loadingTask = loading.ShowAsync();
 
             if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
             {
+                // Cancel current loading, if any
                 CurrentDirectoryLoader.FileReadyEvent -= LoadDirectoryFileReady;
                 CurrentDirectoryLoader.ReportProgressEvent -= LoadDirectoryReportProgress;
                 CurrentDirectoryLoader.ProcessCanceledEvent -= LoadDirectoryCancelled;
@@ -575,9 +647,9 @@ namespace STL_Showcase.Presentation.UI
                             loading.CloseDialog();
 
                             if (CurrentDirectoryLoader.FilesFound.Length > 0)
-                                new MessageDialog("Unable to load the directory.", "Loading Error", "OK", "", "").ShowAsync();
+                                new MessageDialog(Loc.GetText("LoadDirectoryUnable"), Loc.GetText("LoadingError"), Loc.GetText("OK"), "", "").ShowAsync();
                             else
-                                new MessageDialog($"No files found at {dir}.", "Nothing found!", "OK", "", "").ShowAsync();
+                                new MessageDialog(string.Format(Loc.GetText("LoadDirectoryNoFilesAt"), dir), Loc.GetText("Nothing found!"), Loc.GetText("OK"), "", "").ShowAsync();
                             CurrentDirectoryLoader = null;
                             return true;
                         });
@@ -776,5 +848,18 @@ namespace STL_Showcase.Presentation.UI
         }
     }
 
+    public class StringKeyToLocalizedStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string translated = Loc.GetText(parameter == null ? (string)value : (string)parameter);
+            return parameter != null ? string.Format(translated, value) : translated;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return parameter;
+        }
+    }
     #endregion
 }

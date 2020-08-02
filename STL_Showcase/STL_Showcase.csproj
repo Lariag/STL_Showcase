@@ -192,6 +192,7 @@
     <Compile Include="Logic\Files\Lib3MF.cs" />
     <Compile Include="Logic\Files\ModelFileData.cs" />
     <Compile Include="Logic\Files\FileParser.cs" />
+    <Compile Include="Logic\Localization\Loc.cs" />
     <Compile Include="Logic\Rendering\IRenderEnviorement.cs" />
     <Compile Include="Logic\Rendering\Mesh3D.cs" />
     <Compile Include="Logic\Rendering\RenderEnviorementFactory.cs" />
@@ -324,7 +325,6 @@
     </None>
     <None Include="OpenTK.dll.config" />
     <None Include="STL_Showcase_TemporaryKey.pfx" />
-    <Resource Include="STLShowcaseIconFaded.ico" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseIconFaded.ico" />
     <Resource Include="Presentation\UI\Styles\Resources\MissingImageModel.png" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseIcon.ico" />

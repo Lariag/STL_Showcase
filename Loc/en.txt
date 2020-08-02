@@ -1,0 +1,46 @@
+AppName STL Showcase
+LoadDirectory Load Directory
+View View
+ShowDirectoryTree Show Directory Tree
+ShowModelList Show Model List
+Show3DView Show 3D View
+ExpandDirectoryTree Expand Directory Tree
+ExpandModelListView Expand Model List View
+Expand3DView Expand 3D View
+ResetVisibility Reset Visibility
+Configuration Configuration
+Cache Cache
+CacheWhatIsIt What is the cache?
+About About
+UnloadAll Unload All
+ExpandAll Expand All
+ContractAll Contract All
+FilesProcessed: Files Processed: 
+Filter Filter
+Order Order
+NumberKB {0:0} KB
+Modified Modified
+Created Created
+Size Size
+NumberFiles {0} Files
+NumberDirectories {0} Directories
+InformationAboutTheProgram Information about the program...
+OK OK
+No No
+Yes Yes
+Accept Accept
+Cancel Cancel
+AboutWindowMessage The cache folder contains the auto-generated images of your 3D models.\nThose images are generated when a new model is loaded, so the next time a image of the model is needed, it won't be necessary to read all the geometry and render it.\n\nImages will be generated in different sizes and colors depending on your settings.
+AboutTheCache About the cache...
+DeleteCacheFiles Delete Cache Files
+DeleteCacheFilesMessage The cache folder and all its contents will be deleted.\nContinue?
+DeleteCacheFilesConfirmation All cache images were successfully deleted.
+DeleteCacheFilesError There was a problem when deleting cache images. Some may not have been deleted.
+Confirm Confirm
+LookingForFilesAtDir Looking for files at "{0}"...
+LoadDirectoryUnable Unable to load the directory.
+LoadingError Loading Error
+LoadDirectoryNoFilesAtDir No files found at "{0}".
+NothingFound! Nothing found!
+OpenParam Open "{0}"
+ClearCacheSize Clear Cache ({0})
