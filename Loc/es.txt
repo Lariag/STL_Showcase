@@ -44,9 +44,9 @@ LoadDirectoryNoFilesAtDir Ningún archivo encontrado en "{0}".
 NothingFound! ¡Nada encontrado!
 OpenParam Abrir "{0}"
 ClearCacheSize Borrar caché ({0})
- 
- 
- 
+ReloadAll Recargar todos
+DirectoryAlreadyLoaded El directorio seleccionado ya está cargado.
+OnlyFolders Solo carpetas
  
  
  

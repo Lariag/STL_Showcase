@@ -130,5 +130,17 @@ namespace STL_Showcase.Properties {
                 this["Language"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastLoadedDirectories {
+            get {
+                return ((string)(this["LastLoadedDirectories"]));
+            }
+            set {
+                this["LastLoadedDirectories"] = value;
+            }
+        }
     }
 }

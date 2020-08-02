@@ -55,6 +55,7 @@ namespace STL_Showcase.Logic.FilePrcessing
         Dispatcher MainDispatcher;
 
         public ModelFileData[] FilesFound { get; private set; }
+
         public bool IsLoading { get; private set; }
 
         readonly ComputerInfo systemInfo = new ComputerInfo();
@@ -100,7 +101,12 @@ namespace STL_Showcase.Logic.FilePrcessing
                 thumbnailImagesSizes = new int[] { SmallestThumnailSize, BigCalculatedThumnailSize };
         }
 
+
         public bool LoadDirectory(string path)
+        {
+            return LoadDirectories(new string[] { path });
+        }
+        public bool LoadDirectories(IEnumerable<string> paths)
         {
             IsLoading = false;
             MainDispatcher = Dispatcher.CurrentDispatcher;
@@ -111,11 +117,16 @@ namespace STL_Showcase.Logic.FilePrcessing
             userSettings = DefaultFactory.GetDefaultUserSettings();
             renderType = (RenderAspectEnum)userSettings.GetSettingInt(UserSettingEnum.RenderAspect);
 
+            paths = paths.Where(p1 => !paths.Any(p2 => !p1.Equals(p2) && p1.Contains(p2))).ToArray(); // Remove selected subdirectories of other selected paths.
+
             try
             {
-                IEnumerable<string> pathsFound = new string[0];
+                IEnumerable<string> pathsFound = new List<string>();
                 for (int i = 0; i < SupportedExtensionsFilter.Length; i++)
-                    pathsFound = pathsFound.Concat(UtilMethods.EnumerateFiles(path, SupportedExtensionsFilter[i], SearchOption.AllDirectories, cancellationToken));
+                    foreach (string path in paths)
+                    {
+                        pathsFound = pathsFound.Concat(UtilMethods.EnumerateFiles(path, SupportedExtensionsFilter[i], SearchOption.AllDirectories, cancellationToken));
+                    }
                 pathsFound = pathsFound.ToArray();
 
                 if (cancellationToken.IsCancellationRequested)

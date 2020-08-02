@@ -133,15 +133,15 @@ namespace STL_Showcase.Presentation.UI
         {
             try
             {
-                string lastDirectory = userSettings.GetSettingString(UserSettingEnum.LastDirectory);
-                if (!string.IsNullOrWhiteSpace(lastDirectory) && Directory.Exists(lastDirectory))
+                IEnumerable<string> lastDirectories = userSettings.GetSettingString(UserSettingEnum.LastLoadedDirectories).Split(';').Where(dir => !string.IsNullOrWhiteSpace(dir) && Directory.Exists(dir));
+                if (lastDirectories.Any())
                 {
-                    LoadDirectory(lastDirectory);
+                    LoadDirectories(lastDirectories);
                 }
             }
             catch
             {
-                userSettings.SetSettingString(UserSettingEnum.LastDirectory, "");
+                userSettings.SetSettingString(UserSettingEnum.LastLoadedDirectories, "");
             }
         }
 
@@ -255,6 +255,14 @@ namespace STL_Showcase.Presentation.UI
             ContentDialog dialog = new MessageDialog(message, Loc.GetText("AboutTheCache"), Loc.GetText("OK"), "", "");
             await dialog.ShowAsync();
         }
+
+        private void MenuCacheReloadDisplayed_Click(object sender, RoutedEventArgs e)
+        {
+            var cache = DefaultFactory.GetDefaultThumbnailCache();
+            cache.ClearCacheForFiles(_ModelItemListData.ModelList.Select(m => m.FileData.FileName));
+            ReloadDirectories();
+        }
+
         private async void MenuAbout_Click(object sender, RoutedEventArgs e)
         {
             string message = Loc.GetText("InformationAboutTheProgram");
@@ -474,7 +482,16 @@ namespace STL_Showcase.Presentation.UI
                 string path = folderDialog.SelectedPath;
 
                 userSettings.SetSettingString(UserSettingEnum.LastDirectory, path);
-                LoadDirectory(path);
+                if (!_ModelItemListData.IsDirectoryLoaded(path, true))
+                {
+                    LoadDirectory(path);
+                }
+                else
+                {
+                    ContentDialog dialog = new MessageDialog(Loc.GetText("DirectoryAlreadyLoaded"), Loc.GetText("LoadDirectory"), Loc.GetText("OK"), "", "");
+                    dialog.ShowAsync();
+                }
+
             }
         }
         private void UnloadDirectory()
@@ -491,13 +508,13 @@ namespace STL_Showcase.Presentation.UI
         {
             if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
                 CurrentDirectoryLoader.CancelOperation();
+
+            var loadedDirectories = _ModelItemListData.GetDirectoriesLoaded();
             _ModelItemListData.Reset();
             ImageListControl.ItemsSource = _ModelItemListData.ModelListFiltered;
             ImageTreeControl.ItemsSource = _ModelItemListData.ModelTreeRoot;
 
-
-            // TODO: Implement  reload all directories
-            // CurrentDirectoryLoader.LoadDirectory();
+            LoadDirectories(loadedDirectories);
 
 
 
@@ -558,11 +575,17 @@ namespace STL_Showcase.Presentation.UI
 
             }
         }
-        private void LoadDirectory(string dir)
+
+        private void LoadDirectory(string directories)
+        {
+            LoadDirectories(new string[] { directories });
+        }
+
+        private void LoadDirectories(IEnumerable<string> directories)
         {
             CancellationTokenSource source = new CancellationTokenSource();
 
-            LoadingDialog loading = new LoadingDialog(string.Format(Loc.GetText("LookingForFilesAtDir"), dir), Loc.GetText("LoadDirectory"), Loc.GetText("Cancel"), () => source.Cancel(false));
+            LoadingDialog loading = new LoadingDialog(string.Format(Loc.GetText("LookingForFilesAtDir"), string.Join("\", \"", directories)), Loc.GetText("LoadDirectory"), Loc.GetText("Cancel"), () => source.Cancel(false));
             Task loadingTask = loading.ShowAsync();
 
             if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
@@ -584,17 +607,23 @@ namespace STL_Showcase.Presentation.UI
             CurrentDirectoryLoader.ReportProgressEvent += LoadDirectoryReportProgress;
             CurrentDirectoryLoader.ProcessCanceledEvent += LoadDirectoryCancelled;
 
+            IEnumerable<string> loadedDirectories = _ModelItemListData.GetDirectoriesLoaded().Concat(directories);
+
             Task.Factory.StartNew(() =>
             {
                 CancellationToken t = source.Token;
                 try
                 {
-                    if (CurrentDirectoryLoader.LoadDirectory(dir))
+                    if (CurrentDirectoryLoader.LoadDirectories(loadedDirectories))
                     {
                         if (t.IsCancellationRequested)
                             return;
 
-                        Dispatcher.Invoke(() => { UnloadDirectory(); return true; });
+                        Dispatcher.Invoke(() =>
+                        {
+                            userSettings.SetSettingString(UserSettingEnum.LastLoadedDirectories, string.Join(";", loadedDirectories));
+                            UnloadDirectory(); return true;
+                        });
 
                         Tuple<ModelFileData, LoadResultEnum>[] modelFiles = CurrentDirectoryLoader.FilesFound.Select(m => new Tuple<ModelFileData, LoadResultEnum>(m, LoadResultEnum.Okay)).OrderBy(f => f.Item2).ToArray();
                         // List View
@@ -607,25 +636,38 @@ namespace STL_Showcase.Presentation.UI
                                 modelListItem.SetImages(new BitmapSource[] { fileData.Item2 == LoadResultEnum.Okay ? DefaultImageLoading : DefaultImageErrorModel });
                                 newModelList.Add(modelListItem);
                             }
-                            this.Dispatcher.Invoke(() => { _ModelItemListData.ModelList = new ObservableCollection<ModelListItem>(newModelList); return true; });
+                            this.Dispatcher.Invoke(() =>
+                            {
+                                _ModelItemListData.AddDirectoriesLoaded(loadedDirectories);
+                                _ModelItemListData.ModelList = new ObservableCollection<ModelListItem>(newModelList);
+                                return true;
+                            });
                         }
 
                         // Tree View
                         {
                             IEnumerable<Tuple<string[], object>> tuples = _ModelItemListData.ModelList.OrderBy(m => m.FileData.FileName).OrderBy(m => m.FileData.FilePath).Select(m => new Tuple<string[], object>((m.FileData.FileFullPath).Split(System.IO.Path.DirectorySeparatorChar), m));
 
-                            ModelTreeItem treeRoot = new ModelTreeItem(1, tuples.FirstOrDefault().Item1[0], null, (mfd) =>
+                            IEnumerable<string> treeRootsStrings = tuples.Select(tp => tp.Item1[0]).Distinct();
+                            ModelTreeItem[] treeRoots = treeRootsStrings.Select((item1) =>
                             {
-                                return ((ModelListItem)mfd).ImageSmallest;
-                            });
+                                return new ModelTreeItem(1, item1, null, (mfd) =>
+                                {
+                                    return ((ModelListItem)mfd).ImageSmallest;
+                                });
+                            }).ToArray();
 
-                            treeRoot.BuildTreeRecursive(tuples);
-                            var trimmedTree = treeRoot.Trim();
+                            ObservableCollection<ModelTreeItem> trimmedTreeRoots = new ObservableCollection<ModelTreeItem>();
+                            foreach (var treeRoot in treeRoots)
+                            {
+                                treeRoot.BuildTreeRecursive(tuples);
+                                var trimmedTree = treeRoot.Trim();
 
-                            foreach (var node in trimmedTree)
-                                node.IsExpanded = true;
-
-                            this.Dispatcher.Invoke(() => { _ModelItemListData.ModelTreeRoot = trimmedTree; return true; });
+                                foreach (var node in trimmedTree)
+                                    node.IsExpanded = true;
+                                trimmedTreeRoots = new ObservableCollection<ModelTreeItem>(trimmedTreeRoots.Concat(trimmedTree));
+                            }
+                            this.Dispatcher.Invoke(() => { _ModelItemListData.ModelTreeRoot = trimmedTreeRoots; return true; });
                         }
 
                         this.Dispatcher.Invoke(() =>
@@ -649,7 +691,7 @@ namespace STL_Showcase.Presentation.UI
                             if (CurrentDirectoryLoader.FilesFound.Length > 0)
                                 new MessageDialog(Loc.GetText("LoadDirectoryUnable"), Loc.GetText("LoadingError"), Loc.GetText("OK"), "", "").ShowAsync();
                             else
-                                new MessageDialog(string.Format(Loc.GetText("LoadDirectoryNoFilesAt"), dir), Loc.GetText("Nothing found!"), Loc.GetText("OK"), "", "").ShowAsync();
+                                new MessageDialog(string.Format(Loc.GetText("LoadDirectoryNoFilesAtDir"), string.Join("\", \"", directories)), Loc.GetText("NothingFound!"), Loc.GetText("OK"), "", "").ShowAsync();
                             CurrentDirectoryLoader = null;
                             return true;
                         });
@@ -770,6 +812,8 @@ namespace STL_Showcase.Presentation.UI
             userSettings.SetSettingBool(UserSettingEnum.MainColumnsVisibility3DView, ColumnModeManager.IsColumnEnabled(2));
             userSettings.SetSettingInt(UserSettingEnum.MainColumnsPoweredIndex, ColumnModeManager.GetColumnPowered());
         }
+
+
     }
 
     #region Converters

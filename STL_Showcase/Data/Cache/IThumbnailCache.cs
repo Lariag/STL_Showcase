@@ -25,6 +25,14 @@ namespace STL_Showcase.Data.Cache
         /// </summary>
         /// <returns>True if all files were cleared or no files were found. False if was unable to delete one or more files.</returns>
         bool ClearCache();
+
+        /// <summary>
+        /// Deletes the cache files for the received filenames.
+        /// </summary>
+        /// <param name="files">Filenames (without path, but with extension)</param>
+        /// <returns>True if all files were cleared or no files were found.  False if was unable to delete one or more files.</returns>
+        bool ClearCacheForFiles(IEnumerable<string> filenames);
+
         /// <summary>
         /// Calculates the current cache size in bytes. May not be supported by all cache types.
         /// </summary>

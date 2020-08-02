@@ -109,6 +109,45 @@ namespace STL_Showcase.Data.Cache
             return allFilesCleared;
         }
 
+        public bool ClearCacheForFiles(IEnumerable<string> filenames)
+        {
+            string cachePath = GetCachePath();
+            bool allFilesCleared = true;
+
+            try
+            {
+                if (Directory.Exists(cachePath))
+                {
+                    var files = UtilMethods.EnumerateFiles(cachePath, "*.png", SearchOption.AllDirectories);
+                    files = files.Where(f => filenames.Any(n => f.Contains(n)));
+                    logger.Info("Clearing cache for specific files. Detected {fileCount} files.", files.Count());
+
+                    foreach (var filePath in files)
+                    {
+                        try
+                        {
+                            File.Delete(filePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            allFilesCleared = false;
+                            logger.Trace(ex, "Error deleting cache for specific file: {filePath}", filePath);
+                        }
+                    }
+                }
+                else
+                {
+                    logger.Info("Clearing cache for specific files... Cache path not found! {cachePath}", cachePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Trace(ex, "Exception calculating cache size for specific files");
+                return false;
+            }
+            return allFilesCleared;
+
+        }
         public IEnumerable<Tuple<int, BitmapSource>> GetThumbnailsImages(string filePath, string fileName, RenderAspectEnum renderType)
         {
             Tuple<int, BitmapSource>[] loadedFiles = new Tuple<int, BitmapSource>[0];

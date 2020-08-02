@@ -24,6 +24,8 @@ namespace STL_Showcase.Data.Config
                     return Properties.Settings.Default.LastDirectory;
                 case UserSettingEnum.Language:
                     return Properties.Settings.Default.Language;
+                case UserSettingEnum.LastLoadedDirectories:
+                    return Properties.Settings.Default.LastLoadedDirectories;
                 default:
                     return "";
             }
@@ -73,6 +75,8 @@ namespace STL_Showcase.Data.Config
                     Properties.Settings.Default.LastDirectory = val; break;
                 case UserSettingEnum.Language:
                     Properties.Settings.Default.Language = val; break;
+                case UserSettingEnum.LastLoadedDirectories:
+                    Properties.Settings.Default.LastLoadedDirectories = val; break;
             }
             Properties.Settings.Default.Save();
         }

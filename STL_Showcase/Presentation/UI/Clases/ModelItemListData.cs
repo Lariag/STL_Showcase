@@ -16,6 +16,9 @@ namespace STL_Showcase.Presentation.UI.Clases
         public ModelTreeItem SelectedTreeItem { get { return _SelectedTreeItem; } set { _SelectedTreeItem = value; NotifyPropertyChanged(nameof(SelectedTreeItem)); } }
         private ObservableCollection<ModelListItem> _ModelList = new ObservableCollection<ModelListItem>();
         private Dictionary<string, ModelListItem> _ModelListDictionary;
+        private List<string> _LoadedDirectories = new List<string>();
+
+
         public ObservableCollection<ModelListItem> ModelList {
             get { return _ModelList; }
             set
@@ -74,6 +77,8 @@ namespace STL_Showcase.Presentation.UI.Clases
         public bool FileTypeFilterOBJ { get { return _FileTypeFilterOBJ; } set { _FileTypeFilterOBJ = value; NotifyPropertyChanged(nameof(FileTypeFilterOBJ)); } }
         private bool _FileTypeFilter3MF;
         public bool FileTypeFilter3MF { get { return _FileTypeFilter3MF; } set { _FileTypeFilter3MF = value; NotifyPropertyChanged(nameof(FileTypeFilter3MF)); } }
+        private bool _FileOnlyFoldersFilter;
+        public bool FileOnlyFoldersFilter { get { return _FileOnlyFoldersFilter; } set { _FileOnlyFoldersFilter = value; NotifyPropertyChanged(nameof(FileOnlyFoldersFilter)); } }
 
         private bool _ModelListDirectionOrder = true;
         private string _ModelListTextOrder = "Directory";
@@ -123,16 +128,17 @@ namespace STL_Showcase.Presentation.UI.Clases
             bool visible = false;
             foreach (var child in node.ChildItems)
             {
-                if (child.HasData)
+                if (child.HasData && !this.FileOnlyFoldersFilter)
                 {
                     child.IsVisible = (this.FileTypeFilterSTL && child.Text.EndsWith(".stl", StringComparison.InvariantCultureIgnoreCase) ||
                         this.FileTypeFilterOBJ && child.Text.EndsWith(".obj", StringComparison.InvariantCultureIgnoreCase) ||
                         this.FileTypeFilter3MF && child.Text.EndsWith(".3mf", StringComparison.InvariantCultureIgnoreCase));
+
                     visible = visible || child.IsVisible;
                 }
                 else
                 {
-                    visible = ApplyFilterToTreeRecursive(child) || visible;
+                    visible = ApplyFilterToTreeRecursive(child) || visible || this.FileOnlyFoldersFilter;
                 }
             }
             node.IsVisible = visible;
@@ -145,6 +151,8 @@ namespace STL_Showcase.Presentation.UI.Clases
             this.FileTypeFilterSTL = true;
             this.FileTypeFilterOBJ = true;
             this.FileTypeFilter3MF = true;
+            this.FileOnlyFoldersFilter = false;
+            this._LoadedDirectories = new List<string>();
             this.ModelList = new ObservableCollection<ModelListItem>();
             this.ModelTreeRoot = new ObservableCollection<ModelTreeItem>();
             this._ModelListTextOrder = "Directory";
@@ -171,6 +179,29 @@ namespace STL_Showcase.Presentation.UI.Clases
         {
             if (CurrentZoomLevel + zoomChange >= 0 && CurrentZoomLevel + zoomChange <= MaximumZoomLevel)
                 this.CurrentZoomLevel += zoomChange;
+        }
+
+        public bool IsDirectoryLoaded(string path, bool checkSubdirectories)
+        {
+            return (checkSubdirectories && _LoadedDirectories.Any(p => path.Contains(p))) || _LoadedDirectories.Contains(path);
+        }
+        public void AddDirectoryLoaded(string path)
+        {
+            if (!IsDirectoryLoaded(path, true))
+                _LoadedDirectories.Add(path);
+        }
+        public void AddDirectoriesLoaded(IEnumerable<string> paths)
+        {
+            foreach (string path in paths)
+                AddDirectoryLoaded(path);
+        }
+        public void RemoveDirectoryLoaded(string path)
+        {
+            _LoadedDirectories.Remove(path);
+        }
+        public IEnumerable<string> GetDirectoriesLoaded()
+        {
+            return _LoadedDirectories.ToArray();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
