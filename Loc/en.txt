@@ -44,3 +44,6 @@ LoadDirectoryNoFilesAtDir No files found at "{0}".
 NothingFound! Nothing found!
 OpenParam Open "{0}"
 ClearCacheSize Clear Cache ({0})
+ReloadAll Reload All
+DirectoryAlreadyLoaded The selected directory is already loaded.
+OnlyFolders Only Folders

@@ -72,8 +72,15 @@ namespace STL_Showcase.Presentation.UI.Clases
         public ObservableCollection<ModelTreeItem> Trim()
         {
             if (this.ChildItems.Count == 1)
+            {
                 return ChildItems[0].Trim();
+            }
+            else if (!ChildItems.Any(ci => ci.HasData))
+            {
+                return new ObservableCollection<ModelTreeItem>(ChildItems.SelectMany(ci => ci.Trim()));
+            }
             return new ObservableCollection<ModelTreeItem>(new ModelTreeItem[] { this });
+
         }
 
         /// <summary>

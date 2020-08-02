@@ -17,6 +17,7 @@ namespace STL_Showcase.Shared.Enums
         , MainColumnsVisibilityModelList
         , MainColumnsVisibility3DView
         , MainColumnsPoweredIndex
+        , LastLoadedDirectories
     }
 
 }
