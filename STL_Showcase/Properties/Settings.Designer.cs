@@ -142,5 +142,41 @@ namespace STL_Showcase.Properties {
                 this["LastLoadedDirectories"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ConfigLinkedProgramsList {
+            get {
+                return ((string)(this["ConfigLinkedProgramsList"]));
+            }
+            set {
+                this["ConfigLinkedProgramsList"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableDebugLogs {
+            get {
+                return ((bool)(this["EnableDebugLogs"]));
+            }
+            set {
+                this["EnableDebugLogs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Thumbnails3DAspect {
+            get {
+                return ((int)(this["Thumbnails3DAspect"]));
+            }
+            set {
+                this["Thumbnails3DAspect"] = value;
+            }
+        }
     }
 }

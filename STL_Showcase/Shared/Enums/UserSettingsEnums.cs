@@ -18,6 +18,9 @@ namespace STL_Showcase.Shared.Enums
         , MainColumnsVisibility3DView
         , MainColumnsPoweredIndex
         , LastLoadedDirectories
+        , ConfigLinkedProgramsList
+        , EnableDebugLogs
+        , Thumbnails3DAspect
     }
 
 }

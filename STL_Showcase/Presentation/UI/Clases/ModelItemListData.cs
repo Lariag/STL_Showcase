@@ -66,9 +66,19 @@ namespace STL_Showcase.Presentation.UI.Clases
             set { _ModelListTextFilter = value?.Trim(); NotifyPropertyChanged(nameof(ModelListTextFilter)); }
         }
         private string _ModelListDirectoryFilter;
+
         public string ModelListDirectoryFilter {
-            get { return _ModelListDirectoryFilter ?? ""; }
-            set { _ModelListDirectoryFilter = value?.Trim(); NotifyPropertyChanged(nameof(ModelListDirectoryFilter)); }
+            get { return _ModelListDirectoryFilter ?? string.Empty; }
+            set { _ModelListDirectoryFilter = value?.Trim(); NotifyPropertyChanged(nameof(ModelListDirectoryFilter)); NotifyPropertyChanged(nameof(ModelListDirectoryFilterShortened)); }
+        }
+
+        public string ModelListDirectoryFilterShortened {
+            get
+            {
+                if (string.IsNullOrEmpty(_ModelListDirectoryFilter))
+                    return string.Empty;
+                return _ModelListDirectoryFilter.Length > 40 ? $"...{_ModelListDirectoryFilter.Substring(_ModelListDirectoryFilter.Length - 40)}" : _ModelListDirectoryFilter;
+            }
         }
 
         private bool _FileTypeFilterSTL;

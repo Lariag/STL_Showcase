@@ -7,7 +7,7 @@
       xmlns:viewItems="clr-namespace:STL_Showcase.Presentation.UI.Clases"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="1400"
-      Title="ModelShowcase"
+      Title="STL Showcase"
       xmlns:ui="http://schemas.modernwpf.com/2019"
       xmlns:h="http://helix-toolkit.org/wpf"
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
@@ -211,7 +211,7 @@
                                         <ToolTip MaxWidth="1000">
                                             <Grid>
                                                 <StackPanel Orientation="Vertical" Visibility="{Binding Data, Converter={StaticResource nullToVisibleConverter}, ConverterParameter=1}">
-                                                    <TextBlock FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Text="{Binding TextPlusParents}" Margin="5 5 5 2"/>
+                                                    <TextBlock FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Text="{Binding TextPlusParents}" Margin="5 5 5 2" TextWrapping="WrapWithOverflow"/>
 
                                                     <Grid Margin="5">
                                                         <Grid.ColumnDefinitions>
@@ -249,7 +249,7 @@
                                                         <RowDefinition/>
                                                     </Grid.RowDefinitions>
 
-                                                    <TextBlock FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Text="{Binding Data.FileData.FileName}" Margin="0 5 5 2" Grid.ColumnSpan="2" Grid.Row="0"/>
+                                                    <TextBlock FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Text="{Binding Data.FileData.FileName}" Margin="0 5 5 2" Grid.ColumnSpan="2" Grid.Row="0" TextWrapping="Wrap"/>
                                                     <!--<TextBlock VerticalAlignment="Center" Text="{Binding Data.FileData.FilePath}" Grid.ColumnSpan="2" Margin="0 2 5 5" Grid.Row="1"/>-->
 
                                                     <TextBlock VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,0,5" Text="{Binding Source='Size', Converter={StaticResource stringKeyToLocalizedStringConverter}}" Grid.Column="0" Grid.Row="1"/>
@@ -307,29 +307,29 @@
 
                             <TextBlock Name="tbFilter" Grid.Column="0" Grid.Row="0" Text="Filter" VerticalAlignment="Center"/>
                             <DockPanel Grid.Column="1">
-                                <Button x:Name="DirectoryTextFilterButton" Content="{Binding ModelListDirectoryFilter, Mode=OneWay}" DockPanel.Dock="Right" Style="{StaticResource TagButtonRemovableStyle}" Height="24" 
-                                        VerticalAlignment="Center" Margin="4 0 0 0" Visibility="{Binding ModelListDirectoryFilter, Mode=OneWay, Converter={StaticResource nullToVisibleConverter}}" Click="DirectoryTextFilterButton_Click" />
+                                <Button x:Name="DirectoryTextFilterButton" Content="{Binding ModelListDirectoryFilterShortened, Mode=OneWay}" DockPanel.Dock="Right" Style="{StaticResource TagButtonRemovableStyle}" Height="24" 
+                                        VerticalAlignment="Center" Margin="4 0 0 0" Visibility="{Binding ModelListDirectoryFilterShortened, Mode=OneWay, Converter={StaticResource nullToVisibleConverter}}" Click="DirectoryTextFilterButton_Click" />
                                 <TextBox Name="ModelListTextFilter" FontSize="12" Padding="2" MinHeight="20" MaxHeight="24"
                                     TextChanged="ModelListTextFilter_TextChanged" />
                             </DockPanel>
 
                             <TextBlock Name="tbOrder" Grid.Column="0" Grid.Row="1" Text="Order" VerticalAlignment="Center"/>
                             <ui:SimpleStackPanel Name="ModelListOrderPanel" Grid.Column="1" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
-                                <RadioButton IsChecked="{Binding Path=DataContext.ModelListTextOrder, Mode=TwoWay, Converter={StaticResource radioBoolToStringConverter}, ConverterParameter=FileName,
+                                <RadioButton x:Name="rbFilterNameModelList" IsChecked="{Binding Path=DataContext.ModelListTextOrder, Mode=TwoWay, Converter={StaticResource radioBoolToStringConverter}, ConverterParameter=FileName,
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}" Click="RadioButtonFilterModelList_Click"
                                               Style="{StaticResource TagButtonStyle}" Content="File Name" GroupName="ImageListOrder"/>
-                                <RadioButton IsChecked="{Binding Path=DataContext.ModelListTextOrder, Mode=TwoWay, Converter={StaticResource radioBoolToStringConverter}, ConverterParameter=Directory,
+                                <RadioButton x:Name="rbFilterDirectoryModelList" IsChecked="{Binding Path=DataContext.ModelListTextOrder, Mode=TwoWay, Converter={StaticResource radioBoolToStringConverter}, ConverterParameter=Directory,
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}" Click="RadioButtonFilterModelList_Click"
                                              Style="{StaticResource TagButtonStyle}" Content="Directory" GroupName="ImageListOrder"/>
-                                <RadioButton IsChecked="{Binding Path=DataContext.ModelListTextOrder, Mode=TwoWay, Converter={StaticResource radioBoolToStringConverter}, ConverterParameter=DateModified,
+                                <RadioButton x:Name="rbFilterModifiedModelList" IsChecked="{Binding Path=DataContext.ModelListTextOrder, Mode=TwoWay, Converter={StaticResource radioBoolToStringConverter}, ConverterParameter=DateModified,
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}" Click="RadioButtonFilterModelList_Click"
                                              Style="{StaticResource TagButtonStyle}" Content="Date Modified" GroupName="ImageListOrder"/>
-                                <RadioButton IsChecked="{Binding Path=DataContext.ModelListTextOrder, Mode=TwoWay, Converter={StaticResource radioBoolToStringConverter}, ConverterParameter=DateCreated,
+                                <RadioButton x:Name="rbFilterCreatedModelList" IsChecked="{Binding Path=DataContext.ModelListTextOrder, Mode=TwoWay, Converter={StaticResource radioBoolToStringConverter}, ConverterParameter=DateCreated,
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}" Click="RadioButtonFilterModelList_Click"
                                              Style="{StaticResource TagButtonStyle}" Content="Date Created" GroupName="ImageListOrder"/>
-                                <RadioButton IsChecked="{Binding Path=DataContext.ModelListTextOrder, Mode=TwoWay, Converter={StaticResource radioBoolToStringConverter}, ConverterParameter=FileSizeKB,
+                                <RadioButton x:Name="rbFilterSizeModelList" IsChecked="{Binding Path=DataContext.ModelListTextOrder, Mode=TwoWay, Converter={StaticResource radioBoolToStringConverter}, ConverterParameter=FileSizeKB,
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}" Click="RadioButtonFilterModelList_Click"
-                                             Style="{StaticResource TagButtonStyle}" Content="File Size" GroupName="ImageListOrder"/>
+                                             Style="{StaticResource TagButtonStyle}" Content="Size" GroupName="ImageListOrder"/>
                             </ui:SimpleStackPanel>
                         </Grid>
 
@@ -413,8 +413,8 @@
                                         </Button.Resources>
                                         <Button.ToolTip>
                                             <StackPanel Orientation="Vertical">
-                                                <TextBlock FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Text="{Binding FileData.FileName}" Margin="5 5 5 2"/>
-                                                <TextBlock VerticalAlignment="Center" Text="{Binding FileData.FilePath}" Margin="5 2 5 5"/>
+                                                <TextBlock FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Text="{Binding FileData.FileName}" TextWrapping="Wrap" Margin="5 5 5 2"/>
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding FileData.FilePath}" Margin="5 2 5 5" TextWrapping="WrapWithOverflow"/>
 
                                                 <Grid Margin="5">
                                                     <Grid.ColumnDefinitions>
@@ -522,7 +522,7 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="70" Width="70" GroupName="RenderType" Click="RenderTypeButton_Click" Tag="{Binding Index}"
-                                                         IsChecked="{Binding SelectedRenderAspect, Converter={StaticResource boolToVisibleConverter}}">
+                                                         IsChecked="{Binding SelectedRenderAspect, Converter={StaticResource radioBoolToStringConverter}}">
                                                 <Image Source="{Binding Index, Converter={StaticResource stringToUriConverter}, ConverterParameter='Styles/Resources/RenderModes/RenderMode{0}.png'}" Margin="4"/>
                                             </RadioButton>
                                         </DataTemplate>

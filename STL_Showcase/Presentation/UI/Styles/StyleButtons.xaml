@@ -376,4 +376,31 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style x:Key="DeleteButtonStyle" 
+               TargetType="Button" 
+               BasedOn="{StaticResource DefaultButtonStyle}">
+        <Setter Property="Width" Value="auto" />
+        <Setter Property="Height" Value="auto" />
+        <Setter Property="Background" Value="#1D89DE" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="0" Background="{TemplateBinding Background}" BorderThickness="0" >
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}">
+                            <ContentPresenter.Content>
+                                <Image Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" Source="Resources/CloseXb.png" Stretch="Fill" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified" />
+                            </ContentPresenter.Content>
+                        </ContentPresenter>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#DE2D2D"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

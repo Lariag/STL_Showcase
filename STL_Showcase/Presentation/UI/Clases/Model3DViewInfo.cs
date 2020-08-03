@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace STL_Showcase.Presentation.UI.Clases
 {
-    class Model3DViewInfo : INotifyPropertyChanged
+    public class Model3DViewInfo : INotifyPropertyChanged
     {
         public ObservableCollection<RenderAspectItem> RenderAspectList { get; set; }
-        public RenderAspectEnum SelectedRenderAspect { get; set; }
+        private RenderAspectEnum _SelectedRenderAspect { get; set; }
+        public RenderAspectEnum SelectedRenderAspect { get { return _SelectedRenderAspect; } set { _SelectedRenderAspect = value; NotifyPropertyChanged(nameof(SelectedRenderAspect)); } }
         public string ModelName { get; private set; }
         public string ModelTris { get; private set; }
         public string ModelVerts { get; private set; }

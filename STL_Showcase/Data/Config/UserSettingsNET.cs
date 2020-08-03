@@ -1,4 +1,5 @@
-﻿using STL_Showcase.Shared.Enums;
+﻿using Newtonsoft.Json;
+using STL_Showcase.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +28,10 @@ namespace STL_Showcase.Data.Config
                 case UserSettingEnum.LastLoadedDirectories:
                     return Properties.Settings.Default.LastLoadedDirectories;
                 default:
-                    return "";
+                    return string.Empty;
             }
         }
+
         public int GetSettingInt(UserSettingEnum setting)
         {
             switch (setting)
@@ -42,6 +44,8 @@ namespace STL_Showcase.Data.Config
                     return Properties.Settings.Default.CurrentView3DAspect;
                 case UserSettingEnum.MainColumnsPoweredIndex:
                     return Properties.Settings.Default.MainColumnsPoweredIndex;
+                case UserSettingEnum.Thumbnails3DAspect:
+                    return Properties.Settings.Default.Thumbnails3DAspect;
                 default:
                     return 0;
             }
@@ -57,6 +61,8 @@ namespace STL_Showcase.Data.Config
                     return Properties.Settings.Default.MainColumnsVisibilityModelList;
                 case UserSettingEnum.MainColumnsVisibility3DView:
                     return Properties.Settings.Default.MainColumnsVisibility3DView;
+                case UserSettingEnum.EnableDebugLogs:
+                    return Properties.Settings.Default.EnableDebugLogs;
                 default:
                     return false;
             }
@@ -65,6 +71,20 @@ namespace STL_Showcase.Data.Config
         public float GetSettingFloat(UserSettingEnum setting)
         {
             throw new NotImplementedException("Float setting not implemented yet.");
+        }
+
+        public T GetSettingSerialized<T>(UserSettingEnum setting)
+        {
+            string objectSerialized = string.Empty;
+            switch (setting)
+            {
+                case UserSettingEnum.ConfigLinkedProgramsList:
+                    objectSerialized = Properties.Settings.Default.ConfigLinkedProgramsList; break;
+                default:
+                    objectSerialized = string.Empty; break;
+            }
+
+            return string.IsNullOrEmpty(objectSerialized) ? default(T) : JsonConvert.DeserializeObject<T>(objectSerialized);
         }
 
         public void SetSettingString(UserSettingEnum setting, string val)
@@ -92,6 +112,8 @@ namespace STL_Showcase.Data.Config
                     Properties.Settings.Default.CurrentView3DAspect = val; break;
                 case UserSettingEnum.MainColumnsPoweredIndex:
                     Properties.Settings.Default.MainColumnsPoweredIndex = val; break;
+                case UserSettingEnum.Thumbnails3DAspect:
+                    Properties.Settings.Default.Thumbnails3DAspect = val; break; 
             }
             Properties.Settings.Default.Save();
         }
@@ -106,6 +128,8 @@ namespace STL_Showcase.Data.Config
                     Properties.Settings.Default.MainColumnsVisibilityModelList = val; break;
                 case UserSettingEnum.MainColumnsVisibility3DView:
                     Properties.Settings.Default.MainColumnsVisibility3DView = val; break;
+                case UserSettingEnum.EnableDebugLogs:
+                    Properties.Settings.Default.EnableDebugLogs = val; break;
             }
             Properties.Settings.Default.Save();
         }
@@ -113,6 +137,16 @@ namespace STL_Showcase.Data.Config
         public void SetSettingFloat(UserSettingEnum setting, float val)
         {
             throw new NotImplementedException("Float setting not implemented yet.");
+            Properties.Settings.Default.Save();
+        }
+
+        public void SetSettingSerialized<T>(UserSettingEnum setting, T val)
+        {
+            switch (setting)
+            {
+                case UserSettingEnum.ConfigLinkedProgramsList:
+                    Properties.Settings.Default.ConfigLinkedProgramsList = JsonConvert.SerializeObject(val); break;
+            }
             Properties.Settings.Default.Save();
         }
     }

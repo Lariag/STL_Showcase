@@ -115,7 +115,7 @@ namespace STL_Showcase.Logic.FilePrcessing
 
             cache = DefaultFactory.GetDefaultThumbnailCache();
             userSettings = DefaultFactory.GetDefaultUserSettings();
-            renderType = (RenderAspectEnum)userSettings.GetSettingInt(UserSettingEnum.RenderAspect);
+            renderType = (RenderAspectEnum)userSettings.GetSettingInt(UserSettingEnum.Thumbnails3DAspect);
 
             paths = paths.Where(p1 => !paths.Any(p2 => !p1.Equals(p2) && p1.Contains(p2))).ToArray(); // Remove selected subdirectories of other selected paths.
 
@@ -281,7 +281,7 @@ namespace STL_Showcase.Logic.FilePrcessing
         private void RenderProcessAsync()
         {
             IRenderEnviorement renderer = DefaultFactory.GetDefaultRenderEnviorement(thumbnailImagesSizes[thumbnailImagesSizes.Length - 1]);
-            renderer.SetEnviorementOptions((RenderAspectEnum)userSettings.GetSettingInt(UserSettingEnum.RenderAspect));
+            renderer.SetEnviorementOptions((RenderAspectEnum)userSettings.GetSettingInt(UserSettingEnum.Thumbnails3DAspect));
             while (FilesPending(DirectoryLoadingStepsEnum.FileRendering) && !cancellationToken.IsCancellationRequested)
             {
                 if (ReadyToRenderList.TryDequeue(out ModelFileData nextFile))
@@ -305,7 +305,6 @@ namespace STL_Showcase.Logic.FilePrcessing
                             }
                             if (cacheImages != null)
                             {
-
                                 for (int i = 0; i < cacheImages.Length; i++)
                                 {
                                     if (cacheImages[i].Item1 != null && cacheImages[i].Item2) continue; // Image exists and render is not needed.
@@ -324,39 +323,12 @@ namespace STL_Showcase.Logic.FilePrcessing
                             }
                             else
                                 SendToReady(nextFile, LoadResultEnum.ErrorRendering);
-
-
-
-
-
-
-                            //for (int i = 0; i < cacheImages.Length; i++)
-                            //{
-                            //    if (cacheImages[i].Item1 != null && cacheImages[i].Item2) continue; // Image exists and render is not needed.
-
-                            //    if (this.cancellationToken.IsCancellationRequested) return;
-
-                            //    BitmapSource rendered = renderer.RenderImage(thumbnailImagesSizes[i]);
-                            //    if (rendered == null)
-                            //    {
-                            //        LoadedThumbnails.TryRemove(nextFile.FileFullPath, out cacheImages);
-                            //        cacheImages = null;
-                            //    }
-                            //    else
-                            //    {
-                            //        cacheImages[i] = new Tuple<BitmapSource, bool>(rendered, false);
-                            //    }
-                            //}
-                            //if (cacheImages != null)
-                            //    ReadyToSaveList.Enqueue(nextFile);
-                            //else
-                            //    SendToReady(nextFile, LoadResultEnum.ErrorRendering);
                         }
                         else // Cant retrieve the cache.
                             SendToReady(nextFile, LoadResultEnum.ErrorRetrievingLoadedCache);
                         renderer.RemoveModel();
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         SendToReady(nextFile, LoadResultEnum.ErrorRendering);
                     }

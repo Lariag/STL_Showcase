@@ -35,6 +35,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
 using STL_Showcase.Presentation.UI.Clases.Utility;
 using STL_Showcase.Logic.Localization;
+using STL_Showcase.Data.DataObjects;
 
 namespace STL_Showcase.Presentation.UI
 {
@@ -55,6 +56,7 @@ namespace STL_Showcase.Presentation.UI
         private ModelCacheInfo _CacheInfo;
         private Model3DViewInfo _Model3DViewInfo;
         private ModelColumnsStates ColumnModeManager;
+        private List<LinkedProgramData> _LinkedProgramsData { get; set; }
 
         IUserSettings userSettings = DefaultFactory.GetDefaultUserSettings();
 
@@ -102,6 +104,8 @@ namespace STL_Showcase.Presentation.UI
             _CacheInfo = new ModelCacheInfo();
             MenuCacheMain.DataContext = _CacheInfo;
 
+            _LinkedProgramsData = userSettings.GetSettingSerialized<List<LinkedProgramData>>(UserSettingEnum.ConfigLinkedProgramsList);
+
             var viewport = new HelixViewport3D();
             view3d = new View3D(viewport);
             view3d.OptionRenderStyle = (RenderAspectEnum)userSettings.GetSettingInt(UserSettingEnum.CurrentView3DAspect);
@@ -147,12 +151,15 @@ namespace STL_Showcase.Presentation.UI
 
         private void SetUILanguage(string newLanguage = "")
         {
+            this.Title = Loc.GetText("AppName");
             tbAppTitle.Text = Loc.GetText("AppName");
 
             // Main menu
             {
                 MenuColumnsLoadDirectory.Header = Loc.GetText("LoadDirectory");
                 MenuColumnsShowDirectoryTree.Header = Loc.GetText("View");
+
+                MenuColumnsMain.Header = Loc.GetText("View");
 
                 MenuColumnsShowDirectoryTree.Header = Loc.GetText("ShowDirectoryTree");
                 MenuColumnsShowModelList.Header = Loc.GetText("ShowModelList");
@@ -166,6 +173,7 @@ namespace STL_Showcase.Presentation.UI
 
                 MenuCacheMain.Header = Loc.GetText("Cache");
                 MenuCacheAbout.Header = Loc.GetText("CacheWhatIsIt");
+                MenuCacheReloadDisplayed.Header = Loc.GetText("ReloadCacheOfLoadedDirs");
 
                 MenuAbout.Header = Loc.GetText("About");
 
@@ -185,6 +193,12 @@ namespace STL_Showcase.Presentation.UI
             {
                 tbFilter.Text = Loc.GetText("Filter");
                 tbOrder.Text = Loc.GetText("Order");
+                rbFilterNameModelList.Content = Loc.GetText("FileName");
+                rbFilterDirectoryModelList.Content = Loc.GetText("Directory");
+                rbFilterModifiedModelList.Content = Loc.GetText("DateModified");
+                rbFilterCreatedModelList.Content = Loc.GetText("DateCreated");
+                rbFilterSizeModelList.Content = Loc.GetText("Size");
+
             }
 
             this.UpdateLayout();
@@ -202,8 +216,23 @@ namespace STL_Showcase.Presentation.UI
 
         private void MenuItemConfiguration_Click(object sender, RoutedEventArgs e)
         {
+            ModelConfigSettings settingsOriginal = new ModelConfigSettings();
+            settingsOriginal.LoadSettings();
+
             ConfigurationWindow config = new ConfigurationWindow();
-            //config.ShowDialog();
+            bool result = config.ShowDialog() ?? false;
+
+            // Update stuff based on the changed settings
+            if (result)
+            {
+                ModelConfigSettings settingsSettingsModified = new ModelConfigSettings();
+                settingsSettingsModified.LoadSettings();
+
+                _LinkedProgramsData = settingsSettingsModified.LinkedProgramsData.ToList();
+
+                if (settingsOriginal.SelectedThumbnailRenderAspec != settingsSettingsModified.SelectedThumbnailRenderAspec)
+                    ReloadDirectories();
+            }
         }
 
         private void MenuCacheMain_Click(object sender, RoutedEventArgs e)
@@ -813,7 +842,20 @@ namespace STL_Showcase.Presentation.UI
             userSettings.SetSettingInt(UserSettingEnum.MainColumnsPoweredIndex, ColumnModeManager.GetColumnPowered());
         }
 
+        public void OpenFileWithProgram(string filePath, string program)
+        {
+            var pi = new ProcessStartInfo(filePath)
+            {
+                Arguments = System.IO.Path.GetFileName(filePath),
+                UseShellExecute = true,
+                WorkingDirectory = System.IO.Path.GetDirectoryName(filePath),
+                FileName = program, // .exe
+                Verb = "OPEN"
+            };
+            Process.Start(pi);
 
+            // TODO: Show that the file is opening.
+        }
     }
 
     #region Converters
@@ -822,7 +864,19 @@ namespace STL_Showcase.Presentation.UI
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (string)value == (string)parameter;
+            return ((string)value).Equals((string)parameter);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return parameter;
+        }
+    }
+    public class RenderAspectIndexMatchToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (int)((RenderAspectEnum)value) == ((int)parameter) ? "True" : "False";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
