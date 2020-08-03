@@ -47,27 +47,27 @@ ClearCacheSize Borrar caché ({0})
 ReloadAll Recargar todos
 DirectoryAlreadyLoaded El directorio seleccionado ya está cargado.
 OnlyFolders Solo carpetas
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+GeneralSettingsName Ajustes Generales
+ProgramsSettingsName Programas
+AdvancedSettingsName Ajustes Avanzados
+ProgramsSettingsDescription Esta configuración permite definir una lista de programas con los que abrir tus modelos 3D mediante el menú contextual.\nConfigura la ruta del programa, el nombre para mostrar y los tipos de archivos compatibles en la tabla de abajo.
+Settings Ajustes
+Calculating... Calculando...
+SizeNotAvailable Tamaño no disponible
+Directory Directorio
+DisplayName Nombre para mostrar
+ProgramPath Ruta del programa
+NewProgram Nuevo Programa
+AddNew Añadir Nuevo
+ProgramsTable Tabla de Programas
+Language Idioma
+EnableDebugLogs Habilitar logs para debug
+ThumbnailStyle Estilo de miniaturas
+FileName Nombre de Archivo
+DateModified Fecha Modificado
+DateCreated Fecha Creado
+ReloadCacheOfLoadedDirs Regenerar caché de los directorios cargados
+Select... Seleccionar...
  
  
  

@@ -11,7 +11,7 @@
         WindowStartupLocation="CenterScreen" WindowState="Maximized"
         MouseDown="TitleBar_MouseDown"
         Style="{StaticResource ResourceKey=MainWindowStyle}"
-        Icon="Styles/Resources/STLShowcaseIconFaded.ico"
+        Icon="Styles/Resources/STLShowcaseIconFadedMix.ico"
         SizeChanged="Window_SizeChanged"
         ShowInTaskbar="True"
         Closing="Window_Closing">

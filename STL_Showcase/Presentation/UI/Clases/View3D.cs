@@ -96,7 +96,7 @@ namespace STL_Showcase.Presentation.UI.Clases
         {
             Vector3D cameraPosition = Viewport.Camera.Position.ToVector3D();
             cameraPosition.Normalize();
-            LightsAxisRotationZ.SetValue(AxisAngleRotation3D.AngleProperty, Math.Atan2(cameraPosition.X, -cameraPosition.Y) * (180d / Math.PI) -45d);
+            LightsAxisRotationZ.SetValue(AxisAngleRotation3D.AngleProperty, Math.Atan2(cameraPosition.X, -cameraPosition.Y) * (180d / Math.PI) - 45d);
         }
 
         private void Viewport_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -133,27 +133,27 @@ namespace STL_Showcase.Presentation.UI.Clases
             }
             else if (renderAspect == RenderAspectEnum.RedOrangeYellow)
             {
-                lights.Add(new DirectionalLight(Colors.Red, new Vector3D(-1, -0.3, 0)));
-                lights.Add(new DirectionalLight(Colors.Yellow, new Vector3D(0.3, 1, 0)));
-                lights.Add(new DirectionalLight(Colors.Orange, new Vector3D(0.3, -0.3, -1)));
+                lights.Add(new DirectionalLight(Colors.Red, new Vector3D(-1, 0, 0)));
+                lights.Add(new DirectionalLight(Colors.Yellow, new Vector3D(0, 1, 0)));
+                lights.Add(new DirectionalLight(Colors.Orange, new Vector3D(0, 0, -1)));
             }
             else if (renderAspect == RenderAspectEnum.GreenLimeYellow)
             {
-                lights.Add(new DirectionalLight(Colors.Green, new Vector3D(-1, -0.3, 0)));
-                lights.Add(new DirectionalLight(Colors.Yellow, new Vector3D(0.3, 1, 0)));
-                lights.Add(new DirectionalLight(Colors.LimeGreen, new Vector3D(0.3, -0.3, -1)));
+                lights.Add(new DirectionalLight(Colors.Green, new Vector3D(-1, -0, 0)));
+                lights.Add(new DirectionalLight(Colors.Yellow, new Vector3D(0, 1, 0)));
+                lights.Add(new DirectionalLight(Colors.LimeGreen, new Vector3D(0, 0, -1)));
             }
             else if (renderAspect == RenderAspectEnum.PinkFucsiaViolet)
             {
-                lights.Add(new DirectionalLight(Colors.Pink, new Vector3D(-1, -0.3, 0)));
-                lights.Add(new DirectionalLight(Colors.Fuchsia, new Vector3D(0.3, 1, 0)));
-                lights.Add(new DirectionalLight(Colors.Violet, new Vector3D(0.3, -0.3, -1)));
+                lights.Add(new DirectionalLight(Colors.Pink, new Vector3D(-1, 0, 0)));
+                lights.Add(new DirectionalLight(Color.FromArgb(1, 150, 40, 80), new Vector3D(0.3, 1, 0)));
+                lights.Add(new DirectionalLight(Colors.Violet, new Vector3D(0, 0, -1)));
             }
             else if (renderAspect == RenderAspectEnum.CyanBlue)
             {
-                lights.Add(new DirectionalLight(Colors.Blue, new Vector3D(-1, -0.3, 0)));
-                lights.Add(new DirectionalLight(Colors.AliceBlue, new Vector3D(0.3, 1, 0)));
-                lights.Add(new DirectionalLight(Colors.Cyan, new Vector3D(0.3, -0.3, -1)));
+                lights.Add(new DirectionalLight(Colors.Blue, new Vector3D(-1, 0, 0)));
+                lights.Add(new DirectionalLight(Colors.CornflowerBlue, new Vector3D(0, 1, 0)));
+                lights.Add(new DirectionalLight(Colors.Cyan, new Vector3D(0, 0, -1)));
             }
             else if (renderAspect == RenderAspectEnum.RedRedish)
             {
@@ -163,9 +163,9 @@ namespace STL_Showcase.Presentation.UI.Clases
             }
             else if (renderAspect == RenderAspectEnum.Yellow)
             {
-                lights.Add(new DirectionalLight(Colors.Yellow, new Vector3D(-1, -0.3, 0)));
-                lights.Add(new DirectionalLight(Colors.YellowGreen, new Vector3D(0.3, 1, 0)));
-                lights.Add(new DirectionalLight(Colors.LightYellow, new Vector3D(0.3, -0.3, -1)));
+                lights.Add(new DirectionalLight(Colors.Yellow, new Vector3D(-1, 0, 0)));
+                lights.Add(new DirectionalLight(Colors.YellowGreen, new Vector3D(0, 1, 0)));
+                lights.Add(new DirectionalLight(Color.FromArgb(1, 255, 255, 150), new Vector3D(0, 0, -1)));
             }
             else
             {

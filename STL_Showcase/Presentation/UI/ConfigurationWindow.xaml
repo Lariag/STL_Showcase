@@ -8,8 +8,142 @@
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" WindowState="Normal"
-        Title="STL Showcase Configuration" Height="450" Width="800">
-    <Grid>
+        Title="STL Showcase Configuration" Height="700" Width="700"
+        Icon="Styles/Resources/STLShowcaseIconFadedMix_Settings.ico"
+        Style="{StaticResource MainWindowStyle}"
+        Closed="Window_Closed"
+        MouseDown="TitleBar_MouseDown"
+        >
+
+    <Window.Resources>
+        <local:RadioBoolToStringConverter x:Key="radioBoolToStringConverter" />
+        <local:NullToVisibleConverter x:Key="nullToVisibleConverter" />
+        <local:BoolToVisibleConverter x:Key="boolToVisibleConverter" />
+        <local:BoolToVisibleHiddenConverter x:Key="boolToVisibleHiddenConverter" />
+        <local:StringToUriConverter x:Key="stringToUriConverter" />
+        <local:StringKeyToLocalizedStringConverter x:Key="stringKeyToLocalizedStringConverter" />
+        <local:RenderAspectIndexMatchToStringConverter x:Key="renderAspectIndexMatchToStringConverter" />
+    </Window.Resources>
+
+
+
+    <Grid Margin="10" >
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <ui:SimpleStackPanel Spacing="10" DockPanel.Dock="Left" Orientation="Horizontal">
+            <Image Source="Styles/Resources/STLShowcaseSettings.png" Height="40" Margin="15 0 0 5" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"/>
+            <TextBlock x:Name="tbWindowTitle" VerticalAlignment="Top" Margin="0 -5 18 0" Text="Configuration" FontSize="38" Style="{StaticResource HeaderTextBlockStyle}" />
+        </ui:SimpleStackPanel>
         
+        <TabControl Grid.Row="1" Style="{StaticResource TabControlPivotStyle}">
+            <TabItem Name="GeneralSettings" Header="General Settings">
+                <Grid Margin="0 10 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="2"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock x:Name="tbLanguageSetting" Text="Language" Grid.Row="0" Grid.Column="0"/>
+                    <ComboBox Name="cbLanguage" ItemsSource="{Binding SupportedLanguages}" Style="{StaticResource DataGridComboBoxStyle}"  Grid.Row="0" Grid.Column="1"/>
+
+                    <TextBlock x:Name="tbEnableDebugLogs" Text="Enable Debu Logs" Grid.Row="1" Grid.Column="0"/>
+                    <CheckBox x:Name="chkEnableDebugLogs" Grid.Row="1" Grid.Column="1" IsChecked="{Binding EnableDebugLogs}"/>
+                    
+                    <TextBlock x:Name="tbThumnailStyle" Text="Thumbnail Style" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                        <Border Style="{StaticResource BorderSeparatorStyleVertical}" DockPanel.Dock="Left"/>
+                        <Border Style="{StaticResource BorderSeparatorStyleVertical}" DockPanel.Dock="Right"/>
+                        <ScrollViewer x:Name="RenderTypeScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0 0 0 -8" PreviewMouseWheel="RenderTypeScrollViewer_PreviewMouseWheel" >
+                            <ItemsControl x:Name="RenderTypeScrollItemContainer" ItemsSource="{Binding RenderAspectList}" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="0 0 0 7">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="68" Width="68" GroupName="RenderType" Click="RenderTypeButton_Click" Tag="{Binding Index}">
+                                            <Image Source="{Binding Index, Converter={StaticResource stringToUriConverter}, ConverterParameter='Styles/Resources/RenderModes/RenderMode{0}.png'}" Margin="4"/>
+                                        </RadioButton>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                    </DockPanel>
+
+                </Grid>
+            </TabItem>
+            <TabItem Name="ProgramsSettings" Header="Linked Programs">
+                <Grid Margin="0 10 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <GroupBox>
+                        <TextBlock x:Name="tbProgramsDescription" TextWrapping="WrapWithOverflow" Grid.Row="0" Text="Description"/>
+                    </GroupBox>
+
+                    <TextBlock Name="tbProgramsGridTitle" Text="Programs Table" Grid.Row="1" Style="{StaticResource TitleTextBlockStyle}" Margin="0 0 0 10"/>
+
+                    <DataGrid Padding="10" CanUserReorderColumns="False" RowHeaderWidth="0" CanUserAddRows="False" CanUserDeleteRows="True" BorderBrush="LightGray" BorderThickness="1" Name="dgPrograms" ItemsSource="{Binding LinkedProgramsData}" 
+                              Style="{StaticResource DefaultDataGridStyle}" Grid.Row="2" AutoGenerateColumns="False" DataGridCell.Selected="dgPrograms_Selected">
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn Width="140" Header="{Binding Source='DisplayName', Converter={StaticResource stringKeyToLocalizedStringConverter}}" Binding="{Binding ProgramName}" />
+                            <DataGridTextColumn FontSize="12" Width="*" Header="{Binding Source='ProgramPath', Converter={StaticResource stringKeyToLocalizedStringConverter}}" Binding="{Binding ProgramFullPath}" />
+                            <!--<DataGridTemplateColumn Width="*" Header="{Binding Source='ProgramPath', Converter={StaticResource stringKeyToLocalizedStringConverter}}" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DockPanel>
+                                            <Button FontSize="12" DockPanel.Dock="Right" x:Name="btnSelectProgramPath" Style="{StaticResource AccentButtonStyle}" Content="{Binding Source='Select...', Converter={StaticResource stringKeyToLocalizedStringConverter}}" Click="btnSelectProgramPath_Click"/>
+                                            <TextBox FontSize="12" BorderThickness="0" Focusable="False" IsReadOnly="True" Style="{StaticResource DataGridTextBoxStyle}" Text="{Binding ProgramFullPath}"/>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn/>-->
+                            <DataGridCheckBoxColumn Width="auto" Header="STL" Binding="{Binding SupportSTL, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridCheckBoxColumn Width="auto" Header="OBJ" Binding="{Binding SupportOBJ, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridCheckBoxColumn Width="auto" Header="3MF" Binding="{Binding Support3MF, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridCheckBoxColumn Width="auto" Header="{Binding Source='Directory', Converter={StaticResource stringKeyToLocalizedStringConverter}}" Binding="{Binding SupportDirectory, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTemplateColumn Width="34" Header="">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button x:Name="btnDeleteProgramFile" Style="{StaticResource DeleteButtonStyle}" Click="btnDeleteProgramFile_Click" Command="Delete"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    
+                    <Button x:Name="btnAddNewProgram" HorizontalAlignment="Stretch" Content="Add New" Grid.Row="3" Click="btnAddNewProgram_Click" Style="{StaticResource DefaultButtonStyle}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Name="AdvancedSettings" Header="Advanced">
+                TODO...
+            </TabItem>
+
+        </TabControl>
+
+        <ui:SimpleStackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right"  Margin="10">
+            <Button x:Name="btnAccept" Content="Accept" Click="btnAccept_Click" Style="{StaticResource AccentButtonStyle}" Width="150"/>
+            <Button x:Name="btnCancel" Content="Cancel" Click="btnCancel_Click" Style="{StaticResource DefaultButtonStyle}" Width="100"/>
+        </ui:SimpleStackPanel>
     </Grid>
 </Window>

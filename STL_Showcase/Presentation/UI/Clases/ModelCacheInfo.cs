@@ -1,4 +1,5 @@
 ﻿using STL_Showcase.Data.Cache;
+using STL_Showcase.Logic.Localization;
 using STL_Showcase.Shared.Main;
 using System;
 using System.Collections.Generic;
@@ -46,14 +47,14 @@ namespace STL_Showcase.Presentation.UI.Clases
                   d.Invoke(new Action(() =>
                   {
                       if (size < 0)
-                          CacheSize = "Size not available";
+                          CacheSize = Loc.GetText("SizeNotAvailable");
                       else
-                          CacheSize = Math.Round((size / 1024f)).ToString("0") + " KB";
+                          CacheSize = string.Format(Loc.GetText("NumberKB"), Math.Round((size / 1024f)));
                   }));
                   processingCacheSize = false;
               }));
             }
-            return "Calculating...";
+            return Loc.GetText("Calculating...");
         }
 
         public void NotifyPropertyChanged(string propertyName)

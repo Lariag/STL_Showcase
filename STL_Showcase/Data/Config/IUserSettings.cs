@@ -13,9 +13,11 @@ namespace STL_Showcase.Data.Config
         int GetSettingInt(UserSettingEnum setting);
         bool GetSettingBool(UserSettingEnum setting);
         float GetSettingFloat(UserSettingEnum setting);
+        T GetSettingSerialized<T>(UserSettingEnum setting);
         void SetSettingString(UserSettingEnum setting, string val);
         void SetSettingInt(UserSettingEnum setting, int val);
         void SetSettingBool(UserSettingEnum setting, bool val);
         void SetSettingFloat(UserSettingEnum setting, float val);
+        void SetSettingSerialized<T>(UserSettingEnum setting, T val);
     }
 }

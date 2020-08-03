@@ -140,6 +140,9 @@
     <Reference Include="MoreLinq, Version=3.3.2.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
       <HintPath>..\packages\morelinq.3.3.2\lib\net451\MoreLinq.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -188,6 +191,7 @@
     <Compile Include="Data\Config\IUserSettings.cs" />
     <Compile Include="Data\Config\UserSettingsFactory.cs" />
     <Compile Include="Data\Config\UserSettingsNET.cs" />
+    <Compile Include="Data\DataObjects\LinkedProgramData.cs" />
     <Compile Include="Logic\FilePrcessing\DirectoryLoadingAsync.cs" />
     <Compile Include="Logic\Files\Lib3MF.cs" />
     <Compile Include="Logic\Files\ModelFileData.cs" />
@@ -202,12 +206,14 @@
     <Compile Include="Presentation\UI\Clases\Model3DViewInfo.cs" />
     <Compile Include="Presentation\UI\Clases\ModelCacheInfo.cs" />
     <Compile Include="Presentation\UI\Clases\ModelColumnsStates.cs" />
+    <Compile Include="Presentation\UI\Clases\ModelConfigSettings.cs" />
     <Compile Include="Presentation\UI\Clases\ModelItemListData.cs" />
     <Compile Include="Presentation\UI\Clases\ModelListItem.cs" />
     <Compile Include="Presentation\UI\Clases\ModelProgressBarData.cs" />
     <Compile Include="Presentation\UI\Clases\ModelTreeItem.cs" />
     <Compile Include="Presentation\UI\Clases\ProgresBarAnimateBehavior.cs" />
     <Compile Include="Presentation\UI\Clases\Utility\GridLengthAnimation.cs" />
+    <Compile Include="Presentation\UI\Clases\Utility\UtilWPF.cs" />
     <Compile Include="Presentation\UI\Clases\View3D.cs" />
     <Compile Include="Presentation\UI\ConfigurationWindow.xaml.cs">
       <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
@@ -302,6 +308,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseSettings.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseSettingsPerspective2.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseSettingsPerspective.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseIconFadedMix_SettingsPerspective.ico" />
+    <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseIconFadedMix_Settings.ico" />
+    <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseIconFadedMix.ico" />
     <Resource Include="STLShowcaseIconFadedMix.ico" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseLogoFaded.png" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseLogo.png" />

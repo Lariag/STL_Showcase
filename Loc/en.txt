@@ -47,3 +47,24 @@ ClearCacheSize Clear Cache ({0})
 ReloadAll Reload All
 DirectoryAlreadyLoaded The selected directory is already loaded.
 OnlyFolders Only Folders
+GeneralSettingsName General Settings
+ProgramsSettingsName Programs
+AdvancedSettingsName Advanced Settings
+ProgramsSettingsDescription This configuration allows to define a list of programs to open your 3D models via the context menu.\nConfigure the program path, the display name and the compatible file types in the table below.
+Settings Settings
+Calculating... Calculating...
+SizeNotAvailable Size not available
+Directory Directory
+DisplayName Display Name
+ProgramPath Program Path
+NewProgram New Program
+AddNew Add New
+ProgramsTable Programs Table
+Language Language
+EnableDebugLogs Enable Debug Logging
+ThumbnailStyle Thumbnail Style
+FileName File Name
+DateModified Date Modified
+DateCreated Date Created
+ReloadCacheOfLoadedDirs Reload cache of loaded directories
+Select... Select...
