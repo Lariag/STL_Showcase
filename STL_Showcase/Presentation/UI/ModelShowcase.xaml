@@ -28,7 +28,7 @@
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
+ 
         <DockPanel Grid.Row="0">
             <ui:SimpleStackPanel Spacing="10" DockPanel.Dock="Left" Orientation="Horizontal">
                 <Image Source="Styles/Resources/STLShowcaseLogoFaded.png" Height="40" Margin="15 0 0 5" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"/>
@@ -177,7 +177,7 @@
                         </TreeView.ItemContainerStyle>
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate DataType="{x:Type viewItems:ModelTreeItem}" ItemsSource="{Binding ChildItems}" >
-                                <Grid>
+                                <Grid Tag="{Binding}" MouseRightButtonUp="ImageTreeControl_Item_MouseRightButtonUp">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition>
                                             <ColumnDefinition.Style>
@@ -361,7 +361,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Cursor="Hand" x:Name="ImageListItemClick" CommandParameter="{Binding}"  Click="ImageListItemClick_Click" BorderBrush="Transparent" BorderThickness="0" 
+                                    <Button Cursor="Hand" x:Name="ImageListItemClick" CommandParameter="{Binding}"  Click="ImageListItemClick_Click" MouseRightButtonUp="ImageListItemClick_MouseRightButtonUp" BorderBrush="Transparent" BorderThickness="0" 
                                             Background="Transparent" Margin="0">
                                         <Button.Resources>
                                             <Style TargetType="{x:Type Button}">

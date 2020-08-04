@@ -1,6 +1,5 @@
 slic3r
 prusa-slicer
 simplify3d
-blender
 meshlab
 cura
