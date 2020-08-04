@@ -68,11 +68,11 @@ DateModified Fecha Modificado
 DateCreated Fecha Creado
 ReloadCacheOfLoadedDirs Regenerar caché de los directorios cargados
 Select... Seleccionar...
- 
- 
- 
- 
- 
+AutoDetect3DSoftware Auto-Detectar Software 3D
+AutoDetect3DSoftware_FoundList Añadidos {0} nuevos programas:\n{1}
+AutoDetect3DSoftware_NothingFound No se detectaron nuevos programas.
+LookingFor3dSoftwareShortcuts Buscando accesos directos a programas 3D...
+AutoDetect3DSoftwareButton Auto añadir programas desde la carpeta de accesos directos
  
  
  

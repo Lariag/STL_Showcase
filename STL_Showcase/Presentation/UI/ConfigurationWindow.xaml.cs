@@ -1,8 +1,10 @@
-﻿using Ookii.Dialogs.Wpf;
+﻿using IWshRuntimeLibrary;
+using Ookii.Dialogs.Wpf;
 using STL_Showcase.Logic.Localization;
 using STL_Showcase.Presentation.UI.Clases;
 using STL_Showcase.Presentation.UI.Clases.Utility;
 using STL_Showcase.Shared.Enums;
+using STL_Showcase.Shared.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,6 +22,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Threading;
+using System.Windows.Threading;
+using System.Reflection;
 
 namespace STL_Showcase.Presentation.UI
 {
@@ -56,7 +61,6 @@ namespace STL_Showcase.Presentation.UI
             Loc.Ins.OnLanguageChanged += SetUILanguage;
             SetUILanguage();
             InitializeSettingsFields();
-
         }
 
         private void SetUILanguage(string newLanguage = "")
@@ -81,6 +85,7 @@ namespace STL_Showcase.Presentation.UI
                 AdvancedSettings.Header = Loc.GetText("AdvancedSettingsName");
             }
 
+            btnAutoretectPrograms.Content = Loc.GetText("AutoDetect3DSoftwareButton");
             btnAccept.Content = Loc.GetText("Accept");
             btnCancel.Content = Loc.GetText("Cancel");
         }
@@ -141,10 +146,6 @@ namespace STL_Showcase.Presentation.UI
 
         }
 
-        private void btnDeleteProgramFile_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
         private void RenderTypeScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             RenderTypeScrollViewer.ScrollToHorizontalOffset(RenderTypeScrollViewer.HorizontalOffset + e.Delta);
@@ -181,6 +182,11 @@ namespace STL_Showcase.Presentation.UI
             ChooseAppWithDialog();
         }
 
+        private void btnAutoretectPrograms_Click(object sender, RoutedEventArgs e)
+        {
+            AutoretectProgramsAsync();
+        }
+
         private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left && e.GetPosition(this).Y < 30 && e.ClickCount == 1)
@@ -214,6 +220,73 @@ namespace STL_Showcase.Presentation.UI
             }
         }
 
+        private async Task<IEnumerable<string>> AutoFillProgramsTableAsync()
+        {
+            string appPath = System.IO.Path.GetDirectoryName(Assembly.GetAssembly(typeof(ConfigurationWindow)).Location);
+            string programsListFile = System.IO.Path.Combine(appPath, "Autodetect3DSoftwareList.txt");
+
+            if (!System.IO.File.Exists(programsListFile))
+            {
+                return new string[0];
+            }
+
+            string[] recognicedProgramsNames = System.IO.File.ReadAllLines(programsListFile);
+
+            string programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
+            WshShell shell = new WshShell();
+            List<string> addedPrograms = new List<string>();
+
+            foreach (string shortcutFound in UtilMethods.EnumerateFiles(programsFolder, "*.lnk", SearchOption.AllDirectories))
+            {
+                IWshShortcut link = (IWshShortcut)shell.CreateShortcut(shortcutFound);
+
+                string exeFileName = System.IO.Path.GetFileNameWithoutExtension(link.TargetPath);
+                if (recognicedProgramsNames.Any(p => string.Equals(p, exeFileName, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    if (_modelConfigSettings.LinkedProgramsData.Any(p => p.ProgramFullPath == link.TargetPath))
+                        continue;
+
+                    var newRow = new Data.DataObjects.LinkedProgramData()
+                    {
+                        ProgramName = System.IO.Path.GetFileNameWithoutExtension(shortcutFound),
+                        ProgramFullPath = link.TargetPath,
+                        SupportSTL = true,
+                    };
+
+                    await this.Dispatcher.BeginInvoke(() =>
+                   {
+                       _modelConfigSettings.LinkedProgramsData.Add(newRow);
+                   });
+
+                    addedPrograms.Add(newRow.ProgramName);
+                }
+            }
+
+            return addedPrograms;
+        }
+
         #endregion
+
+        private async void AutoretectProgramsAsync()
+        {
+            LoadingDialog loading = new LoadingDialog(Loc.GetText("LookingFor3dSoftwareShortcuts"), string.Empty, Loc.GetText("AutoDetect3DSoftware"));
+
+            loading.ShowAsync();
+
+            Task<IEnumerable<string>> autoAddTask = Task.Run(AutoFillProgramsTableAsync);
+            await autoAddTask;
+
+            loading.CloseDialog();
+
+            if (autoAddTask.Result.Any())
+            {
+                await new MessageDialog(string.Format(Loc.GetText("AutoDetect3DSoftware_FoundList"), autoAddTask.Result.Count(), string.Join("\n", autoAddTask.Result)),
+                    Loc.GetText("AutoDetect3DSoftware"), Loc.GetText("OK"), "", "").ShowAsync();
+            }
+            else
+            {
+                await new MessageDialog(Loc.GetText("AutoDetect3DSoftware_NothingFound"), Loc.GetText("AutoDetect3DSoftware"), Loc.GetText("OK"), "", "").ShowAsync();
+            }
+        }
     }
 }
