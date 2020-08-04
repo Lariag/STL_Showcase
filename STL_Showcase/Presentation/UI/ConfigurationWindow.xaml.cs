@@ -232,11 +232,17 @@ namespace STL_Showcase.Presentation.UI
 
             string[] recognicedProgramsNames = System.IO.File.ReadAllLines(programsListFile);
 
-            string programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
+            string programsFolder1 = Environment.GetFolderPath(Environment.SpecialFolder.StartMenu);
+            string programsFolder2 = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string programsFolder3 = Environment.GetFolderPath(Environment.SpecialFolder.Favorites);
+            string programsFolder4 = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar");
+
             WshShell shell = new WshShell();
             List<string> addedPrograms = new List<string>();
 
-            foreach (string shortcutFound in UtilMethods.EnumerateFiles(programsFolder, "*.lnk", SearchOption.AllDirectories))
+            var allShortcutsFound = new string[] { programsFolder1, programsFolder2, programsFolder3, programsFolder4 }.SelectMany(dir => UtilMethods.EnumerateFiles(dir, "*.lnk", SearchOption.AllDirectories));
+
+            foreach (string shortcutFound in allShortcutsFound)
             {
                 IWshShortcut link = (IWshShortcut)shell.CreateShortcut(shortcutFound);
 

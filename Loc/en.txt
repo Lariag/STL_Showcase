@@ -72,4 +72,9 @@ AutoDetect3DSoftware Auto-Detect 3D Software
 AutoDetect3DSoftware_FoundList Added new {0} programs:\n{1}
 AutoDetect3DSoftware_NothingFound No new programs found.
 LookingFor3dSoftwareShortcuts Looking for 3D software shortcuts...
-AutoDetect3DSoftwareButton Auto add 3D software from your user's shortcuts folder
+AutoDetect3DSoftwareButton Auto add 3D software from shortcuts on your PC
+OpenFileInExplorer Open in file explorer
+OpenFile Open file
+OpenFileWith Open file with {0}
+ViewFileInExplorer  View in file explorer
+UnloadDirectory Unload directory

@@ -120,7 +120,7 @@ namespace STL_Showcase.Presentation.UI
             view3d.LoadModelInfoAvailableEvent += LoadModelInfoAvailable;
 
             this._w = w;
-            _w.ClosingEvent += UnloadDirectory;
+            _w.ClosingEvent += UnloadDirectories;
             InitializeResources();
             SetUILanguage();
             Loc.Ins.OnLanguageChanged += SetUILanguage;
@@ -302,6 +302,20 @@ namespace STL_Showcase.Presentation.UI
 
         #region Model Tree Events
 
+        private void ImageTreeControl_Item_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ModelTreeItem clickedItem = (ModelTreeItem)((Grid)sender).Tag;
+
+            ContextMenu cm;
+            if (clickedItem.HasData)
+                cm = GetContextMenuForListItem(((ModelListItem)clickedItem.Data).FileData.FileFullPath, ((ModelListItem)clickedItem.Data).FileData.FileType);
+            else
+                cm = GetContextMenuForListItem(string.Join(System.IO.Path.DirectorySeparatorChar.ToString(), clickedItem.GetTextsToRoot()), null);
+
+            cm.PlacementTarget = sender as Button;
+            cm.IsOpen = true;
+        }
+
         private void ImageTreeControl_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             ModelTreeItem newItem = e.NewValue as ModelTreeItem;
@@ -351,7 +365,7 @@ namespace STL_Showcase.Presentation.UI
 
         private void DirectoryUnloadAll_Click(object sender, RoutedEventArgs e)
         {
-            UnloadDirectory();
+            UnloadDirectories();
         }
 
         private void DirectoryReloadAll_Click(object sender, RoutedEventArgs e)
@@ -368,6 +382,7 @@ namespace STL_Showcase.Presentation.UI
             this._ModelItemListData.ApplyFilterToTree();
             ImageListControl.ItemsSource = this._ModelItemListData.ModelListFiltered;
         }
+
         #endregion
 
         #region Model List Events and Methods
@@ -389,6 +404,16 @@ namespace STL_Showcase.Presentation.UI
 
             _ModelItemListData.SelectedListItem = (ModelListItem)((Button)e.Source).CommandParameter;
             LoadModelInViewport(_ModelItemListData.SelectedListItem.FileData);
+        }
+
+
+        private void ImageListItemClick_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ModelListItem clickedItem = (ModelListItem)((Button)sender).CommandParameter;
+
+            ContextMenu cm = GetContextMenuForListItem(clickedItem.FileData.FileFullPath, clickedItem.FileData.FileType);
+            cm.PlacementTarget = sender as Button;
+            cm.IsOpen = true;
         }
 
         private void ButtonZoomLevel_Click(object sender, RoutedEventArgs e)
@@ -523,7 +548,18 @@ namespace STL_Showcase.Presentation.UI
 
             }
         }
-        private void UnloadDirectory()
+
+        private void UnloadDirectory(string path)
+        {
+            if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
+                CurrentDirectoryLoader.CancelOperation();
+
+            _ModelItemListData.RemoveDirectoryLoaded(path);
+
+            ReloadDirectories();
+        }
+
+        private void UnloadDirectories()
         {
             if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
                 CurrentDirectoryLoader.CancelOperation();
@@ -638,7 +674,7 @@ namespace STL_Showcase.Presentation.UI
 
             IEnumerable<string> loadedDirectories = _ModelItemListData.GetDirectoriesLoaded().Concat(directories);
 
-            Task.Factory.StartNew(() =>
+            Task.Factory.StartNew(async () =>
             {
                 CancellationToken t = source.Token;
                 try
@@ -648,10 +684,9 @@ namespace STL_Showcase.Presentation.UI
                         if (t.IsCancellationRequested)
                             return;
 
-                        Dispatcher.Invoke(() =>
+                        this.Dispatcher.Invoke(() =>
                         {
-                            userSettings.SetSettingString(UserSettingEnum.LastLoadedDirectories, string.Join(";", loadedDirectories));
-                            UnloadDirectory(); return true;
+                            UnloadDirectories(); return true;
                         });
 
                         Tuple<ModelFileData, LoadResultEnum>[] modelFiles = CurrentDirectoryLoader.FilesFound.Select(m => new Tuple<ModelFileData, LoadResultEnum>(m, LoadResultEnum.Okay)).OrderBy(f => f.Item2).ToArray();
@@ -667,7 +702,6 @@ namespace STL_Showcase.Presentation.UI
                             }
                             this.Dispatcher.Invoke(() =>
                             {
-                                _ModelItemListData.AddDirectoriesLoaded(loadedDirectories);
                                 _ModelItemListData.ModelList = new ObservableCollection<ModelListItem>(newModelList);
                                 return true;
                             });
@@ -698,6 +732,19 @@ namespace STL_Showcase.Presentation.UI
                             }
                             this.Dispatcher.Invoke(() => { _ModelItemListData.ModelTreeRoot = trimmedTreeRoots; return true; });
                         }
+
+                        // Save directories loaded
+                        await this.Dispatcher.Invoke(async () =>
+                        {
+                            string[] rootLoadedDirectories = _ModelItemListData.ModelTreeRoot.Select(tr =>
+                            {
+                                string[] rootPathAsArray = tr.GetTextsToRoot().ToArray();
+                                return System.IO.Path.Combine(string.Join(System.IO.Path.DirectorySeparatorChar.ToString(), rootPathAsArray));
+                            }).ToArray();
+
+                            _ModelItemListData.AddDirectoriesLoaded(rootLoadedDirectories); // loadedDirectories
+                            userSettings.SetSettingString(UserSettingEnum.LastLoadedDirectories, string.Join(";", rootLoadedDirectories)); // loadedDirectories
+                        });
 
                         this.Dispatcher.Invoke(() =>
                         {
@@ -736,7 +783,7 @@ namespace STL_Showcase.Presentation.UI
                 }
                 catch (OperationCanceledException)
                 {
-                    this.Dispatcher.Invoke(() => { UnloadDirectory(); return true; });
+                    this.Dispatcher.Invoke(() => { UnloadDirectories(); return true; });
                     this.Dispatcher.Invoke(() => loading.CloseDialog());
                 }
                 finally
@@ -855,6 +902,66 @@ namespace STL_Showcase.Presentation.UI
             Process.Start(pi);
 
             // TODO: Show that the file is opening.
+        }
+
+        public ContextMenu GetContextMenuForListItem(string fullPathToItem, Supported3DFiles? fileType)
+        {
+            ContextMenu menu = new ContextMenu();
+
+            // Open file/directory
+            if (fileType.HasValue)
+            {
+                MenuItem menuItemOpenDefault = new MenuItem() { Header = Loc.GetText("OpenFile") };
+                menuItemOpenDefault.Click += (sender, e) => Process.Start(fullPathToItem);
+                menu.Items.Add(menuItemOpenDefault);
+            }
+
+
+            // View file in directory
+            MenuItem menuItemOpenInDir = new MenuItem() { Header = Loc.GetText("ViewFileInExplorer") };
+            menuItemOpenInDir.Click += (sender, e) =>
+            {
+                if (fileType.HasValue)
+                    Process.Start("explorer.exe", $"/select, \"{fullPathToItem}\"");
+                else
+                    Process.Start(fullPathToItem);
+            };
+            menu.Items.Add(menuItemOpenInDir);
+
+            // Unload directory
+            if (!fileType.HasValue && _ModelItemListData.GetDirectoriesLoaded().Contains(fullPathToItem))
+            {
+                MenuItem menuItemUnloadDir = new MenuItem() { Header = Loc.GetText("UnloadDirectory") };
+                menuItemUnloadDir.Click += (sender, e) => UnloadDirectory(fullPathToItem);
+                menu.Items.Add(menuItemUnloadDir);
+            }
+
+            // Open file with software
+            if (fileType.HasValue)
+            {
+                menu.Items.Add(new Separator());
+
+                foreach (var data in _LinkedProgramsData.Where(lpd =>
+                 (lpd.SupportSTL && fileType == Supported3DFiles.STL_ASCII || fileType == Supported3DFiles.STL_Binary) ||
+                 (lpd.SupportOBJ && fileType == Supported3DFiles.OBJ) ||
+                 (lpd.Support3MF && fileType == Supported3DFiles._3MF) ||
+                 (lpd.SupportDirectory && !fileType.HasValue)))
+                {
+                    MenuItem menuItemForFile = new MenuItem() { Header = string.Format(Loc.GetText("OpenFileWith"), data.ProgramName) };
+                    menuItemForFile.Click += (sender, e) => OpenFileWithProgram(fullPathToItem, data.ProgramFullPath);
+                    menu.Items.Add(menuItemForFile);
+                }
+            }
+
+            menu.Items.Add(new Separator());
+
+            // Cancel
+            MenuItem menuItemCancel = new MenuItem() { Header = Loc.GetText("Cancel") };
+            menuItemCancel.Click += (sender, e) => menu.IsOpen = false;
+            menu.Items.Add(menuItemCancel);
+
+
+            return menu;
         }
     }
 

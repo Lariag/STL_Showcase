@@ -100,6 +100,7 @@ namespace STL_Showcase.Logic.Files
         {
             try
             {
+                this.FileType = FileParser.CheckFileType(this);
                 this.DateModified = File.GetLastWriteTime(this.FileFullPath);
                 this.DateCreated = File.GetCreationTime(this.FileFullPath);
                 long fileLenght = 0;
