@@ -68,3 +68,8 @@ DateModified Date Modified
 DateCreated Date Created
 ReloadCacheOfLoadedDirs Reload cache of loaded directories
 Select... Select...
+AutoDetect3DSoftware Auto-Detect 3D Software
+AutoDetect3DSoftware_FoundList Added new {0} programs:\n{1}
+AutoDetect3DSoftware_NothingFound No new programs found.
+LookingFor3dSoftwareShortcuts Looking for 3D software shortcuts...
+AutoDetect3DSoftwareButton Auto add 3D software from your user's shortcuts folder
