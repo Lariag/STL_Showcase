@@ -846,6 +846,7 @@ namespace STL_Showcase.Presentation.UI
         private void LoadModelInViewport(ModelFileData modelData)
         {
             this.view3d.SetModel(modelData);
+            this.view3d.Viewport.UpdateLayout();
         }
 
         private void LoadModelInfoAvailable(string name, int tris, int verts, int sizeKB)

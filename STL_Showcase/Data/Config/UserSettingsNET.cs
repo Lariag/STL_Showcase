@@ -46,6 +46,10 @@ namespace STL_Showcase.Data.Config
                     return Properties.Settings.Default.MainColumnsPoweredIndex;
                 case UserSettingEnum.Thumbnails3DAspect:
                     return Properties.Settings.Default.Thumbnails3DAspect;
+                case UserSettingEnum.MinTrianglesForMeshDecimation:
+                    return Properties.Settings.Default.MinTrianglesForMeshDecimation;
+                case UserSettingEnum.MaxSizeMBToLoadMeshInView:
+                    return Properties.Settings.Default.MaxSizeMBToLoadMeshInView;
                 default:
                     return 0;
             }
@@ -67,6 +71,10 @@ namespace STL_Showcase.Data.Config
                     return Properties.Settings.Default.EnableTreeCollections;
                 case UserSettingEnum.EnableTreeOnlyFolders:
                     return Properties.Settings.Default.EnableTreeOnlyFolders;
+                case UserSettingEnum.EnableMeshDecimation:
+                    return Properties.Settings.Default.EnableMeshDecimation;
+                case UserSettingEnum.EnableMaxSizeMBToLoadMeshInView:
+                    return Properties.Settings.Default.EnableMaxSizeMBToLoadMeshInView;
                 default:
                     return false;
             }
@@ -118,6 +126,10 @@ namespace STL_Showcase.Data.Config
                     Properties.Settings.Default.MainColumnsPoweredIndex = val; break;
                 case UserSettingEnum.Thumbnails3DAspect:
                     Properties.Settings.Default.Thumbnails3DAspect = val; break;
+                case UserSettingEnum.MinTrianglesForMeshDecimation:
+                    Properties.Settings.Default.MinTrianglesForMeshDecimation = val; break;
+                case UserSettingEnum.MaxSizeMBToLoadMeshInView:
+                    Properties.Settings.Default.MaxSizeMBToLoadMeshInView = val; break;
             }
             Properties.Settings.Default.Save();
         }
@@ -138,6 +150,10 @@ namespace STL_Showcase.Data.Config
                     Properties.Settings.Default.EnableTreeCollections = val; break;
                 case UserSettingEnum.EnableTreeOnlyFolders:
                     Properties.Settings.Default.EnableTreeOnlyFolders = val; break;
+                case UserSettingEnum.EnableMeshDecimation:
+                    Properties.Settings.Default.EnableMeshDecimation = val; break;
+                case UserSettingEnum.EnableMaxSizeMBToLoadMeshInView:
+                    Properties.Settings.Default.EnableMaxSizeMBToLoadMeshInView = val; break;
             }
             Properties.Settings.Default.Save();
         }

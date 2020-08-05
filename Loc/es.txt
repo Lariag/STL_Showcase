@@ -89,13 +89,13 @@ tooltipExpandAll Expande los directorios raíz.\nSi ya están expandidos, expande 
 tooltipContractAll Contrae todos los directorios excepto los raíz.\nSi ya estaban contraídos, entonces contráe tambíen los de la raíz.
 tooltipOnlyFolders Al activarlo, mustra todas las carpetas del arbol, ocultando los ficheros.
 tooltipCollectionMode Detacta prefijos en los nombres de los archivos y los agrupa en directorios virtuales.
- 
- 
- 
- 
- 
- 
- 
+PerformanceSettings Ajustes de Rendimiento
+EnableMeshDecimate Habilita la reducción de triángulos en modelos
+MeshDecimateMinTris Reducir triángulos cuando haya más de...
+EnableMaxSizeModel Habilita tamaño máximo para visualizar modelos
+MaxSizeModelToView No visualizar cuando ocupe más de...
+tooltipEnableMeshDecimate El modelo se renderizará más rápido, pero tardará más en cargar.\nTan solo se reducirán los triángulos si tiene más que la cantidad especificada.
+tooltipEnableMaxSizeModel  Si se habilita, no se visualizarán modelos que ocupen más que la cantidad especificada (en MB).
  
  
  
