@@ -202,5 +202,53 @@ namespace STL_Showcase.Properties {
                 this["EnableTreeOnlyFolders"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableMeshDecimation {
+            get {
+                return ((bool)(this["EnableMeshDecimation"]));
+            }
+            set {
+                this["EnableMeshDecimation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50000")]
+        public int MinTrianglesForMeshDecimation {
+            get {
+                return ((int)(this["MinTrianglesForMeshDecimation"]));
+            }
+            set {
+                this["MinTrianglesForMeshDecimation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int MaxSizeMBToLoadMeshInView {
+            get {
+                return ((int)(this["MaxSizeMBToLoadMeshInView"]));
+            }
+            set {
+                this["MaxSizeMBToLoadMeshInView"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableMaxSizeMBToLoadMeshInView {
+            get {
+                return ((bool)(this["EnableMaxSizeMBToLoadMeshInView"]));
+            }
+            set {
+                this["EnableMaxSizeMBToLoadMeshInView"] = value;
+            }
+        }
     }
 }

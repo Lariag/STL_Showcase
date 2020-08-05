@@ -83,6 +83,17 @@ namespace STL_Showcase.Presentation.UI
 
             {
                 AdvancedSettings.Header = Loc.GetText("AdvancedSettingsName");
+
+                tbPerformance.Text = Loc.GetText("PerformanceSettings");
+
+                tbEnableMeshDecimate.Text = Loc.GetText("EnableMeshDecimate");
+                tbMeshDecimateMinTris.Text = Loc.GetText("MeshDecimateMinTris");
+                tbEnableMeshDecimate.ToolTip = tbMeshDecimateMinTris.ToolTip = Loc.GetText("tooltipEnableMeshDecimate");
+
+                tbEnableMaxSizeModel.Text = Loc.GetText("EnableMaxSizeModel");
+                tbMaxSizeModelToView.Text = Loc.GetText("MaxSizeModelToView");
+                tbEnableMaxSizeModel.ToolTip = tbMaxSizeModelToView.ToolTip = Loc.GetText("tooltipEnableMaxSizeModel");
+
             }
 
             btnAutoretectPrograms.Content = Loc.GetText("AutoDetect3DSoftwareButton");
@@ -127,7 +138,10 @@ namespace STL_Showcase.Presentation.UI
 
             #region Advanced Settings
             {
-
+                chkEnableMeshDecimate.DataContext = _modelConfigSettings;
+                nmbMeshDecimateMinTris.DataContext = _modelConfigSettings;
+                chkEnableMaxSizeModel.DataContext = _modelConfigSettings;
+                nmbMaxSizeModelToView.DataContext = _modelConfigSettings;
             }
             #endregion Advanced Settings
         }

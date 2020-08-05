@@ -23,6 +23,10 @@ namespace STL_Showcase.Shared.Enums
         , Thumbnails3DAspect
         , EnableTreeCollections
         , EnableTreeOnlyFolders
+        , EnableMeshDecimation
+        , MinTrianglesForMeshDecimation
+        , MaxSizeMBToLoadMeshInView
+        , EnableMaxSizeMBToLoadMeshInView
     }
 
 }

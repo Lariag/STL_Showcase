@@ -89,3 +89,10 @@ tooltipExpandAll Expands the root directories.\nIf already expanded, expands eve
 tooltipContractAll Contracts all directories except the root ones.\nIf already contracted, then contracts the root directories.
 tooltipOnlyFolders When enabled, shows all the folders as a tree, hiding the files.
 tooltipCollectionMode Detects prefixes in the file names and groups them in virtual directories.
+PerformanceSettings Performance Settings
+EnableMeshDecimate Enable mesh triangle reduction
+MeshDecimateMinTris Reduce triangles when more than...
+EnableMaxSizeModel Enable size limit to view model
+MaxSizeModelToView Don't visualize when MB is more than...
+tooltipEnableMeshDecimate The 3D model will render faster, but will take more time to load.\nWill only reduce triangles if it has more than the specified amount.
+tooltipEnableMaxSizeModel  If enabled, won't load models that are bigger (in MB) than the specified amount.

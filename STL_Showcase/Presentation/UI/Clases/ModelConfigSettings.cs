@@ -20,6 +20,11 @@ namespace STL_Showcase.Presentation.UI.Clases
         public RenderAspectEnum SelectedThumbnailRenderAspec { get; set; }
         public bool UseGridIn3DView { get; set; }
 
+        public bool EnableMeshDecimation { get; set; }
+        public int MinTrianglesForMeshDecimation { get; set; }
+        public bool EnableMaxSizeMBToLoadMeshInView { get; set; }
+        public int MaxSizeMBToLoadMeshInView { get; set; }
+
         #endregion General settings
 
         #region Program settings
@@ -44,9 +49,18 @@ namespace STL_Showcase.Presentation.UI.Clases
             EnableDebugLogs = userSettings.GetSettingBool(UserSettingEnum.EnableDebugLogs);
             SelectedThumbnailRenderAspec = (RenderAspectEnum)userSettings.GetSettingInt(UserSettingEnum.Thumbnails3DAspect);
 
+            EnableMeshDecimation = userSettings.GetSettingBool(UserSettingEnum.EnableMeshDecimation);
+            MinTrianglesForMeshDecimation = userSettings.GetSettingInt(UserSettingEnum.MinTrianglesForMeshDecimation);
+            EnableMaxSizeMBToLoadMeshInView = userSettings.GetSettingBool(UserSettingEnum.EnableMaxSizeMBToLoadMeshInView);
+            MaxSizeMBToLoadMeshInView = userSettings.GetSettingInt(UserSettingEnum.MaxSizeMBToLoadMeshInView);
+
             NotifyPropertyChanged(nameof(LinkedProgramsData));
             NotifyPropertyChanged(nameof(EnableDebugLogs));
             NotifyPropertyChanged(nameof(SelectedThumbnailRenderAspec));
+            NotifyPropertyChanged(nameof(EnableMeshDecimation));
+            NotifyPropertyChanged(nameof(MinTrianglesForMeshDecimation));
+            NotifyPropertyChanged(nameof(EnableMaxSizeMBToLoadMeshInView));
+            NotifyPropertyChanged(nameof(MaxSizeMBToLoadMeshInView));
         }
 
         public void SaveSettings()
@@ -56,6 +70,11 @@ namespace STL_Showcase.Presentation.UI.Clases
             userSettings.SetSettingSerialized<List<LinkedProgramData>>(UserSettingEnum.ConfigLinkedProgramsList, LinkedProgramsData.ToList());
             userSettings.SetSettingBool(UserSettingEnum.EnableDebugLogs, EnableDebugLogs);
             userSettings.SetSettingInt(UserSettingEnum.Thumbnails3DAspect, (int)SelectedThumbnailRenderAspec);
+
+            userSettings.SetSettingBool(UserSettingEnum.EnableMeshDecimation, EnableMeshDecimation);
+            userSettings.SetSettingInt(UserSettingEnum.MinTrianglesForMeshDecimation, MinTrianglesForMeshDecimation);
+            userSettings.SetSettingBool(UserSettingEnum.EnableMaxSizeMBToLoadMeshInView, EnableMaxSizeMBToLoadMeshInView);
+            userSettings.SetSettingInt(UserSettingEnum.MaxSizeMBToLoadMeshInView, MaxSizeMBToLoadMeshInView);
         }
 
         public void NotifyPropertyChanged(string propertyName)

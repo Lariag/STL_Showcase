@@ -1,7 +1,11 @@
 ﻿using HelixToolkit.Wpf;
+using MeshDecimator;
+using MeshDecimator.Algorithms;
+using STL_Showcase.Data.Config;
 using STL_Showcase.Logic.Files;
 using STL_Showcase.Shared.Enums;
 using STL_Showcase.Shared.Extensions;
+using STL_Showcase.Shared.Main;
 using STL_Showcase.Shared.Util;
 using System;
 using System.Collections.Generic;
@@ -25,6 +29,7 @@ namespace STL_Showcase.Presentation.UI.Clases
         public double ZoomSensivity = 0.1d;
         double minZoom = 30d;
         double maxZoom = 200d;
+        static IUserSettings userSettings = DefaultFactory.GetDefaultUserSettings();
 
         public HelixViewport3D Viewport { get; private set; }
         ModelFileData ModelData;
@@ -183,10 +188,12 @@ namespace STL_Showcase.Presentation.UI.Clases
         }
         public void SetModel(ModelFileData modelData)
         {
-
             if (CurrentModelVisual != null)
+            {
                 this.Viewport.Children.Remove(CurrentModelVisual);
-            CurrentModelVisual = null;
+                CurrentModelVisual = null;
+                GC.Collect(0, GCCollectionMode.Forced);
+            }
 
             Model3DGroup modelGroup = new Model3DGroup();
             ModelVisual3D modelVisual = new ModelVisual3D();
@@ -199,8 +206,16 @@ namespace STL_Showcase.Presentation.UI.Clases
                     this.ModelData = newModelData;
 
                     newModelData.LoadBasicFileData();
+
+                    if (userSettings.GetSettingBool(UserSettingEnum.EnableMaxSizeMBToLoadMeshInView) && modelData.FileSizeMB > userSettings.GetSettingInt(UserSettingEnum.MaxSizeMBToLoadMeshInView))
+                    {
+                        // TODO: Load generic model with text explaining this condition.
+                        CurrentModelVisual = null;
+                        return;
+                    }
+
                     if (!newModelData.HasBytes())
-                        newModelData.LoadFileBytes(newModelData.FileSizeMB < 100f);
+                        newModelData.LoadFileBytes(newModelData.FileSizeMB < 50f);
                     if (newModelData.Mesh == null)
                         newModelData.ParseFile();
                     newModelData.ReleaseData(true, false);
@@ -218,14 +233,6 @@ namespace STL_Showcase.Presentation.UI.Clases
                     float modelScaleMultiply = (newModelData.Mesh.Scale < 0.001f ? 0.1f : (newModelData.Mesh.Scale > 0.1 ? 10f : 1));
 
 
-                    //{ // This loading is slower and eats lots of memory.
-                    //    StLReader r = new HelixToolkit.Wpf.StLReader();
-                    //    ModelImporter importet = new ModelImporter();
-
-                    //    modelGroup = importet.Load(modelData.FileFullPath);
-                    //}
-
-
                     var transformTranslate = new TranslateTransform3D(-newModelData.Mesh.OffsetX, -newModelData.Mesh.OffsetY, -newModelData.Mesh.OffsetZ);
                     AxisAngleRotation3D axisRotation = new AxisAngleRotation3D(new Vector3D(0, 0, 1), 0);
                     transformObjectRotation = new RotateTransform3D(axisRotation, new Point3D(newModelData.Mesh.OffsetX, newModelData.Mesh.OffsetY, 0));
@@ -236,7 +243,23 @@ namespace STL_Showcase.Presentation.UI.Clases
                     transforms.Children.Add(transformTranslate);
                     transforms.Children.Add(transformScale);
 
-                    Mesh3D mesh = new Mesh3D(Point3DFromLinearCoordinates(newModelData.Mesh.Vertices), newModelData.Mesh.Triangles);
+                    Mesh3D mesh;
+
+                    // Mesh decimation if enabled
+                    if (userSettings.GetSettingBool(UserSettingEnum.EnableDebugLogs) && newModelData.Mesh.TriangleCount > userSettings.GetSettingInt(UserSettingEnum.MinTrianglesForMeshDecimation))
+                    {
+                        MeshDecimator.Math.Vector3d[] vectors3D = newModelData.Mesh.Vertices.Select(v => new MeshDecimator.Math.Vector3d(v.x, v.y, v.z)).ToArray();
+                        Mesh decimatorMesh = new Mesh(vectors3D, newModelData.Mesh.Triangles.ToArray());
+
+                        Mesh decimatedMesh = MeshDecimation.DecimateMeshLossless(decimatorMesh);
+                        mesh = new Mesh3D(decimatedMesh.Vertices.Select(v => new Point3D(v.x, v.y, v.z)), decimatedMesh.Indices);
+
+                        // TODO: Possible cache the decimated models to avoid re-processing.
+                    }
+                    else
+                    {
+                        mesh = new Mesh3D(Point3DFromLinearCoordinates(newModelData.Mesh.Vertices), newModelData.Mesh.Triangles);
+                    }
                     GeometryModel3D geometryModel = new GeometryModel3D(mesh.ToMeshGeometry3D(), GetMaterial());
                     geometryModel.Freeze();
 
