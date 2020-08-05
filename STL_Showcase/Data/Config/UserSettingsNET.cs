@@ -63,6 +63,10 @@ namespace STL_Showcase.Data.Config
                     return Properties.Settings.Default.MainColumnsVisibility3DView;
                 case UserSettingEnum.EnableDebugLogs:
                     return Properties.Settings.Default.EnableDebugLogs;
+                case UserSettingEnum.EnableTreeCollections:
+                    return Properties.Settings.Default.EnableTreeCollections;
+                case UserSettingEnum.EnableTreeOnlyFolders:
+                    return Properties.Settings.Default.EnableTreeOnlyFolders;
                 default:
                     return false;
             }
@@ -113,7 +117,7 @@ namespace STL_Showcase.Data.Config
                 case UserSettingEnum.MainColumnsPoweredIndex:
                     Properties.Settings.Default.MainColumnsPoweredIndex = val; break;
                 case UserSettingEnum.Thumbnails3DAspect:
-                    Properties.Settings.Default.Thumbnails3DAspect = val; break; 
+                    Properties.Settings.Default.Thumbnails3DAspect = val; break;
             }
             Properties.Settings.Default.Save();
         }
@@ -130,6 +134,10 @@ namespace STL_Showcase.Data.Config
                     Properties.Settings.Default.MainColumnsVisibility3DView = val; break;
                 case UserSettingEnum.EnableDebugLogs:
                     Properties.Settings.Default.EnableDebugLogs = val; break;
+                case UserSettingEnum.EnableTreeCollections:
+                    Properties.Settings.Default.EnableTreeCollections = val; break;
+                case UserSettingEnum.EnableTreeOnlyFolders:
+                    Properties.Settings.Default.EnableTreeOnlyFolders = val; break;
             }
             Properties.Settings.Default.Save();
         }

@@ -79,3 +79,13 @@ OpenFileWith Open file with {0}
 ViewFileInExplorer View in file explorer
 UnloadDirectory Unload directory
 NoDirectoriesSelected There are no directories selected
+CollectionMode Collection Mode
+tooltipLoadDirectory Select a directory to showcase its contents.
+tooltipResetVisibility Reset all visibility options of this menu.
+tooltipReloadDisplayed This option will reload the directories and regenerate all the displayed miniatueres.
+tooltipUnloadAll Close all loaded directories.
+tooltipReloadAll Reloads all the displayed directories.
+tooltipExpandAll Expands the root directories.\nIf already expanded, expands every directory.
+tooltipContractAll Contracts all directories except the root ones.\nIf already contracted, then contracts the root directories.
+tooltipOnlyFolders When enabled, shows all the folders as a tree, hiding the files.
+tooltipCollectionMode Detects prefixes in the file names and groups them in virtual directories.

@@ -21,6 +21,8 @@ namespace STL_Showcase.Shared.Enums
         , ConfigLinkedProgramsList
         , EnableDebugLogs
         , Thumbnails3DAspect
+        , EnableTreeCollections
+        , EnableTreeOnlyFolders
     }
 
 }

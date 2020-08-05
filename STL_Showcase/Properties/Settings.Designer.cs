@@ -178,5 +178,29 @@ namespace STL_Showcase.Properties {
                 this["Thumbnails3DAspect"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableTreeCollections {
+            get {
+                return ((bool)(this["EnableTreeCollections"]));
+            }
+            set {
+                this["EnableTreeCollections"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableTreeOnlyFolders {
+            get {
+                return ((bool)(this["EnableTreeOnlyFolders"]));
+            }
+            set {
+                this["EnableTreeOnlyFolders"] = value;
+            }
+        }
     }
 }

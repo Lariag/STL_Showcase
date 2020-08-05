@@ -157,6 +157,7 @@ namespace STL_Showcase.Presentation.UI
             // Main menu
             {
                 MenuColumnsLoadDirectory.Header = Loc.GetText("LoadDirectory");
+                MenuColumnsLoadDirectory.ToolTip = Loc.GetText("tooltipLoadDirectory");
                 MenuColumnsShowDirectoryTree.Header = Loc.GetText("View");
 
                 MenuColumnsMain.Header = Loc.GetText("View");
@@ -168,12 +169,14 @@ namespace STL_Showcase.Presentation.UI
                 MenuColumnsPowerModelList.Header = Loc.GetText("ExpandModelListView");
                 MenuColumnsPower3DView.Header = Loc.GetText("Expand3DView");
                 MenuColumnsResetVisibility.Header = Loc.GetText("ResetVisibility");
+                MenuColumnsResetVisibility.ToolTip = Loc.GetText("tooltipResetVisibility");
 
                 MenuItemConfiguration.Header = Loc.GetText("Configuration");
 
                 MenuCacheMain.Header = Loc.GetText("Cache");
                 MenuCacheAbout.Header = Loc.GetText("CacheWhatIsIt");
                 MenuCacheReloadDisplayed.Header = Loc.GetText("ReloadCacheOfLoadedDirs");
+                MenuCacheReloadDisplayed.ToolTip = Loc.GetText("tooltipReloadDisplayed");
 
                 MenuAbout.Header = Loc.GetText("About");
 
@@ -182,10 +185,19 @@ namespace STL_Showcase.Presentation.UI
             // File tree panel
             {
                 DirectoryUnloadAll.Content = Loc.GetText("UnloadAll");
+                DirectoryUnloadAll.ToolTip = Loc.GetText("tooltipUnloadAll");
                 DirectoryReloadAll.Content = Loc.GetText("ReloadAll");
+                DirectoryReloadAll.ToolTip = Loc.GetText("tooltipReloadAll");
                 TreeExpandAll.Content = Loc.GetText("ExpandAll");
+                TreeExpandAll.ToolTip = Loc.GetText("tooltipExpandAll");
                 TreeContractAll.Content = Loc.GetText("ContractAll");
+                TreeContractAll.ToolTip = Loc.GetText("tooltipContractAll");
 
+
+                btnFilterTypeOnlyFolders.Content = Loc.GetText("OnlyFolders");
+                btnFilterTypeOnlyFolders.ToolTip = Loc.GetText("tooltipOnlyFolders");
+                btnFilterTypeCollectionMode.Content = Loc.GetText("CollectionMode");
+                btnFilterTypeCollectionMode.ToolTip = Loc.GetText("tooltipCollectionMode");
                 tbFilesProcessed.Text = Loc.GetText("FilesProcessed:");
             }
 
@@ -198,7 +210,6 @@ namespace STL_Showcase.Presentation.UI
                 rbFilterModifiedModelList.Content = Loc.GetText("DateModified");
                 rbFilterCreatedModelList.Content = Loc.GetText("DateCreated");
                 rbFilterSizeModelList.Content = Loc.GetText("Size");
-
             }
 
             this.UpdateLayout();
@@ -348,7 +359,10 @@ namespace STL_Showcase.Presentation.UI
             if (_ModelItemListData.ModelTreeRoot != null)
                 foreach (var node in _ModelItemListData.ModelTreeRoot)
                 {
-                    node.SetIsExpandedAll(true);
+                    if (node.IsExpanded)
+                        node.SetIsExpandedAll(true);
+                    else
+                        node.IsExpanded = true;
                     if (node.ParentItem != null) node.ParentItem.IsExpanded = true;
                 }
         }
@@ -358,7 +372,11 @@ namespace STL_Showcase.Presentation.UI
             if (_ModelItemListData.ModelTreeRoot != null)
                 foreach (var node in _ModelItemListData.ModelTreeRoot)
                 {
+                    bool hadAnyExpanded = node.ChildItems?.Any(ci => !ci.HasData && ci.IsExpanded) ?? false;
                     node.SetIsExpandedAll(false);
+                    if (hadAnyExpanded)
+                        node.IsExpanded = true;
+
                     if (node.ParentItem != null) node.ParentItem.IsExpanded = false;
                 }
         }
@@ -380,7 +398,12 @@ namespace STL_Showcase.Presentation.UI
         private void FileTypeFilterToggleButton_Click(object sender, RoutedEventArgs e)
         {
             this._ModelItemListData.ApplyFilterToTree();
+            userSettings.SetSettingBool(UserSettingEnum.EnableTreeOnlyFolders, this._ModelItemListData.FileOnlyFoldersFilter);
             ImageListControl.ItemsSource = this._ModelItemListData.ModelListFiltered;
+        }
+        private void btnFilterTypeCollectionMode_Click(object sender, RoutedEventArgs e)
+        {
+            userSettings.SetSettingBool(UserSettingEnum.EnableTreeCollections, this._ModelItemListData.FileCollectionMode);
         }
 
         #endregion
@@ -652,7 +675,7 @@ namespace STL_Showcase.Presentation.UI
 
             if (!loadedDirectories.Any())
             {
-                new MessageDialog(Loc.GetText("NoDirectoriesSelected"), Loc.GetText("LoadingError"), Loc.GetText("OK"), "", "").ShowAsync();
+                new MessageDialog(Loc.GetText("NoDirectoriesSelected"), Loc.GetText("LoadDirectory"), Loc.GetText("OK"), "", "").ShowAsync();
                 return;
             }
 
@@ -713,7 +736,8 @@ namespace STL_Showcase.Presentation.UI
 
                         // Tree View
                         {
-                            IEnumerable<Tuple<string[], object>> tuples = _ModelItemListData.ModelList.OrderBy(m => m.FileData.FileName).OrderBy(m => m.FileData.FilePath).Select(m => new Tuple<string[], object>((m.FileData.FileFullPath).Split(System.IO.Path.DirectorySeparatorChar), m));
+                            IEnumerable<Tuple<string[], object>> tuples = _ModelItemListData.ModelList.Select(m => new Tuple<string[], object>((m.FileData.FileFullPath).Split(System.IO.Path.DirectorySeparatorChar), m));
+                            //IEnumerable<Tuple<string[], object>> tuples = _ModelItemListData.ModelList.OrderBy(m => m.FileData.FileName).OrderBy(m => m.FileData.FilePath).Select(m => new Tuple<string[], object>((m.FileData.FileFullPath).Split(System.IO.Path.DirectorySeparatorChar), m));
 
                             IEnumerable<string> treeRootsStrings = tuples.Select(tp => tp.Item1[0]).Distinct();
                             ModelTreeItem[] treeRoots = treeRootsStrings.Select((item1) =>
@@ -730,11 +754,23 @@ namespace STL_Showcase.Presentation.UI
                                 treeRoot.BuildTreeRecursive(tuples);
                                 var trimmedTree = treeRoot.Trim();
 
-                                // Commented: For now, the entire tree status is persisted between reloads.
-                                //foreach (var node in trimmedTree)
-                                // node.IsExpanded = true;
-                                trimmedTreeRoots = new ObservableCollection<ModelTreeItem>(trimmedTreeRoots.Concat(trimmedTree));
+                                foreach (var node in trimmedTree)
+                                {
+                                    if (!node.HasExpandedCache)
+                                        node.IsExpanded = true;
+                                }
+                                trimmedTreeRoots = new ObservableCollection<ModelTreeItem>(trimmedTreeRoots.Concat(trimmedTree).OrderBy(tr => tr.Text));
                             }
+
+                            // Order and generate collections.
+                            foreach (var trimmedTreeRoot in trimmedTreeRoots)
+                            {
+                                if (userSettings.GetSettingBool(UserSettingEnum.EnableTreeCollections))
+                                    trimmedTreeRoot.GenerateCollectionsRecursive();
+                                trimmedTreeRoot.OrderChildsByDataAndText(true);
+                            }
+
+
                             this.Dispatcher.Invoke(() => { _ModelItemListData.ModelTreeRoot = trimmedTreeRoots; return true; });
                         }
 
@@ -789,11 +825,15 @@ namespace STL_Showcase.Presentation.UI
                 catch (OperationCanceledException)
                 {
                     this.Dispatcher.Invoke(() => { UnloadDirectories(); return true; });
-                    this.Dispatcher.Invoke(() => loading.CloseDialog());
+                }
+                catch (Exception ex)
+                {
+                    // TODO: Log unexpected error
                 }
                 finally
                 {
                     GC.Collect();
+                    this.Dispatcher.Invoke(() => loading.CloseDialog());
                 }
             }, source.Token);
 
