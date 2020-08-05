@@ -76,9 +76,9 @@ AutoDetect3DSoftwareButton Auto añadir programas desde accesos directos del PC
 OpenFileInExplorer Abrir en explorador de archivos
 OpenFile Abrir archivo
 OpenFileWith Abrir con {0}
-ViewFileInExplorer  Ver en explorador de archivos
+ViewFileInExplorer Ver en explorador de archivos
 UnloadDirectory Quitar directorio
- 
+NoDirectoriesSelected No hay ningún directorio seleccionado
  
  
  

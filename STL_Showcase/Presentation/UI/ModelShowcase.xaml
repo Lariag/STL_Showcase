@@ -99,8 +99,8 @@
 
                         <ui:SimpleStackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Spacing="5">
                             <!--<Button Name="DirectoryAddOneMore" Content="Add Directory" Style="{StaticResource DefaultButtonStyle}" Click="DirectoryAddOneMore_Click" />-->
-                            <Button Name="DirectoryUnloadAll" Content="Unload All" FontSize="10" Style="{StaticResource DefaultButtonStyle}" Click="DirectoryUnloadAll_Click"/>
                             <Button Name="DirectoryReloadAll" Content="Reload All" FontSize="10" Style="{StaticResource DefaultButtonStyle}" Click="DirectoryReloadAll_Click"/>
+                            <Button Name="DirectoryUnloadAll" Content="Unload All" FontSize="10" Style="{StaticResource DefaultButtonStyle}" Click="DirectoryUnloadAll_Click"/>
                             <Border Style="{StaticResource BorderSeparatorStyleVertical}" Width="2" DockPanel.Dock="Top"/>
                             <Button Content="Expand All" Name="TreeExpandAll" FontSize="10" Style="{StaticResource DefaultButtonStyle}" Click="TreeExpandAll_Click"/>
                             <Button Content="Contract All" Name="TreeContractAll" FontSize="10" Style="{StaticResource DefaultButtonStyle}" Click="TreeContractAll_Click"/>
