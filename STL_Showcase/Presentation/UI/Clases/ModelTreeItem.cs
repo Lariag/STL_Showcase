@@ -1,5 +1,6 @@
 ﻿using STL_Showcase.Logic.Files;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -15,6 +16,7 @@ namespace STL_Showcase.Presentation.UI.Clases
     public class ModelTreeItem : INotifyPropertyChanged
     {
 
+        private static ConcurrentDictionary<string, bool> _DictionaryIsExpanded = new ConcurrentDictionary<string, bool>();
         public ModelTreeItem ParentItem { get; set; }
         public ObservableCollection<ModelTreeItem> ChildItems { get; set; } = new ObservableCollection<ModelTreeItem>();
         public string Text { get; set; }
@@ -32,6 +34,9 @@ namespace STL_Showcase.Presentation.UI.Clases
             get { return _IsExpanded; }
             set
             {
+                string key = $"{this.Level}_{this.Text}";
+                _DictionaryIsExpanded.AddOrUpdate(key, (asd) => value, (das, dsa) => value);
+
                 _IsExpanded = value;
                 if (_IsExpanded)
                 {
@@ -61,7 +66,18 @@ namespace STL_Showcase.Presentation.UI.Clases
             this.Data = data;
             this._ImageFunc = imageFunc;
             this._IsVisible = true;
+            _DictionaryIsExpanded.TryGetValue($"{level}_{text}", out _IsExpanded);
             SuscribeDataPropertyEvent();
+        }
+
+        public IEnumerable<ModelTreeItem> GetAllChildItems()
+        {
+            foreach (var child in ChildItems)
+            {
+                yield return child;
+                foreach (var childOfChild in child.GetAllChildItems())
+                    yield return childOfChild;
+            }
         }
 
         /// <summary>

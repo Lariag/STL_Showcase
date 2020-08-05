@@ -545,7 +545,6 @@ namespace STL_Showcase.Presentation.UI
                     ContentDialog dialog = new MessageDialog(Loc.GetText("DirectoryAlreadyLoaded"), Loc.GetText("LoadDirectory"), Loc.GetText("OK"), "", "");
                     dialog.ShowAsync();
                 }
-
             }
         }
 
@@ -555,7 +554,6 @@ namespace STL_Showcase.Presentation.UI
                 CurrentDirectoryLoader.CancelOperation();
 
             _ModelItemListData.RemoveDirectoryLoaded(path);
-
             ReloadDirectories();
         }
 
@@ -650,6 +648,14 @@ namespace STL_Showcase.Presentation.UI
         {
             CancellationTokenSource source = new CancellationTokenSource();
 
+            IEnumerable<string> loadedDirectories = _ModelItemListData.GetDirectoriesLoaded().Concat(directories);
+
+            if (!loadedDirectories.Any())
+            {
+                new MessageDialog(Loc.GetText("NoDirectoriesSelected"), Loc.GetText("LoadingError"), Loc.GetText("OK"), "", "").ShowAsync();
+                return;
+            }
+
             LoadingDialog loading = new LoadingDialog(string.Format(Loc.GetText("LookingForFilesAtDir"), string.Join("\", \"", directories)), Loc.GetText("LoadDirectory"), Loc.GetText("Cancel"), () => source.Cancel(false));
             Task loadingTask = loading.ShowAsync();
 
@@ -671,8 +677,6 @@ namespace STL_Showcase.Presentation.UI
             CurrentDirectoryLoader.FileReadyEvent += LoadDirectoryFileReady;
             CurrentDirectoryLoader.ReportProgressEvent += LoadDirectoryReportProgress;
             CurrentDirectoryLoader.ProcessCanceledEvent += LoadDirectoryCancelled;
-
-            IEnumerable<string> loadedDirectories = _ModelItemListData.GetDirectoriesLoaded().Concat(directories);
 
             Task.Factory.StartNew(async () =>
             {
@@ -726,8 +730,9 @@ namespace STL_Showcase.Presentation.UI
                                 treeRoot.BuildTreeRecursive(tuples);
                                 var trimmedTree = treeRoot.Trim();
 
-                                foreach (var node in trimmedTree)
-                                    node.IsExpanded = true;
+                                // Commented: For now, the entire tree status is persisted between reloads.
+                                //foreach (var node in trimmedTree)
+                                // node.IsExpanded = true;
                                 trimmedTreeRoots = new ObservableCollection<ModelTreeItem>(trimmedTreeRoots.Concat(trimmedTree));
                             }
                             this.Dispatcher.Invoke(() => { _ModelItemListData.ModelTreeRoot = trimmedTreeRoots; return true; });

@@ -76,5 +76,6 @@ AutoDetect3DSoftwareButton Auto add 3D software from shortcuts on your PC
 OpenFileInExplorer Open in file explorer
 OpenFile Open file
 OpenFileWith Open file with {0}
-ViewFileInExplorer  View in file explorer
+ViewFileInExplorer View in file explorer
 UnloadDirectory Unload directory
+NoDirectoriesSelected There are no directories selected
