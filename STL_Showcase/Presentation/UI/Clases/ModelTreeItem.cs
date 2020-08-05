@@ -50,8 +50,11 @@ namespace STL_Showcase.Presentation.UI.Clases
                 NotifyPropertyChanged(nameof(IsExpanded));
             }
         }
+        public bool HasExpandedCache { get { return _DictionaryIsExpanded.TryGetValue($"{this.Level}_{this.Text}", out _IsExpanded); } }
         private bool _IsVisible;
         public bool IsVisible { get { return _IsVisible; } set { _IsVisible = value; NotifyPropertyChanged(nameof(IsVisible)); } }
+        private bool _IsVirtual;
+        public bool IsVirtual { get { return _IsVirtual; } set { _IsVirtual = value; NotifyPropertyChanged(nameof(IsVirtual)); } }
         public int Level { get; set; }
         private object _Data;
         public object Data { get { return _Data; } set { _Data = value; SuscribeDataPropertyEvent(); } }
@@ -126,11 +129,12 @@ namespace STL_Showcase.Presentation.UI.Clases
             this.ChildItems = new ObservableCollection<ModelTreeItem>(this.ChildItems.OrderBy(c => c.HasData));
         }
 
-        public IEnumerable<string> GetTextsToRoot()
+        public IEnumerable<string> GetTextsToRoot(bool includeVirtual = false)
         {
-            if (this.ParentItem == null)
-                return new[] { Text };
-            return this.ParentItem.GetTextsToRoot().Append(this.Text);
+            if (this.IsVirtual && !includeVirtual)
+                return this.ParentItem?.GetTextsToRoot(includeVirtual) ?? new string[0];
+            else
+                return this.ParentItem?.GetTextsToRoot(includeVirtual).Append(this.Text) ?? new[] { Text };
         }
         //public int GetTextsToRoot()
         //{
@@ -141,11 +145,121 @@ namespace STL_Showcase.Presentation.UI.Clases
         //            return child.GetTextsToRoot()
         //    return this.ParentItem.GetTextsToRoot().Append(this.Text);
         //}
+
+
+        public ModelTreeItem VirtualizeChildrenByTextPrefix(string virtualNodeText, string textPrefix)
+        {
+
+            var selectedChildren = ChildItems.Where(c => c.Text.StartsWith(textPrefix)).ToArray();
+            ModelTreeItem newNode = new ModelTreeItem(this.Level + 1, virtualNodeText, imageFunc: this._ImageFunc) { IsVirtual = true, ParentItem = this };
+            if (!selectedChildren.Any())
+                return newNode;
+
+            //int oldIndexInChildItems = this.ChildItems.IndexOf(selectedChildren.First());
+
+            foreach (var selectedChild in selectedChildren)
+            {
+                ChildItems.Remove(selectedChild);
+                selectedChild.ParentItem = newNode;
+                selectedChild.IncreaseLevelRecursive(1);
+                newNode.ChildItems.Add(selectedChild);
+            }
+
+            //this.ChildItems.Insert(oldIndexInChildItems, newNode);
+            this.ChildItems.Add(newNode);
+            return newNode;
+        }
+
+        public void IncreaseLevelRecursive(int increment)
+        {
+            this.Level += increment;
+            foreach (var child in ChildItems) // TODO: Except for the new virtualized nodes.
+                child.IncreaseLevelRecursive(increment);
+        }
+
+        private static char[] _CollectionSeparators = { '_', '-' };
+        public void GenerateCollectionsRecursive()
+        {
+            List<ModelTreeItem> newNodes = new List<ModelTreeItem>();
+
+            {
+                // Identify collections by separator characters.
+                var collectionGroups = ChildItems.GroupBy(c =>
+                {
+                    int indexOfSeparator = c.Text.IndexOfAny(_CollectionSeparators);
+                    if (indexOfSeparator > 0)
+                        return c.Text.Substring(0, indexOfSeparator);
+                    return string.Empty;
+                });
+
+                foreach (var group in collectionGroups)
+                {
+                    if (group.Count() > 1 && group.Key != string.Empty)
+                    {
+
+                        // Locate the full collection name within the items text.
+                        int originalSeparatorIndex = group.Key.Length;
+                        int refinedSeparatorIndex = originalSeparatorIndex;
+
+                        while (true)
+                        {
+                            if (group.First().Text.Length < refinedSeparatorIndex)
+                                break;
+                            int newSeparatorIndex = group.First().Text.IndexOfAny(_CollectionSeparators, refinedSeparatorIndex + 1);
+                            if (newSeparatorIndex > refinedSeparatorIndex)
+                            {
+                                string newPrefix = group.First().Text.Substring(0, newSeparatorIndex);
+                                if (group.Any(t => t.Text.Length < newSeparatorIndex || t.Text.Substring(0, newSeparatorIndex) != newPrefix))
+                                    break;
+                                refinedSeparatorIndex = newSeparatorIndex;
+                            }
+                            else
+                                break;
+                        }
+                        string newCollectionKey = originalSeparatorIndex != refinedSeparatorIndex ? group.First().Text.Substring(0, refinedSeparatorIndex) : group.Key;
+
+                        // Virtualize collection, except if the name matches with this node.
+                        if (this.Text != newCollectionKey)
+                            newNodes.Add(this.VirtualizeChildrenByTextPrefix(newCollectionKey, newCollectionKey));
+                    }
+                }
+            }
+
+            foreach (var child in ChildItems.Where(c => !newNodes.Contains(c)))
+                child.GenerateCollectionsRecursive();
+        }
+
+        public void RemoveCollectionsRecursive()
+        {
+            if (this.IsVirtual)
+            {
+                this.ParentItem?.ChildItems.Remove(this);
+                foreach (var child in ChildItems)
+                    this.ParentItem?.ChildItems.Add(child);
+            }
+
+            var childs = ChildItems.ToArray();
+            foreach (var child in childs)
+                child.RemoveCollectionsRecursive();
+        }
+
         public void SetIsExpandedAll(bool expanded)
         {
             foreach (var child in ChildItems)
                 child.SetIsExpandedAll(expanded);
             this.IsExpanded = expanded;
+        }
+
+        public void OrderChildsByDataAndText(bool recursive)
+        {
+            var orderedChildItems = this.ChildItems.OrderBy(c => c.Text).OrderBy(c => c.Data != null).ToArray();
+            ChildItems.Clear();
+            foreach (var childItem in orderedChildItems)
+                this.ChildItems.Add(childItem);
+
+            if (recursive)
+                foreach (var child in ChildItems)
+                    child.OrderChildsByDataAndText(recursive);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

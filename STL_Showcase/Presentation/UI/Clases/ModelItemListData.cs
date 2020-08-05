@@ -1,4 +1,5 @@
-﻿using System;
+﻿using STL_Showcase.Shared.Main;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,6 +11,14 @@ namespace STL_Showcase.Presentation.UI.Clases
 {
     public class ModelItemListData : INotifyPropertyChanged
     {
+
+        public ModelItemListData()
+        {
+            var userSettings = DefaultFactory.GetDefaultUserSettings();
+            _FileOnlyFoldersFilter = userSettings.GetSettingBool(Shared.Enums.UserSettingEnum.EnableTreeOnlyFolders);
+            _FileCollectionMode = userSettings.GetSettingBool(Shared.Enums.UserSettingEnum.EnableTreeCollections);
+        }
+
         private ObservableCollection<ModelTreeItem> _ModelTreeRoot = new ObservableCollection<ModelTreeItem>();
         public ObservableCollection<ModelTreeItem> ModelTreeRoot { get { return _ModelTreeRoot; } set { _ModelTreeRoot = value; NotifyPropertyChanged(nameof(ModelTreeRoot)); } }
         private ModelTreeItem _SelectedTreeItem;
@@ -89,6 +98,21 @@ namespace STL_Showcase.Presentation.UI.Clases
         public bool FileTypeFilter3MF { get { return _FileTypeFilter3MF; } set { _FileTypeFilter3MF = value; NotifyPropertyChanged(nameof(FileTypeFilter3MF)); } }
         private bool _FileOnlyFoldersFilter;
         public bool FileOnlyFoldersFilter { get { return _FileOnlyFoldersFilter; } set { _FileOnlyFoldersFilter = value; NotifyPropertyChanged(nameof(FileOnlyFoldersFilter)); } }
+        private bool _FileCollectionMode;
+        public bool FileCollectionMode {
+            get { return _FileCollectionMode; }
+            set
+            {
+                foreach (var treeRoot in this._ModelTreeRoot)
+                {
+                    if (value) treeRoot.GenerateCollectionsRecursive();
+                    else treeRoot.RemoveCollectionsRecursive();
+                    treeRoot.OrderChildsByDataAndText(true);
+                }
+
+                _FileCollectionMode = value; NotifyPropertyChanged(nameof(FileCollectionMode)); NotifyPropertyChanged(nameof(ModelTreeRoot));
+            }
+        }
 
         private bool _ModelListDirectionOrder = true;
         private string _ModelListTextOrder = "Directory";
