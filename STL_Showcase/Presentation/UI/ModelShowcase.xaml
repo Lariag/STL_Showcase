@@ -28,7 +28,7 @@
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
- 
+
         <DockPanel Grid.Row="0">
             <ui:SimpleStackPanel Spacing="10" DockPanel.Dock="Left" Orientation="Horizontal">
                 <Image Source="Styles/Resources/STLShowcaseLogoFaded.png" Height="40" Margin="15 0 0 5" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"/>
@@ -383,7 +383,7 @@
                                                                     <StackPanel Margin="2" Background="White" Orientation="Vertical"
                                                                     MaxHeight="{Binding DataContext.ModelListItemContentSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}"
                                                                     MaxWidth="{Binding DataContext.ModelListItemContentSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}">
-                                                                        <Image Source="{Binding Image}" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"/>
+                                                                        <Image Source="{Binding Image}" RenderOptions.BitmapScalingMode="{Binding ScalingMode}" RenderOptions.EdgeMode="Unspecified"/>
                                                                         <!--<TextBlock Name="FileName" Text="{Binding Text}" Height="18" TextAlignment="Center" VerticalAlignment="Center"/>-->
                                                                     </StackPanel>
                                                                 </Border>

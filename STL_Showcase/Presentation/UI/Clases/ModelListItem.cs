@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace STL_Showcase.Presentation.UI.Clases
@@ -19,6 +20,9 @@ namespace STL_Showcase.Presentation.UI.Clases
         public string Text { get { return FileData.FileName; } }
         public BitmapSource Image => _imagesAllLevels?.LastOrDefault(); // _imagesAllLevels?.FirstOrDefault(img => img.PixelWidth >= MinImageSize) ?? _imagesAllLevels?.LastOrDefault();
         public BitmapSource ImageSmallest { get { return _imagesAllLevels.FirstOrDefault(); } }
+
+        private BitmapScalingMode _scalingMode;
+        public BitmapScalingMode ScalingMode { get { return _scalingMode; } set { _scalingMode = value; NotifyPropertyChanged(nameof(ScalingMode)); } }
 
         private static int MinImageSize { get; set; } = 32;
 

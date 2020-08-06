@@ -229,7 +229,7 @@ namespace STL_Showcase.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
         public int MaxSizeMBToLoadMeshInView {
             get {
                 return ((int)(this["MaxSizeMBToLoadMeshInView"]));
@@ -248,6 +248,30 @@ namespace STL_Showcase.Properties {
             }
             set {
                 this["EnableMaxSizeMBToLoadMeshInView"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableReduceThumbnailQuality {
+            get {
+                return ((bool)(this["EnableReduceThumbnailQuality"]));
+            }
+            set {
+                this["EnableReduceThumbnailQuality"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableReduceThumbnailResolution {
+            get {
+                return ((bool)(this["EnableReduceThumbnailResolution"]));
+            }
+            set {
+                this["EnableReduceThumbnailResolution"] = value;
             }
         }
     }
