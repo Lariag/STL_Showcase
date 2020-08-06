@@ -45,10 +45,12 @@ namespace STL_Showcase.Logic.Localization
 
             IUserSettings settings = DefaultFactory.GetDefaultUserSettings();
             CurrentLanguage = settings.GetSettingString(Shared.Enums.UserSettingEnum.Language);
+
+            if (string.IsNullOrEmpty(CurrentLanguage))
+                CurrentLanguage = ci.TwoLetterISOLanguageName;
+
             if (!LoadedLanguages.Contains(CurrentLanguage))
-            {
                 CurrentLanguage = DefaultLanguage;
-            }
         }
 
         public static string GetText(string key, string forLanguage = "")

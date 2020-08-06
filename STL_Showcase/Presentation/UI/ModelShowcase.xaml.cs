@@ -83,6 +83,7 @@ namespace STL_Showcase.Presentation.UI
             _ModelItemListData = new ModelItemListData();
             _ModelItemListData.ZoomLevelChanged += (sender, e) => ModelListItem.SetImageSizeFor(_ModelItemListData.ModelListItemContentSize);
             _ModelItemListData.ZoomLevelChanged += ModelItemList_ZoomLevelChanged_UpdateScrollPosition;
+            _ModelItemListData.ThumbnailScalingMode = userSettings.GetSettingBool(UserSettingEnum.EnableReduceThumbnailQuality) ? BitmapScalingMode.LowQuality : BitmapScalingMode.HighQuality;
             //_ModelItemListData.ZoomLevelChanged += (sender, e) => SetSelectedListItemVisible;
             ImageListZoomSliderControl.DataContext = _ModelItemListData;
             ImageListControl.DataContext = _ModelItemListData;
@@ -241,7 +242,14 @@ namespace STL_Showcase.Presentation.UI
 
                 _LinkedProgramsData = settingsSettingsModified.LinkedProgramsData.ToList();
 
-                if (settingsOriginal.SelectedThumbnailRenderAspec != settingsSettingsModified.SelectedThumbnailRenderAspec)
+                if ((_ModelItemListData.ThumbnailScalingMode == BitmapScalingMode.LowQuality) != settingsSettingsModified.EnableReduceThumbnailQuality)
+                    _ModelItemListData.ThumbnailScalingMode = settingsSettingsModified.EnableReduceThumbnailQuality ? BitmapScalingMode.LowQuality : BitmapScalingMode.HighQuality;
+
+                if (settingsOriginal.EnableReduceThumbnailResolution != settingsSettingsModified.EnableReduceThumbnailResolution)
+                    DefaultFactory.GetDefaultThumbnailCache().ClearCache();
+
+                if (settingsOriginal.SelectedThumbnailRenderAspec != settingsSettingsModified.SelectedThumbnailRenderAspec ||
+                settingsOriginal.EnableReduceThumbnailResolution != settingsSettingsModified.EnableReduceThumbnailResolution)
                     ReloadDirectories();
             }
         }
@@ -719,11 +727,13 @@ namespace STL_Showcase.Presentation.UI
                         Tuple<ModelFileData, LoadResultEnum>[] modelFiles = CurrentDirectoryLoader.FilesFound.Select(m => new Tuple<ModelFileData, LoadResultEnum>(m, LoadResultEnum.Okay)).OrderBy(f => f.Item2).ToArray();
                         // List View
                         {
+                            BitmapScalingMode thumnailScalingMode = userSettings.GetSettingBool(UserSettingEnum.EnableReduceThumbnailQuality) ? BitmapScalingMode.LowQuality : BitmapScalingMode.HighQuality;
                             List<ModelListItem> newModelList = new List<ModelListItem>(modelFiles.Length);
                             foreach (Tuple<ModelFileData, LoadResultEnum> fileData in modelFiles)
                             {
                                 var modelListItem = new ModelListItem();
                                 modelListItem.FileData = fileData.Item1;
+                                modelListItem.ScalingMode = thumnailScalingMode;
                                 modelListItem.SetImages(new BitmapSource[] { fileData.Item2 == LoadResultEnum.Okay ? DefaultImageLoading : DefaultImageErrorModel });
                                 newModelList.Add(modelListItem);
                             }
@@ -845,8 +855,8 @@ namespace STL_Showcase.Presentation.UI
 
         private void LoadModelInViewport(ModelFileData modelData)
         {
-            this.view3d.SetModel(modelData);
-            this.view3d.Viewport.UpdateLayout();
+                this.view3d.SetModel(modelData);
+                this.view3d.Viewport.UpdateLayout();
         }
 
         private void LoadModelInfoAvailable(string name, int tris, int verts, int sizeKB)

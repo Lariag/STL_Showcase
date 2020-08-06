@@ -60,7 +60,9 @@ namespace STL_Showcase.Logic.Rendering
 
             graphicMode = new GraphicsMode(new ColorFormat(8, 8, 8, 8), 24, 0, 0, ColorFormat.Empty, 1);
             window = new OpenTK.GameWindow(sizeInPixels, sizeInPixels, graphicMode, "", OpenTK.GameWindowFlags.FixedWindow, OpenTK.DisplayDevice.Default, 3, 0, GraphicsContextFlags.Offscreen);
-            window.Visible = false;
+            window.WindowBorder = WindowBorder.Hidden;
+            window.ClientRectangle = new Rectangle(0, 0, sizeInPixels, sizeInPixels);
+            //window.Visible = false;
             window.MakeCurrent();
 
             modelViewMatrix = Matrix4.LookAt(2f, 2f, 2f, 0, 0, 0f, 0, 0.0f, -1.0f);

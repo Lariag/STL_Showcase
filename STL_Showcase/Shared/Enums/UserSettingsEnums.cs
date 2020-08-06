@@ -27,6 +27,8 @@ namespace STL_Showcase.Shared.Enums
         , MinTrianglesForMeshDecimation
         , MaxSizeMBToLoadMeshInView
         , EnableMaxSizeMBToLoadMeshInView
+        , EnableReduceThumbnailResolution
+        , EnableReduceThumbnailQuality
     }
 
 }

@@ -3,6 +3,7 @@ using MeshDecimator;
 using MeshDecimator.Algorithms;
 using STL_Showcase.Data.Config;
 using STL_Showcase.Logic.Files;
+using STL_Showcase.Logic.Localization;
 using STL_Showcase.Shared.Enums;
 using STL_Showcase.Shared.Extensions;
 using STL_Showcase.Shared.Main;
@@ -48,6 +49,17 @@ namespace STL_Showcase.Presentation.UI.Clases
 
         public Action<string, int, int, int> LoadModelInfoAvailableEvent;
 
+        private ModelFileData _ModelDataToLoadWhenVisible;
+        public ModelFileData ModelDataToLoadWhenVisible {
+            get { return _ModelDataToLoadWhenVisible; }
+            private set
+            {
+                this._ModelDataToLoadWhenVisible = value == null ? null : new ModelFileData(value.FileFullPath);
+            }
+        }
+
+        private Task _modelLoadingTask;
+
         public View3D(HelixViewport3D viewport)
         {
             this.Viewport = viewport;
@@ -80,6 +92,9 @@ namespace STL_Showcase.Presentation.UI.Clases
             Viewport.RotationSensitivity = 1;
             Viewport.ClipToBounds = true;
 
+            Viewport.LimitFPS = true;
+            Viewport.ShowFrameRate = true;
+
             ModelAutoRotationEnabled = true;
 
             GridLinesVisual3D FloorGridLines;
@@ -95,6 +110,23 @@ namespace STL_Showcase.Presentation.UI.Clases
             UpdateLights();
             Viewport.Children.Add(FloorGridLines);
 
+            Viewport.IsVisibleChanged += (sender, e) =>
+            {
+                if (ModelDataToLoadWhenVisible != null && this.Viewport.IsVisible)
+                {
+                    SetModel(ModelDataToLoadWhenVisible);
+                    ModelDataToLoadWhenVisible = null;
+                }
+            };
+
+            Viewport.SizeChanged += (sender, e) =>
+            {
+                if (e.NewSize.Width < 5 && this.Viewport.IsVisible)
+                    Viewport.Visibility = Visibility.Hidden;
+                else if (e.NewSize.Width >= 5 && !this.Viewport.IsVisible)
+                    Viewport.Visibility = Visibility.Visible;
+
+            };
         }
 
         private void Viewport_CameraChanged(object sender, RoutedEventArgs e)
@@ -186,13 +218,25 @@ namespace STL_Showcase.Presentation.UI.Clases
 
             return lights;
         }
+
         public void SetModel(ModelFileData modelData)
+        {
+            // TODO: Run in a cancellable task.
+            SetModelTask(modelData);
+        }
+        private void SetModelTask(ModelFileData modelData)
         {
             if (CurrentModelVisual != null)
             {
                 this.Viewport.Children.Remove(CurrentModelVisual);
                 CurrentModelVisual = null;
                 GC.Collect(0, GCCollectionMode.Forced);
+            }
+
+            if (!this.Viewport.IsVisible)
+            {
+                this.ModelDataToLoadWhenVisible = modelData;
+                return;
             }
 
             Model3DGroup modelGroup = new Model3DGroup();
@@ -204,12 +248,15 @@ namespace STL_Showcase.Presentation.UI.Clases
                 {
                     ModelFileData newModelData = new ModelFileData(modelData.FileFullPath);
                     this.ModelData = newModelData;
+                    Viewport.SubTitle = modelData.FileName;
+
 
                     newModelData.LoadBasicFileData();
 
                     if (userSettings.GetSettingBool(UserSettingEnum.EnableMaxSizeMBToLoadMeshInView) && modelData.FileSizeMB > userSettings.GetSettingInt(UserSettingEnum.MaxSizeMBToLoadMeshInView))
                     {
-                        // TODO: Load generic model with text explaining this condition.
+                        // TODO: Load generic model.
+                        Viewport.SubTitle = string.Format(Loc.GetText("FileSizeTooBigToLoadMB"), modelData.FileSizeMB, userSettings.GetSettingInt(UserSettingEnum.MaxSizeMBToLoadMeshInView));
                         CurrentModelVisual = null;
                         return;
                     }
@@ -246,7 +293,7 @@ namespace STL_Showcase.Presentation.UI.Clases
                     Mesh3D mesh;
 
                     // Mesh decimation if enabled
-                    if (userSettings.GetSettingBool(UserSettingEnum.EnableDebugLogs) && newModelData.Mesh.TriangleCount > userSettings.GetSettingInt(UserSettingEnum.MinTrianglesForMeshDecimation))
+                    if (userSettings.GetSettingBool(UserSettingEnum.EnableMeshDecimation) && newModelData.Mesh.TriangleCount > userSettings.GetSettingInt(UserSettingEnum.MinTrianglesForMeshDecimation))
                     {
                         MeshDecimator.Math.Vector3d[] vectors3D = newModelData.Mesh.Vertices.Select(v => new MeshDecimator.Math.Vector3d(v.x, v.y, v.z)).ToArray();
                         Mesh decimatorMesh = new Mesh(vectors3D, newModelData.Mesh.Triangles.ToArray());
@@ -254,7 +301,7 @@ namespace STL_Showcase.Presentation.UI.Clases
                         Mesh decimatedMesh = MeshDecimation.DecimateMeshLossless(decimatorMesh);
                         mesh = new Mesh3D(decimatedMesh.Vertices.Select(v => new Point3D(v.x, v.y, v.z)), decimatedMesh.Indices);
 
-                        // TODO: Possible cache the decimated models to avoid re-processing.
+                        // TODO: Possibly cache the decimated models to avoid re-processing.
                     }
                     else
                     {
@@ -316,6 +363,7 @@ namespace STL_Showcase.Presentation.UI.Clases
                 _modelCameraPosition = _originalCameraPosition;
                 ResetCamera(true);
                 LoadModelInfoAvailableEvent?.Invoke("", 0, 0, 0);
+                Viewport.SubTitle = string.Empty;
             }
             GC.Collect();
         }

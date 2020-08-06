@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace STL_Showcase.Presentation.UI.Clases
 {
@@ -26,7 +27,6 @@ namespace STL_Showcase.Presentation.UI.Clases
         private ObservableCollection<ModelListItem> _ModelList = new ObservableCollection<ModelListItem>();
         private Dictionary<string, ModelListItem> _ModelListDictionary;
         private List<string> _LoadedDirectories = new List<string>();
-
 
         public ObservableCollection<ModelListItem> ModelList {
             get { return _ModelList; }
@@ -142,7 +142,16 @@ namespace STL_Showcase.Presentation.UI.Clases
             set { _CurrentZoomLevel = value; ZoomLevelChanged?.Invoke(this, null); NotifySizePropertyChanged(); }
         }
         public double MaximumZoomLevel { get; set; }
-
+        private BitmapScalingMode _thumnailScaligMode;
+        public BitmapScalingMode ThumbnailScalingMode {
+            get { return _thumnailScaligMode; }
+            set
+            {
+                _thumnailScaligMode = value;
+                foreach (var modelItem in ModelList)
+                    if (modelItem.ScalingMode != _thumnailScaligMode) modelItem.ScalingMode = _thumnailScaligMode;
+            }
+        }
         public int ModelListItemContentSize {
             get { return this._zoomSizeBase + (int)(this._zoomSizeStep * _CurrentZoomLevel); }
         }

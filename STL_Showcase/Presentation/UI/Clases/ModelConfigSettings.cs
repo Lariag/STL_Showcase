@@ -25,6 +25,9 @@ namespace STL_Showcase.Presentation.UI.Clases
         public bool EnableMaxSizeMBToLoadMeshInView { get; set; }
         public int MaxSizeMBToLoadMeshInView { get; set; }
 
+        public bool EnableReduceThumbnailResolution { get; set; }
+        public bool EnableReduceThumbnailQuality { get; set; }
+
         #endregion General settings
 
         #region Program settings
@@ -54,6 +57,10 @@ namespace STL_Showcase.Presentation.UI.Clases
             EnableMaxSizeMBToLoadMeshInView = userSettings.GetSettingBool(UserSettingEnum.EnableMaxSizeMBToLoadMeshInView);
             MaxSizeMBToLoadMeshInView = userSettings.GetSettingInt(UserSettingEnum.MaxSizeMBToLoadMeshInView);
 
+            EnableReduceThumbnailResolution = userSettings.GetSettingBool(UserSettingEnum.EnableReduceThumbnailResolution);
+            EnableReduceThumbnailQuality = userSettings.GetSettingBool(UserSettingEnum.EnableReduceThumbnailQuality);
+
+
             NotifyPropertyChanged(nameof(LinkedProgramsData));
             NotifyPropertyChanged(nameof(EnableDebugLogs));
             NotifyPropertyChanged(nameof(SelectedThumbnailRenderAspec));
@@ -61,6 +68,8 @@ namespace STL_Showcase.Presentation.UI.Clases
             NotifyPropertyChanged(nameof(MinTrianglesForMeshDecimation));
             NotifyPropertyChanged(nameof(EnableMaxSizeMBToLoadMeshInView));
             NotifyPropertyChanged(nameof(MaxSizeMBToLoadMeshInView));
+            NotifyPropertyChanged(nameof(EnableReduceThumbnailResolution));
+            NotifyPropertyChanged(nameof(EnableReduceThumbnailQuality));
         }
 
         public void SaveSettings()
@@ -75,6 +84,10 @@ namespace STL_Showcase.Presentation.UI.Clases
             userSettings.SetSettingInt(UserSettingEnum.MinTrianglesForMeshDecimation, MinTrianglesForMeshDecimation);
             userSettings.SetSettingBool(UserSettingEnum.EnableMaxSizeMBToLoadMeshInView, EnableMaxSizeMBToLoadMeshInView);
             userSettings.SetSettingInt(UserSettingEnum.MaxSizeMBToLoadMeshInView, MaxSizeMBToLoadMeshInView);
+
+            userSettings.SetSettingBool(UserSettingEnum.EnableReduceThumbnailResolution, EnableReduceThumbnailResolution);
+            userSettings.SetSettingBool(UserSettingEnum.EnableReduceThumbnailQuality, EnableReduceThumbnailQuality);
+
         }
 
         public void NotifyPropertyChanged(string propertyName)

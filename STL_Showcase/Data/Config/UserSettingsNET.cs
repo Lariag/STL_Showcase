@@ -75,6 +75,10 @@ namespace STL_Showcase.Data.Config
                     return Properties.Settings.Default.EnableMeshDecimation;
                 case UserSettingEnum.EnableMaxSizeMBToLoadMeshInView:
                     return Properties.Settings.Default.EnableMaxSizeMBToLoadMeshInView;
+                case UserSettingEnum.EnableReduceThumbnailQuality:
+                    return Properties.Settings.Default.EnableReduceThumbnailQuality;
+                case UserSettingEnum.EnableReduceThumbnailResolution:
+                    return Properties.Settings.Default.EnableReduceThumbnailResolution;
                 default:
                     return false;
             }
@@ -154,6 +158,10 @@ namespace STL_Showcase.Data.Config
                     Properties.Settings.Default.EnableMeshDecimation = val; break;
                 case UserSettingEnum.EnableMaxSizeMBToLoadMeshInView:
                     Properties.Settings.Default.EnableMaxSizeMBToLoadMeshInView = val; break;
+                case UserSettingEnum.EnableReduceThumbnailResolution:
+                    Properties.Settings.Default.EnableReduceThumbnailResolution = val; break;
+                case UserSettingEnum.EnableReduceThumbnailQuality:
+                    Properties.Settings.Default.EnableReduceThumbnailQuality = val; break;
             }
             Properties.Settings.Default.Save();
         }

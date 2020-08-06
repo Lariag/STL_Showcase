@@ -59,7 +59,7 @@
                     <TextBlock x:Name="tbLanguageSetting" Text="Language" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
                     <ComboBox Name="cbLanguage" ItemsSource="{Binding SupportedLanguages}" Style="{StaticResource DataGridComboBoxStyle}"  Grid.Row="0" Grid.Column="1"/>
 
-                    <TextBlock x:Name="tbEnableDebugLogs" Text="Enable Debu Logs" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="tbEnableDebugLogs" Text="Enable Debug Logs" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
                     <CheckBox x:Name="chkEnableDebugLogs" Grid.Row="1" Grid.Column="1" IsChecked="{Binding EnableDebugLogs}"/>
 
                     <TextBlock x:Name="tbThumnailStyle" Text="Thumbnail Style" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource SubtitleTextBlockStyle}"/>
@@ -150,25 +150,20 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
-
                     </Grid.RowDefinitions>
 
                     <TextBlock x:Name="tbPerformance" Text="Performance Settings" Margin="0 0 0 10" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource SubtitleTextBlockStyle}"/>
 
-                    <TextBlock VerticalAlignment="Center" x:Name="tbEnableMeshDecimate" Text="Enable mesh triangle reduction" Grid.Row="1" Grid.Column="0"/>
-                    <CheckBox x:Name="chkEnableMeshDecimate" Grid.Row="1" Grid.Column="1" IsChecked="{Binding EnableMeshDecimation}"/>
+                    <CheckBox x:Name="chkEnableMeshDecimate" VerticalAlignment="Center" Content="Enable mesh triangle reduction" Grid.Row="1" Grid.Column="0" IsChecked="{Binding EnableMeshDecimation}"/>
+                    <ui:NumberBox HorizontalAlignment="Stretch" Margin="10" FontSize="12" LargeChange="2000" SmallChange="2000" x:Name="nmbMeshDecimateMinTris" Value="{Binding MinTrianglesForMeshDecimation}" IsEnabled="{Binding ElementName=chkEnableMeshDecimate, Path=IsChecked}"
+                                  SpinButtonPlacementMode="Compact" Minimum="15000" Maximum="2000000" ValidationMode="InvalidInputOverwritten" Grid.Row="1" Grid.Column="1" Description="Reduce triangles when more than..." />
 
-                    <TextBlock VerticalAlignment="Center" x:Name="tbMeshDecimateMinTris" Text="Reduce triangles when more than..." Grid.Row="2" Grid.Column="0"/>
-                    <ui:NumberBox FontSize="12" x:Name="nmbMeshDecimateMinTris" Value="{Binding MinTrianglesForMeshDecimation}" IsEnabled="{Binding ElementName=chkEnableMeshDecimate, Path=IsChecked}"
-                                  SpinButtonPlacementMode="Inline" Minimum="15000" Maximum="2000000" ValidationMode="InvalidInputOverwritten" Grid.Row="2" Grid.Column="1" />
+                    <CheckBox x:Name="chkEnableMaxSizeModel" VerticalAlignment="Center" Content="Enable size limit to view model" Grid.Row="2" Grid.Column="0" IsChecked="{Binding EnableMaxSizeMBToLoadMeshInView}"/>
+                    <ui:NumberBox HorizontalAlignment="Stretch" Margin="10" LargeChange="5 " SmallChange="5" FontSize="12" x:Name="nmbMaxSizeModelToView" Value="{Binding MaxSizeMBToLoadMeshInView}" IsEnabled="{Binding ElementName=chkEnableMaxSizeModel, Path=IsChecked}"
+                                  SpinButtonPlacementMode="Compact" Minimum="5" Maximum="1000000" ValidationMode="InvalidInputOverwritten" Grid.Row="2" Grid.Column="1" Description="Don't visualize when MB is more than..." />
 
-
-                    <TextBlock VerticalAlignment="Center" x:Name="tbEnableMaxSizeModel" Text="Enable size limit to view model" Grid.Row="3" Grid.Column="0"/>
-                    <CheckBox x:Name="chkEnableMaxSizeModel" Grid.Row="3" Grid.Column="1" IsChecked="{Binding EnableMaxSizeMBToLoadMeshInView}"/>
-
-                    <TextBlock VerticalAlignment="Center" x:Name="tbMaxSizeModelToView" Text="Don't visualize when MB is more than..." Grid.Row="4" Grid.Column="0"/>
-                    <ui:NumberBox FontSize="12" x:Name="nmbMaxSizeModelToView" Value="{Binding MaxSizeMBToLoadMeshInView}" IsEnabled="{Binding ElementName=chkEnableMaxSizeModel, Path=IsChecked}"
-                                  SpinButtonPlacementMode="Inline" Minimum="5" Maximum="1000000" ValidationMode="InvalidInputOverwritten" Grid.Row="4" Grid.Column="1" />
+                    <CheckBox x:Name="chkEnableReduceThumbnailResolution" VerticalAlignment="Center" Content="Generate thumbnail at lower resolution" Grid.Row="3" Grid.Column="0" IsChecked="{Binding EnableReduceThumbnailResolution}"/>
+                    <CheckBox x:Name="chkReduceEnableReduceThumbnailQuality" VerticalAlignment="Center" Content="Use faster thumbnail drawing" Grid.Row="3" Grid.Column="1" IsChecked="{Binding EnableReduceThumbnailQuality}"/>
                 </Grid>
             </TabItem>
 

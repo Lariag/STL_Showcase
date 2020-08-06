@@ -93,6 +93,11 @@ PerformanceSettings Performance Settings
 EnableMeshDecimate Enable mesh triangle reduction
 MeshDecimateMinTris Reduce triangles when more than...
 EnableMaxSizeModel Enable size limit to view model
-MaxSizeModelToView Don't visualize when MB is more than...
+MaxSizeModelToView Don't visualize when size in MB is more than...
 tooltipEnableMeshDecimate The 3D model will render faster, but will take more time to load.\nWill only reduce triangles if it has more than the specified amount.
-tooltipEnableMaxSizeModel  If enabled, won't load models that are bigger (in MB) than the specified amount.
+tooltipEnableMaxSizeModel If enabled, won't load models that are bigger (in MB) than the specified amount.
+FileSizeTooBigToLoadMB File size too big to load (Size: {0:0}MB, Limit: {1:0}MB)
+GenerateThumnailLowRes Generate thumbnail at lower resolution
+UseFastThumbnailDrawing Use faster thumbnail drawing
+tooltipGenerateThumnailLowRes Renders the thumbnails at lower resolution to reduce memory usage.\nWARNING: Changing this setting will delete the cache and generate new thumnails.
+tooltipUseFastThumbnailDrawing Uses lower quality scaling to display the thumbnail images, improving performance.

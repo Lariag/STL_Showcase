@@ -86,14 +86,18 @@ namespace STL_Showcase.Presentation.UI
 
                 tbPerformance.Text = Loc.GetText("PerformanceSettings");
 
-                tbEnableMeshDecimate.Text = Loc.GetText("EnableMeshDecimate");
-                tbMeshDecimateMinTris.Text = Loc.GetText("MeshDecimateMinTris");
-                tbEnableMeshDecimate.ToolTip = tbMeshDecimateMinTris.ToolTip = Loc.GetText("tooltipEnableMeshDecimate");
+                chkEnableMeshDecimate.Content = Loc.GetText("EnableMeshDecimate");
+                nmbMeshDecimateMinTris.Description = Loc.GetText("MeshDecimateMinTris");
+                chkEnableMeshDecimate.ToolTip = nmbMeshDecimateMinTris.ToolTip = Loc.GetText("tooltipEnableMeshDecimate");
 
-                tbEnableMaxSizeModel.Text = Loc.GetText("EnableMaxSizeModel");
-                tbMaxSizeModelToView.Text = Loc.GetText("MaxSizeModelToView");
-                tbEnableMaxSizeModel.ToolTip = tbMaxSizeModelToView.ToolTip = Loc.GetText("tooltipEnableMaxSizeModel");
+                chkEnableMaxSizeModel.Content = Loc.GetText("EnableMaxSizeModel");
+                nmbMaxSizeModelToView.Description = Loc.GetText("MaxSizeModelToView");
+                nmbMaxSizeModelToView.ToolTip = chkEnableMaxSizeModel.ToolTip = Loc.GetText("tooltipEnableMaxSizeModel");
 
+                chkEnableReduceThumbnailResolution.Content = Loc.GetText("GenerateThumnailLowRes");
+                chkEnableReduceThumbnailResolution.ToolTip = Loc.GetText("tooltipGenerateThumnailLowRes");
+                chkReduceEnableReduceThumbnailQuality.Content = Loc.GetText("UseFastThumbnailDrawing");
+                chkReduceEnableReduceThumbnailQuality.ToolTip = Loc.GetText("tooltipUseFastThumbnailDrawing");
             }
 
             btnAutoretectPrograms.Content = Loc.GetText("AutoDetect3DSoftwareButton");
@@ -142,6 +146,9 @@ namespace STL_Showcase.Presentation.UI
                 nmbMeshDecimateMinTris.DataContext = _modelConfigSettings;
                 chkEnableMaxSizeModel.DataContext = _modelConfigSettings;
                 nmbMaxSizeModelToView.DataContext = _modelConfigSettings;
+
+                chkEnableReduceThumbnailResolution.DataContext = _modelConfigSettings;
+                chkReduceEnableReduceThumbnailQuality.DataContext = _modelConfigSettings;
             }
             #endregion Advanced Settings
         }

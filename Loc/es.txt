@@ -34,7 +34,7 @@ AboutWindowMessage La carpeta caché contiene imágenes auto-generadas de tus mode
 AboutTheCache Acera de la caché...
 DeleteCacheFiles Eliminar archivos de caché
 DeleteCacheFilesMessage La carpeta de caché y su contenido serán eliminados.\n¿Continuar?
-DeleteCacheFilesConfirmation All cache images were successfully deleted.
+DeleteCacheFilesConfirmation Todas las imágenes de la caché fueron eliminadas satisfactoriamente.
 DeleteCacheFilesError Sucedió un problema al eliminar los archivos de caché. Algunos podrían no haber sido eliminados.
 Confirm Confirmar
 LookingForFilesAtDir Buscando archivos en "{0}"...
@@ -93,14 +93,14 @@ PerformanceSettings Ajustes de Rendimiento
 EnableMeshDecimate Habilita la reducción de triángulos en modelos
 MeshDecimateMinTris Reducir triángulos cuando haya más de...
 EnableMaxSizeModel Habilita tamaño máximo para visualizar modelos
-MaxSizeModelToView No visualizar cuando ocupe más de...
+MaxSizeModelToView No visualizar cuando ocupe más de... (en MB)
 tooltipEnableMeshDecimate El modelo se renderizará más rápido, pero tardará más en cargar.\nTan solo se reducirán los triángulos si tiene más que la cantidad especificada.
-tooltipEnableMaxSizeModel  Si se habilita, no se visualizarán modelos que ocupen más que la cantidad especificada (en MB).
- 
- 
- 
- 
- 
+tooltipEnableMaxSizeModel Si se habilita, no se visualizarán modelos que ocupen más que la cantidad especificada (en MB).
+FileSizeTooBigToLoadMB Archivo demasiado grande para ser cargado (Tamaño: {0:0}MB, Límite: {1:0}MB) 
+GenerateThumnailLowRes Generar las miniaturas a menor resolución
+UseFastThumbnailDrawing Dibujar miniaturas en menor calidad
+tooltipGenerateThumnailLowRes Renderiza las miniaturas a menor resolución para reducir el uso de memoria.\nADVERTENCIA: Cambiar este ajuste borrará la caché y generará nuevas miniaturas.
+tooltipUseFastThumbnailDrawing Utiliza un escalado de menor calidad para dibujar las miniaturas, mejorando el rendimiento.
  
  
  
