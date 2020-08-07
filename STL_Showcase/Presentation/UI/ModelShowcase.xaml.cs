@@ -266,13 +266,13 @@ namespace STL_Showcase.Presentation.UI
             try
             {
                 if (string.IsNullOrWhiteSpace(cachePath) || !Directory.Exists(cachePath))
-                    MessageBox.Show("The no cache folder doesn't exist yet.");
+                    MessageBox.Show(Loc.GetText("CacheFolderDontExistsYet"));
                 else
                     Process.Start(cachePath);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format("Unable to open cache folder: {cachePath}", cachePath));
+                MessageBox.Show(Loc.GetTextFormatted("UnableOpenCacheFolder", cachePath));
             }
         }
 
@@ -687,7 +687,7 @@ namespace STL_Showcase.Presentation.UI
                 return;
             }
 
-            LoadingDialog loading = new LoadingDialog(string.Format(Loc.GetText("LookingForFilesAtDir"), string.Join("\", \"", directories)), Loc.GetText("LoadDirectory"), Loc.GetText("Cancel"), () => source.Cancel(false));
+            LoadingDialog loading = new LoadingDialog(Loc.GetTextFormatted("LookingForFilesAtDir", string.Join("\", \"", directories)), Loc.GetText("LoadDirectory"), Loc.GetText("Cancel"), () => source.Cancel(false));
             Task loadingTask = loading.ShowAsync();
 
             if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
@@ -818,7 +818,7 @@ namespace STL_Showcase.Presentation.UI
                             if (CurrentDirectoryLoader.FilesFound.Length > 0)
                                 new MessageDialog(Loc.GetText("LoadDirectoryUnable"), Loc.GetText("LoadingError"), Loc.GetText("OK"), "", "").ShowAsync();
                             else
-                                new MessageDialog(string.Format(Loc.GetText("LoadDirectoryNoFilesAtDir"), string.Join("\", \"", directories)), Loc.GetText("NothingFound!"), Loc.GetText("OK"), "", "").ShowAsync();
+                                new MessageDialog(Loc.GetTextFormatted("LoadDirectoryNoFilesAtDir", string.Join("\", \"", directories)), Loc.GetText("NothingFound!"), Loc.GetText("OK"), "", "").ShowAsync();
                             CurrentDirectoryLoader = null;
                             return true;
                         });
@@ -855,8 +855,8 @@ namespace STL_Showcase.Presentation.UI
 
         private void LoadModelInViewport(ModelFileData modelData)
         {
-                this.view3d.SetModel(modelData);
-                this.view3d.Viewport.UpdateLayout();
+            this.view3d.SetModel(modelData);
+            this.view3d.Viewport.UpdateLayout();
         }
 
         private void LoadModelInfoAvailable(string name, int tris, int verts, int sizeKB)
@@ -1003,7 +1003,7 @@ namespace STL_Showcase.Presentation.UI
                  (lpd.Support3MF && fileType == Supported3DFiles._3MF) ||
                  (lpd.SupportDirectory && !fileType.HasValue)))
                 {
-                    MenuItem menuItemForFile = new MenuItem() { Header = string.Format(Loc.GetText("OpenFileWith"), data.ProgramName) };
+                    MenuItem menuItemForFile = new MenuItem() { Header = Loc.GetTextFormatted("OpenFileWith", data.ProgramName) };
                     menuItemForFile.Click += (sender, e) => OpenFileWithProgram(fullPathToItem, data.ProgramFullPath);
                     menu.Items.Add(menuItemForFile);
                 }

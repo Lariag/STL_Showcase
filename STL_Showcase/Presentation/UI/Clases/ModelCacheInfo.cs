@@ -49,7 +49,7 @@ namespace STL_Showcase.Presentation.UI.Clases
                       if (size < 0)
                           CacheSize = Loc.GetText("SizeNotAvailable");
                       else
-                          CacheSize = string.Format(Loc.GetText("NumberKB"), Math.Round((size / 1024f)));
+                          CacheSize = Loc.GetTextFormatted("NumberKB", Math.Round((size / 1024f)));
                   }));
                   processingCacheSize = false;
               }));

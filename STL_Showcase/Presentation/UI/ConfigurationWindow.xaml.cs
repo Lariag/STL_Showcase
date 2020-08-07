@@ -307,7 +307,7 @@ namespace STL_Showcase.Presentation.UI
 
             if (autoAddTask.Result.Any())
             {
-                await new MessageDialog(string.Format(Loc.GetText("AutoDetect3DSoftware_FoundList"), autoAddTask.Result.Count(), string.Join("\n", autoAddTask.Result)),
+                await new MessageDialog(Loc.GetTextFormatted("AutoDetect3DSoftware_FoundList", autoAddTask.Result.Count(), string.Join("\n", autoAddTask.Result)),
                     Loc.GetText("AutoDetect3DSoftware"), Loc.GetText("OK"), "", "").ShowAsync();
             }
             else

@@ -256,7 +256,7 @@ namespace STL_Showcase.Presentation.UI.Clases
                     if (userSettings.GetSettingBool(UserSettingEnum.EnableMaxSizeMBToLoadMeshInView) && modelData.FileSizeMB > userSettings.GetSettingInt(UserSettingEnum.MaxSizeMBToLoadMeshInView))
                     {
                         // TODO: Load generic model.
-                        Viewport.SubTitle = string.Format(Loc.GetText("FileSizeTooBigToLoadMB"), modelData.FileSizeMB, userSettings.GetSettingInt(UserSettingEnum.MaxSizeMBToLoadMeshInView));
+                        Viewport.SubTitle = Loc.GetTextFormatted("FileSizeTooBigToLoadMB", modelData.FileSizeMB, userSettings.GetSettingInt(UserSettingEnum.MaxSizeMBToLoadMeshInView));
                         CurrentModelVisual = null;
                         return;
                     }
