@@ -57,6 +57,10 @@ namespace STL_Showcase.Logic.Localization
         {
             return Ins._GetText(key, forLanguage);
         }
+        public static string GetTextFormatted(string key, params object[] parameters)
+        {
+            return string.Format(Ins._GetText(key), parameters);
+        }
         private string _GetText(string key, string forLanguage = "")
         {
             Dictionary<string, string> translatedTexts;
