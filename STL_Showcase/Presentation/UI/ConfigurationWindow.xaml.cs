@@ -33,6 +33,9 @@ namespace STL_Showcase.Presentation.UI
     /// </summary>
     public partial class ConfigurationWindow : Window
     {
+
+        static NLog.Logger logger = NLog.LogManager.GetLogger("Settings");
+
         #region Initialization
 
         public ModelConfigSettings _modelConfigSettingsOriginal { get; set; }
@@ -57,6 +60,8 @@ namespace STL_Showcase.Presentation.UI
 
             _model3DViewInfo = new Model3DViewInfo();
             cbLanguage.DataContext = this;
+
+            logger.Info("Opened settings window");
 
             Loc.Ins.OnLanguageChanged += SetUILanguage;
             SetUILanguage();
@@ -159,12 +164,8 @@ namespace STL_Showcase.Presentation.UI
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            logger.Info("Settings window: Closed");
             Loc.Ins.OnLanguageChanged -= SetUILanguage;
-        }
-
-        private void btnSelectProgramPath_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void RenderTypeScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -186,6 +187,7 @@ namespace STL_Showcase.Presentation.UI
 
         private void btnAccept_Click(object sender, RoutedEventArgs e)
         {
+            logger.Info("Settings window: Accept");
             _modelConfigSettings.SaveSettings();
             Loc.Ins.SetLanguage(((ComboboxItemToString)cbLanguage.SelectedItem).ID);
             this.DialogResult = true;
@@ -194,6 +196,7 @@ namespace STL_Showcase.Presentation.UI
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
+            logger.Info("Settings window: Cancel");
             this.DialogResult = false;
             this.Close();
         }
@@ -205,7 +208,7 @@ namespace STL_Showcase.Presentation.UI
 
         private void btnAutoretectPrograms_Click(object sender, RoutedEventArgs e)
         {
-            AutoretectProgramsAsync();
+            AutoDetectProgramsAsync();
         }
 
         private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
@@ -294,8 +297,10 @@ namespace STL_Showcase.Presentation.UI
 
         #endregion
 
-        private async void AutoretectProgramsAsync()
+        private async void AutoDetectProgramsAsync()
         {
+            logger.Info("Settings window: AutoDetectProgramsAsync");
+
             LoadingDialog loading = new LoadingDialog(Loc.GetText("LookingFor3dSoftwareShortcuts"), string.Empty, Loc.GetText("AutoDetect3DSoftware"));
 
             loading.ShowAsync();
@@ -307,11 +312,14 @@ namespace STL_Showcase.Presentation.UI
 
             if (autoAddTask.Result.Any())
             {
+                logger.Info($"Settings window: Autodetected {autoAddTask.Result.Count()} programs: [{string.Join("] [", autoAddTask.Result)}]");
+
                 await new MessageDialog(Loc.GetTextFormatted("AutoDetect3DSoftware_FoundList", autoAddTask.Result.Count(), string.Join("\n", autoAddTask.Result)),
                     Loc.GetText("AutoDetect3DSoftware"), Loc.GetText("OK"), "", "").ShowAsync();
             }
             else
             {
+                logger.Info("Settings window: Autodetected 0 programs.");
                 await new MessageDialog(Loc.GetText("AutoDetect3DSoftware_NothingFound"), Loc.GetText("AutoDetect3DSoftware"), Loc.GetText("OK"), "", "").ShowAsync();
             }
         }

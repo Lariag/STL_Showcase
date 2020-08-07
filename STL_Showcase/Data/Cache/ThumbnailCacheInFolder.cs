@@ -92,7 +92,7 @@ namespace STL_Showcase.Data.Cache
                         catch (Exception ex)
                         {
                             allFilesCleared = false;
-                            logger.Trace(ex, "Error deleting cache file: {filePath}", filePath);
+                            logger.Debug(ex, "Error deleting cache file: {filePath}", filePath);
                         }
                     }
                 }
@@ -177,8 +177,10 @@ namespace STL_Showcase.Data.Cache
                 logger.Trace(ex, "Exception loading cache file images for {fullpath} as {renderType}", Path.Combine(filePath, fileName), renderType.ToString());
             }
 
+            /*
             if (loadedFiles.Length == 0) logger.Info("No cache files found for {filePath} as {filesNameForFilter}", Path.Combine(filePath, fileName), filesNameForFilter);
             else logger.Info("Loaded {fileCount} cache files found for {filePath} as {filesNameForFilter}", loadedFiles.Length, Path.Combine(filePath, fileName), filesNameForFilter);
+            */
 
             return loadedFiles;
         }
@@ -204,8 +206,10 @@ namespace STL_Showcase.Data.Cache
                 return null;
             }
 
+            /*
             if (loadedFile == null) logger.Info("Cache file not found at {FullThumbnailFilePath}", fullThumbnailFilePath);
             else logger.Info("Loaded cache file at {FullThumbnailFilePath}", fullThumbnailFilePath);
+            */
 
             return loadedFile;
         }
@@ -229,8 +233,10 @@ namespace STL_Showcase.Data.Cache
                 return null;
             }
 
+            /*
             if (foundFiles == null || foundFiles.Length == 0) logger.Info("No cache files found for {filePath} as {filesNameForFilter}", Path.Combine(filePath, fileName), filesNameForFilter);
             else logger.Info("Found {fileCount} cache files for {filePath} as {filesNameForFilter}", foundFiles.Length, Path.Combine(filePath, fileName), filesNameForFilter);
+            */
 
             return foundFiles;
         }
@@ -264,7 +270,7 @@ namespace STL_Showcase.Data.Cache
                     png.Frames.Add(BitmapFrame.Create(img));
                     png.Save(file);
                 }
-                logger.Info("Updated file thumbnail for {fileName} for size {size}", fileName, size);
+                logger.Debug("Updated file thumbnail for {fileName} for size {size}", fileName, size);
             }
             catch (Exception ex)
             {
@@ -340,7 +346,7 @@ namespace STL_Showcase.Data.Cache
 
             if (size > 0)
                 cachePath = Path.Combine(cachePath, size.ToString());
-            logger.Info("Using cache folder {cachePath}", cachePath);
+            // logger.Info("Using cache folder {cachePath}", cachePath);
 
             return cachePath;
         }

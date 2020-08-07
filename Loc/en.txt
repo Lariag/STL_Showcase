@@ -101,3 +101,5 @@ GenerateThumnailLowRes Generate thumbnail at lower resolution
 UseFastThumbnailDrawing Use faster thumbnail drawing
 tooltipGenerateThumnailLowRes Renders the thumbnails at lower resolution to reduce memory usage.\nWARNING: Changing this setting will delete the cache and generate new thumnails.
 tooltipUseFastThumbnailDrawing Uses lower quality scaling to display the thumbnail images, improving performance.
+UnableOpenCacheFolder Unable to open cache folder: {0}
+CacheFolderDontExistsYet The cache folder has not been created yet.

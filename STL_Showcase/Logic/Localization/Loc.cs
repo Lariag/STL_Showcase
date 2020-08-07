@@ -13,6 +13,7 @@ namespace STL_Showcase.Logic.Localization
 {
     public class Loc
     {
+        static NLog.Logger logger = NLog.LogManager.GetLogger("Settings");
 
         private Dictionary<string, Dictionary<string, string>> LoadedTexts;
 
@@ -47,10 +48,16 @@ namespace STL_Showcase.Logic.Localization
             CurrentLanguage = settings.GetSettingString(Shared.Enums.UserSettingEnum.Language);
 
             if (string.IsNullOrEmpty(CurrentLanguage))
+            {
+                logger.Info("Localization: Missing saved language. Setting system language '{0}'", ci.TwoLetterISOLanguageName);
                 CurrentLanguage = ci.TwoLetterISOLanguageName;
+            }
 
             if (!LoadedLanguages.Contains(CurrentLanguage))
+            {
+                logger.Info("Localization: Missing current language '{0}'", CurrentLanguage);
                 CurrentLanguage = DefaultLanguage;
+            }
         }
 
         public static string GetText(string key, string forLanguage = "")
@@ -104,6 +111,8 @@ namespace STL_Showcase.Logic.Localization
             string localizationPath = Path.Combine(appPath, "Loc");
             string[] localizationFiles = Directory.GetFiles(localizationPath, "*.txt");
 
+            logger.Debug("Localization: Loading texts from path: {0}", localizationPath);
+
             HashSet<string> supportedLanguages = new HashSet<string>(CultureInfo.GetCultures(CultureTypes.NeutralCultures).Select(ci => ci.TwoLetterISOLanguageName));
 
             LoadedTexts = new Dictionary<string, Dictionary<string, string>>();
@@ -113,6 +122,7 @@ namespace STL_Showcase.Logic.Localization
                 string languageName = Path.GetFileNameWithoutExtension(localizationFiles[i]);
                 if (!supportedLanguages.Contains(languageName))
                 {
+                    logger.Error("Localization: Not supported language file: {0}", localizationFiles[i]);
                     throw new CultureNotFoundException($"ERROR Loading language file: file {localizationFiles[i]} is not a supported language.");
                 }
 
@@ -129,6 +139,7 @@ namespace STL_Showcase.Logic.Localization
             }
 
             LoadedLanguages = LoadedTexts.Keys.ToArray();
+            logger.Debug("Localization: Loaded {0} languages: [{1}]", LoadedLanguages.Length, string.Join("] [", LoadedLanguages));
         }
     }
 }

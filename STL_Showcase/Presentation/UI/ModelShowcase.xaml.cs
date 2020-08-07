@@ -36,6 +36,7 @@ using System.Windows.Media.Animation;
 using STL_Showcase.Presentation.UI.Clases.Utility;
 using STL_Showcase.Logic.Localization;
 using STL_Showcase.Data.DataObjects;
+using NLog;
 
 namespace STL_Showcase.Presentation.UI
 {
@@ -76,6 +77,8 @@ namespace STL_Showcase.Presentation.UI
             InitializeComponent();
 
             userSettings = DefaultFactory.GetDefaultUserSettings();
+
+            SetLoggingEnabled(userSettings.GetSettingBool(UserSettingEnum.EnableDebugLogs));
 
             InitializeVisibilityMenuItemsCheckedState();
             UpdateVisibilityMenuItemsCheckedState();
@@ -224,8 +227,6 @@ namespace STL_Showcase.Presentation.UI
             LoadDirectoryWithDialog();
         }
 
-
-
         private void MenuItemConfiguration_Click(object sender, RoutedEventArgs e)
         {
             ModelConfigSettings settingsOriginal = new ModelConfigSettings();
@@ -241,6 +242,9 @@ namespace STL_Showcase.Presentation.UI
                 settingsSettingsModified.LoadSettings();
 
                 _LinkedProgramsData = settingsSettingsModified.LinkedProgramsData.ToList();
+
+                if (settingsSettingsModified.EnableDebugLogs != settingsOriginal.EnableDebugLogs)
+                    SetLoggingEnabled(settingsSettingsModified.EnableDebugLogs);
 
                 if ((_ModelItemListData.ThumbnailScalingMode == BitmapScalingMode.LowQuality) != settingsSettingsModified.EnableReduceThumbnailQuality)
                     _ModelItemListData.ThumbnailScalingMode = settingsSettingsModified.EnableReduceThumbnailQuality ? BitmapScalingMode.LowQuality : BitmapScalingMode.HighQuality;
@@ -881,6 +885,40 @@ namespace STL_Showcase.Presentation.UI
 
 
         #endregion
+
+
+        private void SetLoggingEnabled(bool enabled)
+        {
+            foreach (var rule in LogManager.Configuration.LoggingRules)
+            {
+                if (enabled)
+                {
+                    foreach (var target in rule.Targets)
+                    {
+                        LogLevel minLevel;
+                        switch (target.Name)
+                        {
+                            case "AllFileLog":
+                                minLevel = LogLevel.Trace; break;
+                            case "GeneralLogFile":
+                                minLevel = LogLevel.Debug; break;
+                            default:
+                                minLevel = LogLevel.Info; break;
+                        }
+                        rule.SetLoggingLevels(minLevel, LogLevel.Fatal);
+
+                        break;
+                    }
+                }
+                else
+                {
+                    rule.SetLoggingLevels(LogLevel.Off, LogLevel.Off);
+                }
+            }
+
+            LogManager.ReconfigExistingLoggers();
+        }
+
 
         private void RenderTypeButton_Click(object sender, RoutedEventArgs e)
         {
