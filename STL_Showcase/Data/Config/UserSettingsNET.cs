@@ -43,6 +43,7 @@ namespace STL_Showcase.Data.Config
             , false             // EnableMaxSizeMBToLoadMeshInView
             , false             // EnableReduceThumbnailResolution
             , false             // EnableReduceThumbnailQuality
+            , true              // EnableViewModelAutoRotation
 
         };
 

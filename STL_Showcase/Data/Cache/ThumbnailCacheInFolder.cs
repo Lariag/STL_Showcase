@@ -270,7 +270,7 @@ namespace STL_Showcase.Data.Cache
                     png.Frames.Add(BitmapFrame.Create(img));
                     png.Save(file);
                 }
-                logger.Debug("Updated file thumbnail for {fileName} for size {size}", fileName, size);
+                // logger.Debug("Updated file thumbnail for {fileName} for size {size}", fileName, size);
             }
             catch (Exception ex)
             {

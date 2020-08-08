@@ -116,10 +116,12 @@ namespace STL_Showcase.Presentation.UI
             ViewportContainer.Child = viewport;
             view3d.SetModel(null);
             view3d.UpdateLights();
+            view3d.SetCameraRotationMode(userSettings.GetSettingBool(UserSettingEnum.EnableViewModelAutoRotation));
 
             _Model3DViewInfo = new Model3DViewInfo();
             View3DText.DataContext = _Model3DViewInfo;
             RenderTypeScrollItemContainer.DataContext = _Model3DViewInfo;
+            ToggleButton3DAutoRotation.IsChecked = userSettings.GetSettingBool(UserSettingEnum.EnableViewModelAutoRotation);
 
             view3d.LoadModelInfoAvailableEvent += LoadModelInfoAvailable;
 
@@ -250,41 +252,8 @@ namespace STL_Showcase.Presentation.UI
                 if ((_ModelItemListData.ThumbnailScalingMode == BitmapScalingMode.LowQuality) != settingsSettingsModified.EnableReduceThumbnailQuality)
                     _ModelItemListData.ThumbnailScalingMode = settingsSettingsModified.EnableReduceThumbnailQuality ? BitmapScalingMode.LowQuality : BitmapScalingMode.HighQuality;
 
-                if (settingsOriginal.EnableReduceThumbnailResolution != settingsSettingsModified.EnableReduceThumbnailResolution)
-                    DefaultFactory.GetDefaultThumbnailCache().ClearCache();
-
                 if (settingsOriginal.CachePath != settingsSettingsModified.CachePath)
-                {
-                    if (_CacheRelocationTask == null)
-                    {
-                        var cacheInstance = DefaultFactory.GetDefaultThumbnailCache();
-                        LoadingDialog loading = new LoadingDialog(Loc.GetTextFormatted(CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading ? "MovingCacheFolderWaiting" : "MovingCacheFolder", cacheInstance.GetCurrentCachePath()), Loc.GetText("CacheFolderSetting"));
-                        loading.ShowAsync();
-
-                        _CacheRelocationTask = Task.Run(async () =>
-                        {
-                            while (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
-                                await Task.Delay(500);
-
-                            await Task.Delay(1000);
-
-                            await Dispatcher.Invoke(async () =>
-                            {
-                                bool cacheMoved = cacheInstance.MoveCacheToNewLocation(settingsOriginal.CachePath, settingsSettingsModified.CachePath);
-                                loading.Hide();
-
-                                if (!cacheMoved)
-                                    await new MessageDialog(Loc.GetTextFormatted("ErrorMovingCacheFolder", cacheInstance.GetCurrentCachePath()), Loc.GetText("CacheFolderSetting"), Loc.GetText("OK"), "", "").ShowAsync();
-                                else
-                                    await new MessageDialog(Loc.GetTextFormatted("CacheMovedToNewLocation", cacheInstance.GetCurrentCachePath()), Loc.GetText("CacheFolderSetting"), Loc.GetText("OK"), "", "").ShowAsync();
-
-
-                                _CacheRelocationTask = null;
-                            });
-
-                        });
-                    }
-                }
+                    SetThumnailCacheFolder(settingsOriginal.CachePath, settingsSettingsModified.CachePath);
 
                 if (settingsOriginal.SelectedThumbnailRenderAspec != settingsSettingsModified.SelectedThumbnailRenderAspec ||
                 settingsOriginal.EnableReduceThumbnailResolution != settingsSettingsModified.EnableReduceThumbnailResolution)
@@ -392,7 +361,7 @@ namespace STL_Showcase.Presentation.UI
                 }
                 else
                 {
-                    _ModelItemListData.ModelListDirectoryFilter = string.Join(System.IO.Path.DirectorySeparatorChar + "", newItem.GetTextsToRoot());
+                    _ModelItemListData.ModelListDirectoryFilter = string.Join(System.IO.Path.DirectorySeparatorChar.ToString(), newItem.GetTextsToRoot());
                     ImageListControl.ItemsSource = _ModelItemListData.ModelListFiltered;
                 }
                 if (_ModelItemListData.SelectedListItem != null)
@@ -914,7 +883,9 @@ namespace STL_Showcase.Presentation.UI
 
         private void ToggleButton3DAutoRotation_Click(object sender, RoutedEventArgs e)
         {
-            view3d.SetCameraRotationMode(((ToggleButton)sender).IsChecked ?? true);
+            bool newState = ((ToggleButton)sender).IsChecked ?? true;
+            userSettings.SetSettingBool(UserSettingEnum.EnableViewModelAutoRotation, newState);
+            view3d.SetCameraRotationMode(newState);
         }
 
 
@@ -953,6 +924,38 @@ namespace STL_Showcase.Presentation.UI
             LogManager.ReconfigExistingLoggers();
         }
 
+        private void SetThumnailCacheFolder(CacheEnums.CachePathType oldPath, CacheEnums.CachePathType newPath)
+        {
+            if (_CacheRelocationTask == null)
+            {
+                var cacheInstance = DefaultFactory.GetDefaultThumbnailCache();
+                LoadingDialog loading = new LoadingDialog(Loc.GetTextFormatted(CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading ? "MovingCacheFolderWaiting" : "MovingCacheFolder", cacheInstance.GetCurrentCachePath()), Loc.GetText("CacheFolderSetting"));
+                loading.ShowAsync();
+
+                _CacheRelocationTask = Task.Run(async () =>
+                {
+                    while (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
+                        await Task.Delay(500);
+
+                    await Task.Delay(1000);
+
+                    await Dispatcher.Invoke(async () =>
+                    {
+                        bool cacheMoved = cacheInstance.MoveCacheToNewLocation(oldPath, newPath);
+                        loading.Hide();
+
+                        if (!cacheMoved)
+                            await new MessageDialog(Loc.GetTextFormatted("ErrorMovingCacheFolder", cacheInstance.GetCurrentCachePath()), Loc.GetText("CacheFolderSetting"), Loc.GetText("OK"), "", "").ShowAsync();
+                        else
+                            await new MessageDialog(Loc.GetTextFormatted("CacheMovedToNewLocation", cacheInstance.GetCurrentCachePath()), Loc.GetText("CacheFolderSetting"), Loc.GetText("OK"), "", "").ShowAsync();
+
+
+                        _CacheRelocationTask = null;
+                    });
+
+                });
+            }
+        }
 
         private void RenderTypeButton_Click(object sender, RoutedEventArgs e)
         {

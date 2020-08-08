@@ -79,7 +79,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="68" Width="68" GroupName="RenderType" Click="RenderTypeButton_Click" Tag="{Binding Index}">
-                                            <Image Source="{Binding Index, Converter={StaticResource stringToUriConverter}, ConverterParameter='Styles/Resources/RenderModes/RenderMode{0}.png'}" Margin="4"/>
+                                            <Image Source="{Binding Index, Converter={StaticResource stringToUriConverter}, ConverterParameter='Styles/Resources/RenderModes/Icosphere/RenderMode{0}.png'}" Margin="4"/>
                                         </RadioButton>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>

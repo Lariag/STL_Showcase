@@ -44,6 +44,7 @@ namespace STL_Showcase.Data.Config
             , false             // EnableMaxSizeMBToLoadMeshInView
             , false             // EnableReduceThumbnailResolution
             , false             // EnableReduceThumbnailQuality
+            , true              // EnableViewModelAutoRotation
 
         };
         private object[] _CurrentSettingsArray;
@@ -81,6 +82,14 @@ namespace STL_Showcase.Data.Config
             {
                 var loadedObject = JsonConvert.DeserializeObject<object[]>(File.ReadAllText(_SettingsFilePath));
                 _CurrentSettingsArray = loadedObject;
+
+                if(_CurrentSettingsArray.Length < _DefaultSettingsArray.Length)
+                { // Fix for adding new settings.
+                    object[] updateLoadedSettings = new object[_DefaultSettingsArray.Length];
+                    _DefaultSettingsArray.CopyTo(updateLoadedSettings, 0);
+                    _CurrentSettingsArray.CopyTo(updateLoadedSettings, 0);
+                    _CurrentSettingsArray = updateLoadedSettings;
+                }
                 SetDefaultSettings(false);
             }
             else

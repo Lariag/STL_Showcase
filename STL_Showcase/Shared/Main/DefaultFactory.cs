@@ -13,7 +13,7 @@ namespace STL_Showcase.Shared.Main
     {
 
         private const ThumbnailCacheFactory.CacheType ThumbnailCacheType = ThumbnailCacheFactory.CacheType.FolderImages;
-        private const RenderEnviorementFactory.EvnType RenderEnviorementType = RenderEnviorementFactory.EvnType.OpenTx;
+        private const RenderEnviorementFactory.EvnType RenderEnviorementType = RenderEnviorementFactory.EvnType.OpenTK;
         private const UserSettingsFactory.SettingsType UserSettingsType = UserSettingsFactory.SettingsType.JSONSettings;
 
         public static IThumbnailCache GetDefaultThumbnailCache()

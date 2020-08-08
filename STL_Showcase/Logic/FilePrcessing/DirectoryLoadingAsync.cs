@@ -73,7 +73,7 @@ namespace STL_Showcase.Logic.FilePrcessing
         private void CalculateThumnailSizes(int filesAmount)
         {
 
-            int[] availableThumnailSizes = {182, 256, 362 }; // 182 512
+            int[] availableThumnailSizes = { 182, 256, 362 }; // 182, 256, 362, 512
             if (userSettings.GetSettingBool(UserSettingEnum.EnableReduceThumbnailResolution))
                 availableThumnailSizes = availableThumnailSizes.Take(availableThumnailSizes.Length / 2).ToArray();
 

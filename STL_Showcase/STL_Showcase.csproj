@@ -309,6 +309,42 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="Content\Autodetect3DSoftwareList.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Loc\en.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Loc\es.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Icosphere\RenderMode0.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Icosphere\RenderMode1.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Icosphere\RenderMode2.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Icosphere\RenderMode3.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Icosphere\RenderMode4.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Icosphere\RenderMode5.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Icosphere\RenderMode6.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Icosphere\RenderMode7.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Icosphere\RenderMode8.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\SphereOld\RenderMode0.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\SphereOld\RenderMode1.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\SphereOld\RenderMode2.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\SphereOld\RenderMode3.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\SphereOld\RenderMode4.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\SphereOld\RenderMode5.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\SphereOld\RenderMode6.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\SphereOld\RenderMode7.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\SphereOld\RenderMode8.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Sphere\RenderMode0.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Sphere\RenderMode1.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Sphere\RenderMode2.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Sphere\RenderMode3.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Sphere\RenderMode4.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Sphere\RenderMode5.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Sphere\RenderMode6.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Sphere\RenderMode7.png" />
+    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\Sphere\RenderMode8.png" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseSettings.png" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseSettingsPerspective2.png" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseSettingsPerspective.png" />
@@ -318,18 +354,9 @@
     <Resource Include="STLShowcaseIconFadedMix.ico" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseLogoFaded.png" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseLogo.png" />
-    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\RenderMode5.png" />
-    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\RenderMode6.png" />
-    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\RenderMode7.png" />
-    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\RenderMode8.png" />
     <Resource Include="Presentation\UI\Styles\Resources\Camera.png" />
     <Resource Include="Presentation\UI\Styles\Resources\CameraReset.png" />
     <Resource Include="Presentation\UI\Styles\Resources\RotationArrows.png" />
-    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\RenderMode0.png" />
-    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\RenderMode1.png" />
-    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\RenderMode2.png" />
-    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\RenderMode3.png" />
-    <Resource Include="Presentation\UI\Styles\Resources\RenderModes\RenderMode4.png" />
     <Resource Include="Presentation\UI\Styles\Resources\FadedColorBar.png" />
     <Resource Include="Presentation\UI\Styles\Resources\STL_Error.png" />
     <Resource Include="Presentation\UI\Styles\Resources\STL_Loading.png" />

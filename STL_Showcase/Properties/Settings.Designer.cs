@@ -274,5 +274,17 @@ namespace STL_Showcase.Properties {
                 this["EnableReduceThumbnailResolution"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableViewModelAutoRotation {
+            get {
+                return ((bool)(this["EnableViewModelAutoRotation"]));
+            }
+            set {
+                this["EnableViewModelAutoRotation"] = value;
+            }
+        }
     }
 }
