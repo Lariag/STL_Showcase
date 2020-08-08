@@ -19,5 +19,6 @@ namespace STL_Showcase.Data.Config
         void SetSettingBool(UserSettingEnum setting, bool val);
         void SetSettingFloat(UserSettingEnum setting, float val);
         void SetSettingSerialized<T>(UserSettingEnum setting, T val);
+        void SetDefaultSettings(bool overrideExisting);
     }
 }

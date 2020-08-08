@@ -190,6 +190,7 @@
     <Compile Include="Data\Cache\ThumbnailCacheFactory.cs" />
     <Compile Include="Data\Config\IUserSettings.cs" />
     <Compile Include="Data\Config\UserSettingsFactory.cs" />
+    <Compile Include="Data\Config\UserSettingsJSON.cs" />
     <Compile Include="Data\Config\UserSettingsNET.cs" />
     <Compile Include="Data\DataObjects\LinkedProgramData.cs" />
     <Compile Include="Logic\FilePrcessing\DirectoryLoadingAsync.cs" />
