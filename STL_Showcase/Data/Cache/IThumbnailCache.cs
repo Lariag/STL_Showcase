@@ -42,9 +42,10 @@ namespace STL_Showcase.Data.Cache
         /// <summary>
         /// Moves all exsisting cache files and folders from current location to the new one.
         /// </summary>
+        /// <param name="oldPath">Origin location.</param>
         /// <param name="newPath">Destination location.</param>
         /// <returns>Bool if success, false if any problem occured.</returns>
-        bool MoveCacheToNewLocation(CachePathType newPath);
+        bool MoveCacheToNewLocation(CachePathType oldPath, CachePathType newPath);
 
         /// <summary>
         /// Gets the full path for the current cache directory.

@@ -227,6 +227,7 @@ namespace STL_Showcase.Presentation.UI
             LoadDirectoryWithDialog();
         }
 
+        Task _CacheRelocationTask;
         private void MenuItemConfiguration_Click(object sender, RoutedEventArgs e)
         {
             ModelConfigSettings settingsOriginal = new ModelConfigSettings();
@@ -251,6 +252,39 @@ namespace STL_Showcase.Presentation.UI
 
                 if (settingsOriginal.EnableReduceThumbnailResolution != settingsSettingsModified.EnableReduceThumbnailResolution)
                     DefaultFactory.GetDefaultThumbnailCache().ClearCache();
+
+                if (settingsOriginal.CachePath != settingsSettingsModified.CachePath)
+                {
+                    if (_CacheRelocationTask == null)
+                    {
+                        var cacheInstance = DefaultFactory.GetDefaultThumbnailCache();
+                        LoadingDialog loading = new LoadingDialog(Loc.GetTextFormatted(CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading ? "MovingCacheFolderWaiting" : "MovingCacheFolder", cacheInstance.GetCurrentCachePath()), Loc.GetText("CacheFolderSetting"));
+                        loading.ShowAsync();
+
+                        _CacheRelocationTask = Task.Run(async () =>
+                        {
+                            while (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
+                                await Task.Delay(500);
+
+                            await Task.Delay(1000);
+
+                            await Dispatcher.Invoke(async () =>
+                            {
+                                bool cacheMoved = cacheInstance.MoveCacheToNewLocation(settingsOriginal.CachePath, settingsSettingsModified.CachePath);
+                                loading.Hide();
+
+                                if (!cacheMoved)
+                                    await new MessageDialog(Loc.GetTextFormatted("ErrorMovingCacheFolder", cacheInstance.GetCurrentCachePath()), Loc.GetText("CacheFolderSetting"), Loc.GetText("OK"), "", "").ShowAsync();
+                                else
+                                    await new MessageDialog(Loc.GetTextFormatted("CacheMovedToNewLocation", cacheInstance.GetCurrentCachePath()), Loc.GetText("CacheFolderSetting"), Loc.GetText("OK"), "", "").ShowAsync();
+
+
+                                _CacheRelocationTask = null;
+                            });
+
+                        });
+                    }
+                }
 
                 if (settingsOriginal.SelectedThumbnailRenderAspec != settingsSettingsModified.SelectedThumbnailRenderAspec ||
                 settingsOriginal.EnableReduceThumbnailResolution != settingsSettingsModified.EnableReduceThumbnailResolution)

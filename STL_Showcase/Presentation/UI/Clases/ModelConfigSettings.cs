@@ -18,15 +18,8 @@ namespace STL_Showcase.Presentation.UI.Clases
 
         public bool EnableDebugLogs { get; set; }
         public RenderAspectEnum SelectedThumbnailRenderAspec { get; set; }
-        public bool UseGridIn3DView { get; set; }
 
-        public bool EnableMeshDecimation { get; set; }
-        public int MinTrianglesForMeshDecimation { get; set; }
-        public bool EnableMaxSizeMBToLoadMeshInView { get; set; }
-        public int MaxSizeMBToLoadMeshInView { get; set; }
-
-        public bool EnableReduceThumbnailResolution { get; set; }
-        public bool EnableReduceThumbnailQuality { get; set; }
+        public CacheEnums.CachePathType CachePath { get; set; }
 
         #endregion General settings
 
@@ -40,7 +33,13 @@ namespace STL_Showcase.Presentation.UI.Clases
 
         #region Advanced settings
 
-        // TODO: Add advanced settings.
+        public bool EnableMeshDecimation { get; set; }
+        public int MinTrianglesForMeshDecimation { get; set; }
+        public bool EnableMaxSizeMBToLoadMeshInView { get; set; }
+        public int MaxSizeMBToLoadMeshInView { get; set; }
+
+        public bool EnableReduceThumbnailResolution { get; set; }
+        public bool EnableReduceThumbnailQuality { get; set; }
 
         #endregion Advanced settings
 
@@ -50,6 +49,7 @@ namespace STL_Showcase.Presentation.UI.Clases
 
             LinkedProgramsData = new ObservableCollection<LinkedProgramData>(userSettings.GetSettingSerialized<List<LinkedProgramData>>(UserSettingEnum.ConfigLinkedProgramsList) ?? new List<LinkedProgramData>());
             EnableDebugLogs = userSettings.GetSettingBool(UserSettingEnum.EnableDebugLogs);
+            CachePath = (CacheEnums.CachePathType)userSettings.GetSettingInt(UserSettingEnum.PreferredCachePath);
             SelectedThumbnailRenderAspec = (RenderAspectEnum)userSettings.GetSettingInt(UserSettingEnum.Thumbnails3DAspect);
 
             EnableMeshDecimation = userSettings.GetSettingBool(UserSettingEnum.EnableMeshDecimation);
@@ -63,6 +63,7 @@ namespace STL_Showcase.Presentation.UI.Clases
 
             NotifyPropertyChanged(nameof(LinkedProgramsData));
             NotifyPropertyChanged(nameof(EnableDebugLogs));
+            NotifyPropertyChanged(nameof(CachePath));
             NotifyPropertyChanged(nameof(SelectedThumbnailRenderAspec));
             NotifyPropertyChanged(nameof(EnableMeshDecimation));
             NotifyPropertyChanged(nameof(MinTrianglesForMeshDecimation));
@@ -78,6 +79,7 @@ namespace STL_Showcase.Presentation.UI.Clases
 
             userSettings.SetSettingSerialized<List<LinkedProgramData>>(UserSettingEnum.ConfigLinkedProgramsList, LinkedProgramsData.ToList());
             userSettings.SetSettingBool(UserSettingEnum.EnableDebugLogs, EnableDebugLogs);
+            userSettings.SetSettingInt(UserSettingEnum.PreferredCachePath, (int)CachePath);
             userSettings.SetSettingInt(UserSettingEnum.Thumbnails3DAspect, (int)SelectedThumbnailRenderAspec);
 
             userSettings.SetSettingBool(UserSettingEnum.EnableMeshDecimation, EnableMeshDecimation);

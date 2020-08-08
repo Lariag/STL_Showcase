@@ -21,7 +21,7 @@ namespace STL_Showcase.Data.Cache
 
         public static ThumbnailCacheInFolder Instance { get; private set; }
         static NLog.Logger logger = NLog.LogManager.GetLogger("Cache");
-        const string CacheFolderName = "STLShowcaseImageCache";
+        static string CacheFolderName = "STLShowcaseImageCache";
         IUserSettings settings;
 
         #endregion
@@ -285,9 +285,51 @@ namespace STL_Showcase.Data.Cache
         {
             return GetCachePath();
         }
-        public bool MoveCacheToNewLocation(CachePathType newPath)
+
+        public bool MoveCacheToNewLocation(CachePathType oldPath, CachePathType newPath)
         {
-            return false;
+            string currentCachePath = GetCachePath(pathType: oldPath);
+            string newCachePath = GetCachePath(pathType: newPath);
+
+            try
+            {
+                logger.Info("Moving cache folder from [{currentCachePath}] to [{newCachePath}]", currentCachePath, newCachePath);
+
+                IEnumerable<string> cacheFiles = UtilMethods.EnumerateFiles(currentCachePath, "*.png", SearchOption.AllDirectories).ToArray();
+
+                if (Path.GetPathRoot(currentCachePath) == Path.GetPathRoot(newCachePath))
+                {
+                    Directory.Move(currentCachePath, newCachePath);
+                }
+                else
+                {
+                    if (!Directory.Exists(newCachePath))
+                        Directory.CreateDirectory(newCachePath);
+
+                    foreach (string cacheFile in cacheFiles)
+                    {
+                        var imageSize = Path.GetDirectoryName(cacheFile).Split(Path.DirectorySeparatorChar).Last();
+                        string newImageDir = Path.Combine(newCachePath, imageSize);
+
+                        if (!Directory.Exists(newImageDir))
+                            Directory.CreateDirectory(newImageDir);
+
+                        File.Copy(cacheFile, Path.Combine(newImageDir, Path.GetFileName(cacheFile)), true);
+
+                    }
+
+                    foreach (string cacheFile in cacheFiles)
+                        File.Delete(cacheFile);
+
+                    Directory.Delete(currentCachePath, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Error when moving cache folder from [{currentCachePath}] to [{newCachePath}]", currentCachePath, newCachePath);
+                return false;
+            }
+            return true;
         }
 
         public bool CheckThumbnailExists(string filePath, string fileName, RenderAspectEnum renderType, int thumbnailSize)
@@ -304,6 +346,7 @@ namespace STL_Showcase.Data.Cache
                 return false;
             }
         }
+
         #endregion
 
         #region Private methods
@@ -326,27 +369,26 @@ namespace STL_Showcase.Data.Cache
             }
         }
 
-        private string GetCachePath(int size = 0)
+        private string GetCachePath(int size = 0, CachePathType? pathType = null)
         {
             string cachePath = "";
 
-            CachePathType cachePathLocation = (CachePathType)settings.GetSettingInt(Shared.Enums.UserSettingEnum.PreferredCachePath);
+            CachePathType cachePathLocation = pathType.HasValue ? pathType.Value : (CachePathType)settings.GetSettingInt(Shared.Enums.UserSettingEnum.PreferredCachePath);
             switch (cachePathLocation)
             {
                 case CachePathType.ApplicationFolder:
                     cachePath = Path.Combine(AppContext.BaseDirectory, CacheFolderName);
                     break;
                 case CachePathType.UserDataFolder:
-                    cachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), CacheFolderName);
+                    cachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "STLShowcase", CacheFolderName);
                     break;
-                case CachePathType.UserImagesFolder:
-                    cachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), CacheFolderName);
-                    break;
+                    //case CachePathType.UserImagesFolder:
+                    //    cachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "STLShowcase", CacheFolderName);
+                    //    break;
             }
 
             if (size > 0)
                 cachePath = Path.Combine(cachePath, size.ToString());
-            // logger.Info("Using cache folder {cachePath}", cachePath);
 
             return cachePath;
         }
