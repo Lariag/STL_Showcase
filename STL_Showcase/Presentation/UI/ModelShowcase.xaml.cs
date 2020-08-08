@@ -136,7 +136,7 @@ namespace STL_Showcase.Presentation.UI
         {
 
             DefaultImageErrorModel = new BitmapImage(new Uri("pack://application:,,,/Presentation/UI/Styles/Resources/STL_Error.png", UriKind.Absolute));
-            DefaultImageLoading = new BitmapImage(new Uri("pack://application:,,,/Presentation/UI/Styles/Resources/STL_Loading.png", UriKind.Absolute));
+            DefaultImageLoading = new BitmapImage(new Uri("pack://application:,,,/Presentation/UI/Styles/Resources/STL_Loading2.png", UriKind.Absolute));
         }
 
         private void InitializeDirectoryLoading()
