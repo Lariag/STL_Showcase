@@ -11,15 +11,18 @@ namespace STL_Showcase.Data.Config
 
         public enum SettingsType
         {
-            RegularSettings
+            NETSettings,
+            JSONSettings
         }
 
         public static IUserSettings GetSettings(SettingsType t)
         {
             switch (t)
             {
-                case SettingsType.RegularSettings:
+                case SettingsType.NETSettings:
                     return UserSettingsNET.Instance;
+                case SettingsType.JSONSettings:
+                    return UserSettingsJSON.Instance;
                 default:
                     throw new NotImplementedException($"Settings mode for {t.ToString()} is not implemented.");
             }

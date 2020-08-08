@@ -2,6 +2,7 @@
 using STL_Showcase.Shared.Enums;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,17 +10,17 @@ using System.Threading.Tasks;
 
 namespace STL_Showcase.Data.Config
 {
-    class UserSettingsNET : IUserSettings
+    class UserSettingsJSON : IUserSettings
     {
         #region Properties
 
         static NLog.Logger logger = NLog.LogManager.GetLogger("Settings");
 
-        public static UserSettingsNET Instance { get; private set; }
+        public static UserSettingsJSON Instance { get; private set; }
+
+        private static string _SettingsFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "STLShowcase", "STLShowcase_Settings.json");
 
         private bool _ConfigChanged = false;
-
-        private readonly Dictionary<UserSettingEnum, PropertyInfo> _PropertyInfoDictinary = new Dictionary<UserSettingEnum, PropertyInfo>();
 
         private object[] _DefaultSettingsArray = {
               0                 // PreferredCachePath
@@ -45,47 +46,74 @@ namespace STL_Showcase.Data.Config
             , false             // EnableReduceThumbnailQuality
 
         };
+        private object[] _CurrentSettingsArray;
 
         #endregion Properties
 
         #region Initialization
 
-        static UserSettingsNET()
+        static UserSettingsJSON()
         {
-            Instance = new UserSettingsNET();
+            Instance = new UserSettingsJSON();
         }
 
-        private UserSettingsNET()
+        private UserSettingsJSON()
         {
-            logger.Info("Initializing application settings with {0}.", nameof(UserSettingsNET));
+            logger.Info("Initializing application settings with {0}.", nameof(UserSettingsJSON));
 
-            string[] enumNames = Enum.GetNames(typeof(UserSettingEnum));
-            foreach (var prop in Properties.Settings.Default.GetType().GetProperties().Where(p => enumNames.Contains(p.Name)))
-            {
-                UserSettingEnum propEnum = (UserSettingEnum)Enum.Parse(typeof(UserSettingEnum), prop.Name);
-                _PropertyInfoDictinary.Add(propEnum, prop);
-            }
+            LoadSettingsFromFile();
+
             Task.Run(() => SaveSettingsTask(this));
         }
 
-        ~UserSettingsNET()
+        ~UserSettingsJSON()
         {
-            Properties.Settings.Default.Save();
+            SaveSettingsTask(this);
         }
 
         #endregion Initialization
 
         #region Private Methods
 
-        private async void SaveSettingsTask(UserSettingsNET ins)
+        private void LoadSettingsFromFile()
+        {
+            if (File.Exists(_SettingsFilePath))
+            {
+                var loadedObject = JsonConvert.DeserializeObject<object[]>(File.ReadAllText(_SettingsFilePath));
+                _CurrentSettingsArray = loadedObject;
+                SetDefaultSettings(false);
+            }
+            else
+            {
+                _CurrentSettingsArray = new object[_DefaultSettingsArray.Length];
+                SetDefaultSettings(true);
+                _ConfigChanged = true;
+            }
+        }
+
+        private async void SaveSettingsTask(UserSettingsJSON ins)
         {
             while (true)
             {
                 if (ins._ConfigChanged)
                 {
-                    Properties.Settings.Default.Save();
+                    try
+                    {
+                        logger.Info("Saving settings to disk with {0} at {1}", nameof(UserSettingsJSON), _SettingsFilePath);
+
+                        lock (_CurrentSettingsArray)
+                        {
+                            if (!Directory.Exists(Path.GetDirectoryName(_SettingsFilePath)))
+                                Directory.CreateDirectory(Path.GetDirectoryName(_SettingsFilePath));
+
+                            File.WriteAllText(_SettingsFilePath, JsonConvert.SerializeObject(_CurrentSettingsArray));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Debug(ex, "Error when saving settings to disk with {0} at {1}", nameof(UserSettingsJSON), _SettingsFilePath);
+                    }
                     ins._ConfigChanged = false;
-                    logger.Info("Saving settings to disk with {0}.", nameof(UserSettingsNET));
                 }
                 await Task.Delay(10000);
             }
@@ -95,20 +123,15 @@ namespace STL_Showcase.Data.Config
         {
             _ConfigChanged = false;
 
-            if (_PropertyInfoDictinary.TryGetValue(setting, out PropertyInfo prop))
-                prop.SetValue(Properties.Settings.Default, val);
+            _CurrentSettingsArray[(int)setting] = val;
 
             _ConfigChanged = true;
         }
         private T GetSetting<T>(UserSettingEnum setting)
         {
-
-            _PropertyInfoDictinary.TryGetValue(setting, out PropertyInfo prop);
-            object val = prop.GetValue(Properties.Settings.Default);
-
+            object val = _CurrentSettingsArray[(int)setting];
             T valConverted = val == null ? default(T) : (T)Convert.ChangeType(val, typeof(T));
             return valConverted;
-
         }
 
         #endregion Private Methods
@@ -139,6 +162,7 @@ namespace STL_Showcase.Data.Config
 
         public T GetSettingSerialized<T>(UserSettingEnum setting)
         {
+            //return GetSetting<T>(setting);
             string objectSerialized = GetSetting<string>(setting) ?? string.Empty;
             return string.IsNullOrEmpty(objectSerialized) ? default : JsonConvert.DeserializeObject<T>(objectSerialized);
         }
@@ -169,20 +193,18 @@ namespace STL_Showcase.Data.Config
 
         public void SetSettingSerialized<T>(UserSettingEnum setting, T val)
         {
+            //SetSetting(setting, val);
             SetSetting(setting, JsonConvert.SerializeObject(val));
         }
 
         public void SetDefaultSettings(bool overrideExisting)
         {
-            if (!overrideExisting)
-                throw new NotImplementedException("Not overriding option is not implemented. Can only call UserSettingsNET.SetDefaultSettings() with overrideExisting = true.");
-
-            var enumSettings = (UserSettingEnum[])Enum.GetValues(typeof(UserSettingEnum));
-            for (int i = 0; i < enumSettings.Length; i++)
-            {
-                SetSetting(enumSettings[i], _DefaultSettingsArray[(int)enumSettings[i]]);
-            }
+            for (int i = 0; i < _DefaultSettingsArray.Length; i++)
+                if (_CurrentSettingsArray[i] == null || overrideExisting)
+                    _CurrentSettingsArray[i] = _DefaultSettingsArray[i];
         }
+
+
         #endregion Setters
 
         #endregion IUserSettings
