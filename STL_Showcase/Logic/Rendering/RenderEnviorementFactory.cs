@@ -12,7 +12,7 @@ namespace STL_Showcase.Logic.Rendering
         public enum EvnType
         {
             Viewport3D // Yes its a wpf viewport pls dont hate me.
-            , OpenTx
+            , OpenTK
         }
 
         public static IRenderEnviorement CreateEnviorement(EvnType t, int renderResolution)
@@ -21,7 +21,7 @@ namespace STL_Showcase.Logic.Rendering
             {
                 case EvnType.Viewport3D:
                     return new RenderEnv_ViewPort3D(renderResolution);
-                case EvnType.OpenTx:
+                case EvnType.OpenTK:
                     return new RenderEnv_OpenTK(renderResolution);
                 default:
                     throw new NotImplementedException($"Rendering Enviorement for {t.ToString()} is not implemented.");

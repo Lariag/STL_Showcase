@@ -261,7 +261,7 @@ namespace STL_Showcase.Presentation.UI
         private async Task<IEnumerable<string>> AutoFillProgramsTableAsync()
         {
             string appPath = System.IO.Path.GetDirectoryName(Assembly.GetAssembly(typeof(ConfigurationWindow)).Location);
-            string programsListFile = System.IO.Path.Combine(appPath, "Autodetect3DSoftwareList.txt");
+            string programsListFile = System.IO.Path.Combine(appPath, "Content", "Autodetect3DSoftwareList.txt");
 
             if (!System.IO.File.Exists(programsListFile))
             {
@@ -315,7 +315,7 @@ namespace STL_Showcase.Presentation.UI
         {
             logger.Info("Settings window: AutoDetectProgramsAsync");
 
-            LoadingDialog loading = new LoadingDialog(Loc.GetText("LookingFor3dSoftwareShortcuts"), string.Empty, Loc.GetText("AutoDetect3DSoftware"));
+            LoadingDialog loading = new LoadingDialog(Loc.GetText("LookingFor3dSoftwareShortcuts"), Loc.GetText("AutoDetect3DSoftware"));
 
             loading.ShowAsync();
 

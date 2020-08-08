@@ -524,7 +524,7 @@
                                         <DataTemplate>
                                             <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="70" Width="70" GroupName="RenderType" Click="RenderTypeButton_Click" Tag="{Binding Index}"
                                                          IsChecked="{Binding SelectedRenderAspect, Converter={StaticResource radioBoolToStringConverter}}">
-                                                <Image Source="{Binding Index, Converter={StaticResource stringToUriConverter}, ConverterParameter='Styles/Resources/RenderModes/RenderMode{0}.png'}" Margin="4"/>
+                                                <Image Source="{Binding Index, Converter={StaticResource stringToUriConverter}, ConverterParameter='Styles/Resources/RenderModes/Icosphere/RenderMode{0}.png'}" Margin="4"/>
                                             </RadioButton>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>

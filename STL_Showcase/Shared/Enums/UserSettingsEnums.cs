@@ -29,6 +29,7 @@ namespace STL_Showcase.Shared.Enums
         , EnableMaxSizeMBToLoadMeshInView
         , EnableReduceThumbnailResolution
         , EnableReduceThumbnailQuality
+        , EnableViewModelAutoRotation
     }
 
 }

@@ -108,7 +108,7 @@ namespace STL_Showcase.Logic.Localization
         private void LoadTexts()
         {
             string appPath = Path.GetDirectoryName(Assembly.GetAssembly(typeof(Loc)).Location);
-            string localizationPath = Path.Combine(appPath, "Loc");
+            string localizationPath = Path.Combine(appPath, "Content", "Loc");
             string[] localizationFiles = Directory.GetFiles(localizationPath, "*.txt");
 
             logger.Debug("Localization: Loading texts from path: {0}", localizationPath);
