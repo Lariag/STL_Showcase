@@ -53,17 +53,20 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
-                        <RowDefinition Height="2"/>
+                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
                     <TextBlock x:Name="tbLanguageSetting" Text="Language" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
                     <ComboBox Name="cbLanguage" ItemsSource="{Binding SupportedLanguages}" Style="{StaticResource DataGridComboBoxStyle}"  Grid.Row="0" Grid.Column="1"/>
 
-                    <TextBlock x:Name="tbEnableDebugLogs" Text="Enable Debug Logs" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
-                    <CheckBox x:Name="chkEnableDebugLogs" Grid.Row="1" Grid.Column="1" IsChecked="{Binding EnableDebugLogs}"/>
+                    <TextBlock x:Name="tbCacheFolder" Text="Language" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                    <ComboBox Name="cbCacheFolder" ItemsSource="{Binding CacheFolders}" Style="{StaticResource DataGridComboBoxStyle}"  Grid.Row="1" Grid.Column="1"/>
 
-                    <TextBlock x:Name="tbThumnailStyle" Text="Thumbnail Style" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                    <TextBlock x:Name="tbEnableDebugLogs" Text="Enable Debug Logs" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="chkEnableDebugLogs" Grid.Row="2" Grid.Column="1" IsChecked="{Binding EnableDebugLogs}"/>
+
+                    <TextBlock x:Name="tbThumnailStyle" Text="Thumbnail Style" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <DockPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
                         <Border Style="{StaticResource BorderSeparatorStyleVertical}" DockPanel.Dock="Left"/>
                         <Border Style="{StaticResource BorderSeparatorStyleVertical}" DockPanel.Dock="Right"/>
                         <ScrollViewer x:Name="RenderTypeScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0 0 0 -8" PreviewMouseWheel="RenderTypeScrollViewer_PreviewMouseWheel" >

@@ -11,7 +11,6 @@ namespace STL_Showcase.Shared.Enums
         public enum CachePathType
         {
             UserDataFolder
-            , UserImagesFolder
             , ApplicationFolder
         }
 

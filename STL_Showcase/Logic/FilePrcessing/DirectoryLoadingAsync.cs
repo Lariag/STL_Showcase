@@ -404,6 +404,9 @@ namespace STL_Showcase.Logic.FilePrcessing
             this.FileReadyEvent?.Invoke(fileData, cacheImages?.Select(ci => ci.Item1).ToArray(), result);
             this.ReportProgressEvent?.Invoke(FilesReady);
 
+            if (FilesToProcess == 0 && FilesBeingProcessed == 0)
+                IsLoading = false;
+
             //if (result != LoadResultEnum.Okay)
             //    MainDispatcher.Invoke(new Action(() =>
             //    {

@@ -103,3 +103,12 @@ tooltipGenerateThumnailLowRes Renders the thumbnails at lower resolution to redu
 tooltipUseFastThumbnailDrawing Uses lower quality scaling to display the thumbnail images, improving performance.
 UnableOpenCacheFolder Unable to open cache folder: {0}
 CacheFolderDontExistsYet The cache folder has not been created yet.
+ErrorMovingCacheFolder There was a problem when moving the cache files to a new location.
+CacheFolderSetting Cache Images Directory
+UserDataFolder User application data folder
+UserImagesFolder User images folder
+ApplicationFolder Installation direcory
+CacheMovedToNewLocation Cache successfully moved to a new location: {0}
+MovingCacheFolder Moving cache folder to {0}
+MovingCacheFolderWaiting Moving cache folder to {0}.\nWaiting to finish the current directory loading operation...
+tooltipCacheFolderSetting The directory where the cache images will be stored. Change it only if you lack space in the default location.

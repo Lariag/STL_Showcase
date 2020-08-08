@@ -130,6 +130,8 @@ namespace STL_Showcase.Logic.Localization
 
                 foreach (string line in File.ReadLines(localizationFiles[i], Encoding.GetEncoding(1252))) // Set high-ANSI encoding (found at: https://stackoverflow.com/a/37145016)
                 {
+                    if (line.Length < 2) continue;
+
                     int separationIndex = line.IndexOf(' ');
                     if (!newTexts.ContainsKey(line.Substring(0, separationIndex)))
                         newTexts.Add(line.Substring(0, separationIndex), line.Substring(separationIndex + 1).Replace(@"\n", "\n"));

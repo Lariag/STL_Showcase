@@ -44,6 +44,8 @@ namespace STL_Showcase.Presentation.UI
 
         public ObservableCollection<ComboboxItemToString> SupportedLanguages { get; set; }
 
+        public ObservableCollection<ComboboxItemToString> CacheFolders { get; set; }
+
         public class ComboboxItemToString
         {
             public string ID { get; set; }
@@ -60,6 +62,7 @@ namespace STL_Showcase.Presentation.UI
 
             _model3DViewInfo = new Model3DViewInfo();
             cbLanguage.DataContext = this;
+            cbCacheFolder.DataContext = this;
 
             logger.Info("Opened settings window");
 
@@ -75,6 +78,8 @@ namespace STL_Showcase.Presentation.UI
             {
                 GeneralSettings.Header = Loc.GetText("GeneralSettingsName");
                 tbLanguageSetting.Text = Loc.GetText("Language");
+                tbCacheFolder.Text = Loc.GetText("CacheFolderSetting");
+                tbCacheFolder.ToolTip = Loc.GetText("tooltipCacheFolderSetting");
                 tbEnableDebugLogs.Text = Loc.GetText("EnableDebugLogs");
                 tbThumnailStyle.Text = Loc.GetText("ThumbnailStyle");
             }
@@ -123,6 +128,14 @@ namespace STL_Showcase.Presentation.UI
                     .OrderBy(cbi => cbi.DisplayName));
 
                 cbLanguage.SelectedItem = SupportedLanguages.FirstOrDefault(cbi => cbi.ID == Loc.Ins.CurrentLanguage);
+
+                IEnumerable<CacheEnums.CachePathType> cachePathTypes = (CacheEnums.CachePathType[])Enum.GetValues(typeof(CacheEnums.CachePathType));
+                CacheFolders = new ObservableCollection<ComboboxItemToString>(cachePathTypes
+                    .Select(n => new ComboboxItemToString() { ID = ((int)n).ToString(), DisplayName = Loc.GetText(n.ToString()) })
+                    .OrderBy(n => n.DisplayName));
+
+                cbCacheFolder.SelectedItem = CacheFolders.FirstOrDefault(cbi => cbi.ID == ((int)_modelConfigSettings.CachePath).ToString());
+
 
                 chkEnableDebugLogs.DataContext = _modelConfigSettings;
 
@@ -188,6 +201,7 @@ namespace STL_Showcase.Presentation.UI
         private void btnAccept_Click(object sender, RoutedEventArgs e)
         {
             logger.Info("Settings window: Accept");
+            _modelConfigSettings.CachePath = (CacheEnums.CachePathType)(int.TryParse(((ComboboxItemToString)cbCacheFolder.SelectedItem).ID, out int newCachePath) ? newCachePath : 0);
             _modelConfigSettings.SaveSettings();
             Loc.Ins.SetLanguage(((ComboboxItemToString)cbLanguage.SelectedItem).ID);
             this.DialogResult = true;
