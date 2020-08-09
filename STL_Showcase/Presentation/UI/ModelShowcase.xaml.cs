@@ -67,7 +67,9 @@ namespace STL_Showcase.Presentation.UI
         DirectoryLoadingAsync CurrentDirectoryLoader;
 
         public BitmapImage DefaultImageErrorModel { get; set; }
+        private BitmapSource[] DefaultImageErrorModelArray;
         public BitmapImage DefaultImageLoading { get; set; }
+        private BitmapSource[] DefaultImageLoadingArray;
 
         #endregion
 
@@ -136,7 +138,10 @@ namespace STL_Showcase.Presentation.UI
         {
 
             DefaultImageErrorModel = new BitmapImage(new Uri("pack://application:,,,/Presentation/UI/Styles/Resources/STL_Error.png", UriKind.Absolute));
+            DefaultImageErrorModelArray = new[] { DefaultImageErrorModel };
             DefaultImageLoading = new BitmapImage(new Uri("pack://application:,,,/Presentation/UI/Styles/Resources/STL_Loading2.png", UriKind.Absolute));
+            DefaultImageLoadingArray = new[] { DefaultImageLoading };
+
         }
 
         private void InitializeDirectoryLoading()
@@ -629,13 +634,14 @@ namespace STL_Showcase.Presentation.UI
                 if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
                     _ = this.Dispatcher.BeginInvoke(() =>
                       {
-                          var listItem = this._ModelItemListData.GetFromInternalDictionary(modelFile.FileFullPath);
+                          ModelListItem listItem = this._ModelItemListData.GetFromInternalDictionary(modelFile.FileFullPath);
                           if (listItem != null)
                           {
                               BitmapSource[] images = cacheImages;
                               if (result != LoadResultEnum.Okay)
                               {
-                                  images = new BitmapSource[] { DefaultImageErrorModel };
+                                  images = DefaultImageErrorModelArray;
+                                  listItem.ErrorMessage = Loc.GetText(result.ToString());
                               }
                               listItem.SetImages(images);
                           }
@@ -741,7 +747,8 @@ namespace STL_Showcase.Presentation.UI
                                 var modelListItem = new ModelListItem();
                                 modelListItem.FileData = fileData.Item1;
                                 modelListItem.ScalingMode = thumnailScalingMode;
-                                modelListItem.SetImages(new BitmapSource[] { fileData.Item2 == LoadResultEnum.Okay ? DefaultImageLoading : DefaultImageErrorModel });
+                                modelListItem.SetImages(fileData.Item2 == LoadResultEnum.Okay ? DefaultImageLoadingArray : DefaultImageErrorModelArray);
+                                modelListItem.ErrorMessage = fileData.Item2 == LoadResultEnum.Okay ? string.Empty : Loc.GetText(fileData.Item2.ToString());
                                 newModelList.Add(modelListItem);
                             }
                             this.Dispatcher.Invoke(() =>
@@ -845,7 +852,7 @@ namespace STL_Showcase.Presentation.UI
                 }
                 catch (Exception ex)
                 {
-                    // TODO: Log unexpected error
+                    mainLogger.Trace(ex, "An unexpected error happened when loading directories.");
                 }
                 finally
                 {
@@ -904,6 +911,8 @@ namespace STL_Showcase.Presentation.UI
                         switch (target.Name)
                         {
                             case "AllFileLog":
+                            case "Loader":
+                            case "Parser":
                                 minLevel = LogLevel.Trace; break;
                             case "GeneralLogFile":
                                 minLevel = LogLevel.Debug; break;

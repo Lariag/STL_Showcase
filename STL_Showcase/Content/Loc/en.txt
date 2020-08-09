@@ -112,3 +112,16 @@ CacheMovedToNewLocation Cache successfully moved to a new location: {0}
 MovingCacheFolder Moving cache folder to {0}
 MovingCacheFolderWaiting Moving cache folder to {0}.\nWaiting to finish the current directory loading operation...
 tooltipCacheFolderSetting The directory where the cache images will be stored. Change it only if you lack space in the default location.
+ErrorReadingFileData Error reading the properties of the file
+ErrorLoadingThumbnails Error loading existing thumbnails
+ErrorAddingThumbnailsToList Error adding thumnails to list
+ErrorReadingFileBytes Error reading file content
+ErrorParsing Error parsing the file content
+ErrorRendering Error rendering the model
+NotEnoughFreeMemory Not enough memory available
+ErrorRetrievingLoadedCache Error retrieving loaded cache images
+ErrorRetrievingRenderedCache Error retrieving rendered cache images
+ErrorSavingCacheFile Error saving rendered cache files
+OpenLogsFolder Open logs folder
+LogsFolderDontExists The logs folder doesn't exists yet.
+ErrorOpeningLogsFolder There was an error when trying to open the debug logs folder.\nCheck the debug logs for more info (good luck with that).

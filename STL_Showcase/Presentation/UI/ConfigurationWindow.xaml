@@ -63,7 +63,11 @@
                     <ComboBox Name="cbCacheFolder" ItemsSource="{Binding CacheFolders}" Style="{StaticResource DataGridComboBoxStyle}"  Grid.Row="1" Grid.Column="1"/>
 
                     <TextBlock x:Name="tbEnableDebugLogs" Text="Enable Debug Logs" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
-                    <CheckBox x:Name="chkEnableDebugLogs" Grid.Row="2" Grid.Column="1" IsChecked="{Binding EnableDebugLogs}"/>
+                    <CheckBox x:Name="chkEnableDebugLogs" Grid.Row="2" Grid.Column="1" IsChecked="{Binding EnableDebugLogs}" VerticalContentAlignment="Center">
+                        <CheckBox.Content>
+                            <Button Name="btnOpenLogsFolder" IsEnabled="{Binding ElementName=chkEnableDebugLogs, Path=IsChecked}" Content="Open logs folder" Style="{StaticResource AccentButtonStyle}" Padding="0" Click="btnOpenLogsFolder_Click"/>
+                        </CheckBox.Content>
+                    </CheckBox>
 
                     <TextBlock x:Name="tbThumnailStyle" Text="Thumbnail Style" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource SubtitleTextBlockStyle}"/>
                     <DockPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
@@ -79,7 +83,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="68" Width="68" GroupName="RenderType" Click="RenderTypeButton_Click" Tag="{Binding Index}">
-                                            <Image Source="{Binding Index, Converter={StaticResource stringToUriConverter}, ConverterParameter='Styles/Resources/RenderModes/Icosphere/RenderMode{0}.png'}" Margin="4"/>
+                                            <Image Source="{Binding Index, Converter={StaticResource stringToUriConverter}, ConverterParameter='Styles/Resources/RenderModes/Icosphere/RenderMode{0}.png'}" Margin="4" RenderOptions.BitmapScalingMode="HighQuality"/>
                                         </RadioButton>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>

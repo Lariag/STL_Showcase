@@ -112,3 +112,16 @@ CacheMovedToNewLocation Cache movida a nuevo directorio: {0}
 MovingCacheFolder Moviendo cache a {0}
 MovingCacheFolderWaiting Moviendo cache a {0}.\nEsperando que termine la carga de directorios actual...
 tooltipCacheFolderSetting El directorio en el que se almacenan las imágenes de cache. Cámbialo solo si no tienes espacio suficiente en el directorio por defecto.
+ErrorReadingFileData Error leyendo las propiedades del fichero
+ErrorLoadingThumbnails Error cargando las miniaturas desde la cache
+ErrorAddingThumbnailsToList Error añadiendo las miniaturas a la lista
+ErrorReadingFileBytes Error leyendo el contenido del fichero
+ErrorParsing Error procesando el contenido del fichero
+ErrorRendering Error renderizando el modelo
+NotEnoughFreeMemory El fichero ocupa demasiada memoria
+ErrorRetrievingLoadedCache Error obteniendo las imágenes de la cache
+ErrorRetrievingRenderedCache Error obteniendo las imágenes renderizadas
+ErrorSavingCacheFile Error almacenando las imágenes en la cache
+OpenLogsFolder Abrir carpeta de logs
+LogsFolderDontExists La carpeta de logs no existe todavía
+ErrorOpeningLogsFolder Ocurrió un error al intentar abrir la carpeta de logs.\nPara más información, revisa los logs (buena suerte intentándolo).

@@ -85,14 +85,14 @@ namespace STL_Showcase.Presentation.UI.Clases
             Viewport.CameraChanged += Viewport_CameraChanged;
 
             Viewport.IsMoveEnabled = false;
-            Viewport.IsPanEnabled = false;
+            Viewport.IsPanEnabled = true;
             Viewport.IsManipulationEnabled = false;
             Viewport.IsHeadLightEnabled = false;
 
             Viewport.RotationSensitivity = 1;
             Viewport.ClipToBounds = true;
 
-            Viewport.LimitFPS = true;
+            Viewport.LimitFPS = false;
             Viewport.ShowFrameRate = true;
 
             ModelAutoRotationEnabled = true;
