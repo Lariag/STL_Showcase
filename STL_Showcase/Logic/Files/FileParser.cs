@@ -16,6 +16,7 @@ namespace STL_Showcase.Logic.Files
     class FileParser
     {
 
+        static NLog.Logger logger = NLog.LogManager.GetLogger("Parser");
         const string FloatStringPattern = @"([+\-]?(?:0|[1-9]\d*)(?:\.\d*)?(?:[eE][+\-]?\d+)?)";
 
         /// <summary>
@@ -42,20 +43,33 @@ namespace STL_Showcase.Logic.Files
 
         public static Supported3DFiles CheckFileType(ModelFileData fileData)
         {
+            byte[] byteBuffer = new byte[100];
+
+            if (fileData.HasBytes())
+            {
+                // Has enough bytes?
+                if (!fileData.ReadBytes(byteBuffer, 0, 0, byteBuffer.Length))
+                    return Supported3DFiles.Unsuportted;
+
+                // Check if some evil being renamed some PNG file to one of the supported formats.
+                if (byteBuffer[0] == 137 && byteBuffer[1] == 80 && byteBuffer[2] == 78 && byteBuffer[3] == 71 && byteBuffer[4] == 13 && byteBuffer[5] == 10 && byteBuffer[6] == 26 && byteBuffer[7] == 10)
+                    return Supported3DFiles.Unsuportted;
+
+                // Or maybe a JPG.
+                if (byteBuffer[0] == 0xFF && byteBuffer[1] == 0xD8 && byteBuffer[2] == 0xFF)
+                    return Supported3DFiles.Unsuportted;
+            }
+
             if (fileData.FileName.EndsWith(".stl", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (!fileData.HasBytes())
-                    return Supported3DFiles.STL_Binary;
-
-                byte[] byteBuffer = new byte[100];
-                if (!fileData.ReadBytes(byteBuffer, 0, 0, byteBuffer.Length))
-                    return Supported3DFiles.Unsuportted;
+                    return Supported3DFiles.STL_Binary; // Return default STL format.
 
                 // If doesnt start with "solid", its always binary.
                 if (!(Encoding.ASCII.GetString(byteBuffer, 0, 5) == "solid"))
                     return Supported3DFiles.STL_Binary;
 
-                // But some binary files also start with solid, so check the header and wish bad omen to whoever created such files.
+                // EXCEPT, that some binary files also start with solid, so check the header and wish bad omen to whoever created such files.
                 string header = Encoding.ASCII.GetString(byteBuffer, 0, 100);
                 for (int i = 0; i < header.Length; i++)
                 {
@@ -95,11 +109,14 @@ namespace STL_Showcase.Logic.Files
             if (triangleAmount <= 0 || fileData.BytesLength < 80 + triangleAmount * 50)
                 return null;
 
-            SegmentedArray<int> triangles = new SegmentedArray<int>(triangleAmount * 3);
-            SegmentedArray<Mesh3D.Vertexh> vertices = new SegmentedArray<Mesh3D.Vertexh>(triangleAmount * 3);
-
             try
             {
+                if (triangleAmount <= 0 || triangleAmount > 10000000)
+                    throw new Exception("The STLBinary file has too many triangles.");
+
+                SegmentedArray<int> triangles = new SegmentedArray<int>(triangleAmount * 3);
+                SegmentedArray<Mesh3D.Vertexh> vertices = new SegmentedArray<Mesh3D.Vertexh>(triangleAmount * 3);
+
                 for (int i = 0; i < triangles.Length;)
                 {
                     // Skip reading the facet normal (why STL come with normals???).
@@ -138,8 +155,9 @@ namespace STL_Showcase.Logic.Files
 
                 return new Mesh3D(vertices, triangles);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                logger.Trace(ex, "Exception when processing file: {FileName}, {FileSizeKB}, {FileType}", fileData.FileName, fileData.FileSizeKB, fileData.FileType.ToString());
                 return null;
             }
         }
@@ -178,6 +196,7 @@ namespace STL_Showcase.Logic.Files
             }
             catch (Exception ex)
             {
+                logger.Trace(ex, "Exception when processing file: {FileName}, {FileSizeKB}, {FileType}", fileData.FileName, fileData.FileSizeKB, fileData.FileType.ToString());
                 return null;
             }
 
@@ -253,6 +272,7 @@ namespace STL_Showcase.Logic.Files
             }
             catch (Exception ex)
             {
+                logger.Trace(ex, "Exception when processing file: {FileName}, {FileSizeKB}, {FileType}", fileData.FileName, fileData.FileSizeKB, fileData.FileType.ToString());
                 return null;
             }
 

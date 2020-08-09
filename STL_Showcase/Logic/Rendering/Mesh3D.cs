@@ -74,7 +74,7 @@ namespace STL_Showcase.Logic.Rendering
 
             float minX = float.MaxValue, minY = float.MaxValue, minZ = float.MaxValue, maxX = float.MinValue, maxY = float.MinValue, maxZ = float.MinValue;
 
-            int triangleSkip = (TriangleCount > _RepresentativeSalmpleTriangles ? TriangleCount / _RepresentativeSalmpleTriangles : 0);
+            int triangleSkip = (int)(TriangleCount > _RepresentativeSalmpleTriangles ? TriangleCount / _RepresentativeSalmpleTriangles : 0);
             
             for (int i = 0; i < Triangles.Length; i++)
             {

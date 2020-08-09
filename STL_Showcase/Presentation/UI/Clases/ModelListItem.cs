@@ -23,7 +23,7 @@ namespace STL_Showcase.Presentation.UI.Clases
 
         private BitmapScalingMode _scalingMode;
         public BitmapScalingMode ScalingMode { get { return _scalingMode; } set { _scalingMode = value; NotifyPropertyChanged(nameof(ScalingMode)); } }
-
+        public string ErrorMessage { get; set; }
         private static int MinImageSize { get; set; } = 32;
 
         bool _IsSelected;

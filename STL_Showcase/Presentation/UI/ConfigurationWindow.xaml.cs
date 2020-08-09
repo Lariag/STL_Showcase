@@ -81,6 +81,7 @@ namespace STL_Showcase.Presentation.UI
                 tbCacheFolder.Text = Loc.GetText("CacheFolderSetting");
                 tbCacheFolder.ToolTip = Loc.GetText("tooltipCacheFolderSetting");
                 tbEnableDebugLogs.Text = Loc.GetText("EnableDebugLogs");
+                btnOpenLogsFolder.Content = $"   {Loc.GetText("OpenLogsFolder")}   ";
                 tbThumnailStyle.Text = Loc.GetText("ThumbnailStyle");
             }
 
@@ -335,6 +336,29 @@ namespace STL_Showcase.Presentation.UI
             {
                 logger.Info("Settings window: Autodetected 0 programs.");
                 await new MessageDialog(Loc.GetText("AutoDetect3DSoftware_NothingFound"), Loc.GetText("AutoDetect3DSoftware"), Loc.GetText("OK"), "", "").ShowAsync();
+            }
+        }
+
+        private void btnOpenLogsFolder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string appPath = System.IO.Path.GetDirectoryName(Assembly.GetAssembly(typeof(ConfigurationWindow)).Location);
+                string logsPath = System.IO.Path.Combine(appPath, "Logs");
+
+                if (Directory.Exists(logsPath))
+                {
+                    System.Diagnostics.Process.Start(logsPath);
+                }
+                else
+                {
+                    new MessageDialog(Loc.GetText("LogsFolderDontExists"), Loc.GetText("OpenLogsFolder"), Loc.GetText("OK"), "", "").ShowAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                new MessageDialog(Loc.GetText("ErrorOpeningLogsFolder"), Loc.GetText("OpenLogsFolder"), Loc.GetText("OK"), "", "").ShowAsync();
+                logger.Trace(ex, "Error when trying to open logs folder (yet here you are, reading a log file).");
             }
         }
     }

@@ -32,9 +32,9 @@ namespace STL_Showcase.Logic.FilePrcessing
         private const int IntervalSmallMS = 25;
         private const int SmallestThumnailSize = 32;
 
-        private int MaxRenderingThreadsActive = 1;
+        private int MaxRenderingThreadsActive = 2;
         private float MaxMemoryUsedByLoadedFilesMB = 1000; // Keep loading files in memory until reaching this limit.
-        private float MaxMemoryUsedByFilesMB = 100; // Do not load files that are bigger than this.
+        private float MaxMemoryUsedByFilesMB = 200; // Do not load files that are bigger than this.
         private int[] thumbnailImagesSizes;
         private int FilesReady = 0;
 
@@ -102,6 +102,8 @@ namespace STL_Showcase.Logic.FilePrcessing
                 thumbnailImagesSizes = new int[] { SmallestThumnailSize, MiddleCalculatedThumnailSize, BigCalculatedThumnailSize };
             else
                 thumbnailImagesSizes = new int[] { SmallestThumnailSize, BigCalculatedThumnailSize };
+
+            logger.Info("Calculate Thumbnail Sizes: Calculated: [{0}]", string.Join("] [", thumbnailImagesSizes.Select(n => n.ToString())));
         }
 
 
@@ -120,7 +122,9 @@ namespace STL_Showcase.Logic.FilePrcessing
             userSettings = DefaultFactory.GetDefaultUserSettings();
             renderType = (RenderAspectEnum)userSettings.GetSettingInt(UserSettingEnum.Thumbnails3DAspect);
 
+            logger.Info("Loading paths: Received: [{0}]", string.Join("] [", paths));
             paths = paths.Where(p1 => !paths.Any(p2 => !p1.Equals(p2) && p1.Contains(p2))).ToArray(); // Remove selected subdirectories of other selected paths.
+            logger.Info("Loading paths: After removed subdirs: [{0}]", string.Join("] [", paths));
 
             try
             {
@@ -156,6 +160,10 @@ namespace STL_Showcase.Logic.FilePrcessing
         {
             if (IsLoading)
                 return;
+
+            logger.Info("Loading started, launching async tasks... MaxRenderingThreadsActive: {0}", MaxRenderingThreadsActive);
+            logger.Info("Current loading queue status (info): FilesToProcess -> FilesBeingProcessed | ReadyToCacheCheck -> ReadyToLoadBasicFileData -> ReadyToLoadBytes -> ReadyToRender -> ReadyToSave");
+
             try
             {
                 Task.Factory.StartNew(LoadFromCacheTask, cancellationTokenSource.Token);
@@ -164,6 +172,7 @@ namespace STL_Showcase.Logic.FilePrcessing
                 Task.Factory.StartNew(LoadingProcessAsync, cancellationTokenSource.Token);
                 Task.Factory.StartNew(LoadingProcessAsync, cancellationTokenSource.Token);
                 Task.Factory.StartNew(SaveCacheFileTask, cancellationTokenSource.Token);
+                Task.Factory.StartNew(LogCurrentQueueStatus, cancellationTokenSource.Token);
 
                 MainRenderingThreads = new Thread[MaxRenderingThreadsActive];
                 for (int i = 0; i < MaxRenderingThreadsActive; i++)
@@ -370,6 +379,25 @@ namespace STL_Showcase.Logic.FilePrcessing
                     await Task.Delay(IntervalMS);
             }
         }
+        private async void LogCurrentQueueStatus()
+        {
+            while (IsLoading && !cancellationToken.IsCancellationRequested)
+            {
+                logger.Info("Current loading queue status: {0} -> {1} | {2} -> {3} -> {4} -> {5} -> {6} | SUM: {7}",
+                    FilesToProcess,
+                    FilesBeingProcessed,
+
+                    ReadyToCacheCheckList.Count,
+                    ReadyToLoadBasicFileDataList.Count,
+                    ReadyToLoadBytesList.Count,
+                    ReadyToRenderList.Count,
+                    ReadyToSaveList.Count,
+
+                    ReadyToCacheCheckList.Count + ReadyToLoadBasicFileDataList.Count + ReadyToLoadBytesList.Count + ReadyToRenderList.Count + ReadyToSaveList.Count
+                    );
+                await Task.Delay(1000);
+            }
+        }
         private void CleanMemory()
         {
             //_ = MainDispatcher.BeginInvoke(new Action(() =>
@@ -398,6 +426,9 @@ namespace STL_Showcase.Logic.FilePrcessing
             Interlocked.Increment(ref FilesReady);
 
             fileData.ReleaseData(true, true);
+
+            if (result != LoadResultEnum.Okay)
+                logger.Info("File loading error: {0}, {1}", result.ToString(), fileData.FileName);
 
             LoadedThumbnails.TryGetValue(fileData.FileFullPath, out Tuple<BitmapSource, bool>[] cacheImages);
 
