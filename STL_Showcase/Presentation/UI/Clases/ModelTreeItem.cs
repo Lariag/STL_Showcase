@@ -20,7 +20,7 @@ namespace STL_Showcase.Presentation.UI.Clases
         public ModelTreeItem ParentItem { get; set; }
         public ObservableCollection<ModelTreeItem> ChildItems { get; set; } = new ObservableCollection<ModelTreeItem>();
         public string Text { get; set; }
-        public string TextPlusParents { get { return string.Join(System.IO.Path.DirectorySeparatorChar + "", GetTextsToRoot()); } }
+        public string TextPlusParents { get { return string.Join(System.IO.Path.DirectorySeparatorChar.ToString(), GetTextsToRoot()); } }
         public int TotalLeafs { get { return ChildItems.Sum(c => c.HasData ? 1 : c.TotalLeafs); } }
         public int TotalSubNodes { get { return ChildItems.Sum(c => !c.HasData ? 1 : c.TotalSubNodes); } }
         public BitmapSource Image {
@@ -109,15 +109,17 @@ namespace STL_Showcase.Presentation.UI.Clases
         /// <param name="tuples">Item1: Full file path, separated by the directory separator. Item2: Data item.</param>
         public void BuildTreeRecursive(IEnumerable<Tuple<string[], object>> tuples)
         {
-            string lastPath = "";
+            HashSet<string> lastPaths = new HashSet<string>();
             foreach (var tuple in tuples)
             {
                 if (tuple.Item1.Length <= this.Level) continue;
-                if (tuple.Item1[this.Level] == lastPath) continue;
+                if (lastPaths.Contains(tuple.Item1[this.Level])) continue;
 
-                if (this.Text == tuple.Item1[this.Level - 1])
+                string tuplePath = string.Join(System.IO.Path.DirectorySeparatorChar.ToString(), tuple.Item1.Take(this.Level));
+                if (this.TextPlusParents == tuplePath)
                 {
-                    var newNode = new ModelTreeItem(this.Level + 1, lastPath = tuple.Item1[this.Level], imageFunc: this._ImageFunc);
+                    lastPaths.Add(tuple.Item1[this.Level]);
+                    var newNode = new ModelTreeItem(this.Level + 1, tuple.Item1[this.Level], imageFunc: this._ImageFunc);
                     newNode.ParentItem = this;
                     this.ChildItems.Add(newNode);
                     if (tuple.Item1.Length == this.Level + 1)

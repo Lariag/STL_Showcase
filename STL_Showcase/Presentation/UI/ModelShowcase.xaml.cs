@@ -1108,7 +1108,8 @@ namespace STL_Showcase.Presentation.UI
                 if (ItemsForOpenWith.Any())
                 {
                     menu.Items.Add(new Separator());
-                    menu.Items.Add(ItemsForOpenWith);
+                    foreach (var menuItemForProgram in ItemsForOpenWith)
+                        menu.Items.Add(menuItemForProgram);
                 }
             }
 
