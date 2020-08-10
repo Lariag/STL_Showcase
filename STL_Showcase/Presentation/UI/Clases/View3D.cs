@@ -114,7 +114,7 @@ namespace STL_Showcase.Presentation.UI.Clases
 
             GridLinesVisual3D FloorGridLines;
             FloorGridLines = new GridLinesVisual3D();
-            FloorGridLines.Fill = Brushes.LightGray;
+            FloorGridLines.Fill = Brushes.Gray;
             FloorGridLines.Width = 15000;
             FloorGridLines.Thickness = 1;
             FloorGridLines.Length = FloorGridLines.Width;
@@ -217,7 +217,7 @@ namespace STL_Showcase.Presentation.UI.Clases
             {
                 lights.Add(new DirectionalLight(Colors.Yellow, new Vector3D(-1, 0, 0)));
                 lights.Add(new DirectionalLight(Colors.YellowGreen, new Vector3D(0, 1, 0)));
-                lights.Add(new DirectionalLight(Color.FromArgb(1, 255, 255, 150), new Vector3D(0, 0, -1)));
+                lights.Add(new DirectionalLight(Color.FromArgb(1, 230, 230, 130), new Vector3D(0, 0, -1)));
             }
             else
             {
