@@ -84,7 +84,7 @@ tooltipLoadDirectory Selecciona un directorio para mostrar sus contenidos.
 tooltipResetVisibility Reestablece las opciones de visibilidad de este menú.
 tooltipReloadDisplayed Esta opción recargará los directorios y regenerará todas las miniaturas mostradas.
 tooltipUnloadAll Cierra todos los directorios cargados.
-tooltipReloadAll Recarga todos los directorios abiertos.
+tooltipReloadAll Recarga todos los directorios abiertos o cancela el proceso de carga actual.
 tooltipExpandAll Expande los directorios raíz.\nSi ya están expandidos, expande todos los demás.
 tooltipContractAll Contrae todos los directorios excepto los raíz.\nSi ya estaban contraídos, entonces contráe tambíen los de la raíz.
 tooltipOnlyFolders Al activarlo, mustra todas las carpetas del arbol, ocultando los ficheros.
