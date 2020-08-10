@@ -106,7 +106,7 @@
                             <Button Content="Contract All" Name="TreeContractAll" FontSize="10" Style="{StaticResource DefaultButtonStyle}" Click="TreeContractAll_Click"/>
                         </ui:SimpleStackPanel>
 
-                        <ui:SimpleStackPanel x:Name="TreeItemFilterButtons" Grid.Column="1" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom" Spacing="4">
+                        <ui:SimpleStackPanel x:Name="TreeItemFilterButtons" Grid.Column="1" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom">
                             <!--<Label Style="{StaticResource TagLabelStyle}" Content="Show: " FontSize="12" />-->
                             <ToggleButton FontSize="12" Style="{StaticResource ToggleButtonStyle}" Click="FileTypeFilterToggleButton_Click"
                                 IsChecked="{Binding Path=DataContext.FileTypeFilterSTL, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}">STL</ToggleButton>
@@ -489,7 +489,7 @@
                             <Grid DockPanel.Dock="Left">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="45"/>
-                                    <ColumnDefinition Width="45"/>
+                                    <!--<ColumnDefinition Width="45"/> -->
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="1*"/>
@@ -497,26 +497,43 @@
                                 </Grid.RowDefinitions>
 
                                 <Button Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Padding="2"  Margin="1" Name="ButtonReset3DCamera" Click="ButtonReset3DCamera_Click">
-                                    <Image Source="Styles/Resources/CameraReset.png" />
+                                    <Image Source="Styles/Resources/CameraHome.png" RenderOptions.BitmapScalingMode="HighQuality" />
                                 </Button>
-                                <Button Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" Padding="2" Margin="1" Name="ButtonTake3DScreenShot" Click="ButtonTake3DScreenShot_Click">
-                                    <Image Source="Styles/Resources/Camera.png" />
-                                </Button>
+                                <!--<Button Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" Padding="2" Margin="1" Name="ButtonTake3DScreenShot" Click="ButtonTake3DScreenShot_Click">
+                                    <Image Source="Styles/Resources/Camera.png" RenderOptions.BitmapScalingMode="HighQuality" />
+                                </Button>-->
                                 <ToggleButton Name="ToggleButton3DAutoRotation" Click="ToggleButton3DAutoRotation_Click" Padding="2" Margin="1"
                                       Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" IsChecked="True">
-                                    <Image Source="Styles/Resources/RotationArrows.png" Stretch="Uniform" Margin="0" />
+                                    <Image Source="Styles/Resources/ObjectAutoRotation.png" Stretch="Uniform" Margin="0" RenderOptions.BitmapScalingMode="HighQuality" />
                                 </ToggleButton>
                             </Grid>
 
                             <Border Margin="4 -4 4 -4" DockPanel.Dock="Left" Style="{StaticResource BorderSeparatorStyleVertical}" HorizontalAlignment="Center"/>
 
-                            <UniformGrid Name="View3DText" Width="120" DockPanel.Dock="Left" Columns="1">
-                                <TextBlock Text="{Binding ModelName}"/>
-                                <TextBlock Text="{Binding ModelTris}"/>
-                                <TextBlock Text="{Binding ModelVerts}"/>
-                                <TextBlock Text="{Binding ModelSizeKB}"/>
-                            </UniformGrid>
-                            <Border Margin="4 -4 4 -4" DockPanel.Dock="Left" Style="{StaticResource BorderSeparatorStyleVertical}" HorizontalAlignment="Center"/>
+                            <Grid Name="View3DText" Width="130" DockPanel.Dock="Left" Visibility="{Binding IsLoaded, Converter={StaticResource boolToVisibleConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <!--<RowDefinition Height="auto" MinHeight="20"/>-->
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="28"/>
+                                </Grid.RowDefinitions>
+
+                                <!--<TextBlock Text="{Binding ModelName}" TextWrapping="Wrap"/>-->
+                                <TextBlock Grid.Row="0" Text="{Binding ModelTris}"/>
+                                <TextBlock Grid.Row="1" Text="{Binding ModelVerts}"/>
+                                <TextBlock Grid.Row="2" Text="{Binding ModelSizeKB}"/>
+
+                                <Button x:Name="btnUnset3DViewModel" Grid.Row="3" Style="{StaticResource TagButtonRemovableStyle}"
+                                        VerticalAlignment="Center" HorizontalAlignment="Stretch" ToolTip="{Binding ModelName}" Click="btnUnset3DViewModel_Click" Height="28" Background="LightGray" Margin="0 4 0 0"/>
+
+                                <Border Margin="4 -4 4 -4" Grid.Column="1" Grid.RowSpan="4" Style="{StaticResource BorderSeparatorStyleVertical}" HorizontalAlignment="Center"/>
+
+                            </Grid>
 
                             <ScrollViewer x:Name="RenderTypeScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0 0 0 -8" PreviewMouseWheel="RenderTypeScrollViewer_PreviewMouseWheel">
                                 <ItemsControl x:Name="RenderTypeScrollItemContainer" ItemsSource="{Binding RenderAspectList}" ScrollViewer.HorizontalScrollBarVisibility="Auto">
@@ -569,8 +586,32 @@
                     </Grid>
 
                     <Border Style="{StaticResource BorderSeparatorStyle}" Height="2" Margin="-3 0 -3 0" DockPanel.Dock="Top" Panel.ZIndex="3"/>
-                    <Border x:Name="ViewportContainer" BorderThickness="2" BorderBrush="AliceBlue">
+                    <Border BorderThickness="2" BorderBrush="AliceBlue">
+                        <Grid>
+                            <Grid  x:Name="ViewportContainer">
+                            </Grid>
 
+                            <Grid HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Button Name="btnPerspectiveUp" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Padding="2"  Margin="1" Height="30" Width="50" Background="Transparent" Click="btnPerspective_Click" Tag="Up" PreviewMouseRightButtonUp="btnPerspective_PreviewMouseRightButtonUp">
+                                    <Image Source="Styles/Resources/EyeUp.png" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" />
+                                </Button>
+                                <Button Name="btnPerspectiveFront" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" Padding="2"  Margin="1" Height="35" Width="50" Background="Transparent" Click="btnPerspective_Click" Tag="Front" PreviewMouseRightButtonUp="btnPerspective_PreviewMouseRightButtonUp">
+                                    <Image Source="Styles/Resources/EyeFront.png" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" />
+                                </Button>
+                                <Button Name="btnPerspectiveSide" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Padding="2"  Margin="1" Height="35" Width="50" Background="Transparent" Click="btnPerspective_Click" Tag="Side" PreviewMouseRightButtonUp="btnPerspective_PreviewMouseRightButtonUp">
+                                    <Image Source="Styles/Resources/EyeSide.png" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Fill" Margin="0 4 0 3" />
+                                </Button>
+                            </Grid>
+
+                        </Grid>
                         <!--<Viewbox x:Name="asdasd"><h:HelixViewport3D x:Name="HelixViewPortControl">
                             </h:HelixViewport3D>-->
                         <!-- The Viewport3D provides a rendering surface for 3-D visual content. -->

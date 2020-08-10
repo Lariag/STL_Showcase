@@ -115,7 +115,7 @@ namespace STL_Showcase.Presentation.UI
             var viewport = new HelixViewport3D();
             view3d = new View3D(viewport);
             view3d.OptionRenderStyle = (RenderAspectEnum)userSettings.GetSettingInt(UserSettingEnum.CurrentView3DAspect);
-            ViewportContainer.Child = viewport;
+            ViewportContainer.Children.Add(viewport);
             view3d.SetModel(null);
             view3d.UpdateLights();
             view3d.SetCameraRotationMode(userSettings.GetSettingBool(UserSettingEnum.EnableViewModelAutoRotation));
@@ -214,6 +214,8 @@ namespace STL_Showcase.Presentation.UI
 
             // Image list panel
             {
+                ButtonReset3DCamera.ToolTip = Loc.GetText("tooltipButtonReset3DCamera");
+                ToggleButton3DAutoRotation.ToolTip = Loc.GetText("tooltipEnableModelAutoRotation");
                 tbFilter.Text = Loc.GetText("Filter");
                 tbOrder.Text = Loc.GetText("Order");
                 rbFilterNameModelList.Content = Loc.GetText("FileName");
@@ -221,6 +223,11 @@ namespace STL_Showcase.Presentation.UI
                 rbFilterModifiedModelList.Content = Loc.GetText("DateModified");
                 rbFilterCreatedModelList.Content = Loc.GetText("DateCreated");
                 rbFilterSizeModelList.Content = Loc.GetText("Size");
+            }
+
+            // 3D Model View
+            {
+                btnUnset3DViewModel.Content = Loc.GetText("DeselectModelFrom3DView");
             }
 
             this.UpdateLayout();
@@ -880,7 +887,7 @@ namespace STL_Showcase.Presentation.UI
         }
         private void ButtonReset3DCamera_Click(object sender, RoutedEventArgs e)
         {
-            view3d.ResetCamera();
+            view3d.ResetCamera(View3D.CameraPositionEnum.Default);
         }
 
         private void ButtonTake3DScreenShot_Click(object sender, RoutedEventArgs e)
@@ -895,6 +902,11 @@ namespace STL_Showcase.Presentation.UI
             view3d.SetCameraRotationMode(newState);
         }
 
+        private void btnUnset3DViewModel_Click(object sender, RoutedEventArgs e)
+        {
+            LoadModelInViewport(null);
+            _ModelItemListData.SelectedListItem = null;
+        }
 
         #endregion
 
@@ -1077,9 +1089,10 @@ namespace STL_Showcase.Presentation.UI
             }
 
             // Open file with software
-            if (fileType.HasValue)
+            if (_LinkedProgramsData.Any())
             {
-                menu.Items.Add(new Separator());
+
+                List<MenuItem> ItemsForOpenWith = new List<MenuItem>();
 
                 foreach (var data in _LinkedProgramsData.Where(lpd =>
                  (lpd.SupportSTL && fileType == Supported3DFiles.STL_ASCII || fileType == Supported3DFiles.STL_Binary) ||
@@ -1089,7 +1102,13 @@ namespace STL_Showcase.Presentation.UI
                 {
                     MenuItem menuItemForFile = new MenuItem() { Header = Loc.GetTextFormatted("OpenFileWith", data.ProgramName) };
                     menuItemForFile.Click += (sender, e) => OpenFileWithProgram(fullPathToItem, data.ProgramFullPath);
-                    menu.Items.Add(menuItemForFile);
+                    ItemsForOpenWith.Add(menuItemForFile);
+                }
+
+                if (ItemsForOpenWith.Any())
+                {
+                    menu.Items.Add(new Separator());
+                    menu.Items.Add(ItemsForOpenWith);
                 }
             }
 
@@ -1102,6 +1121,37 @@ namespace STL_Showcase.Presentation.UI
 
 
             return menu;
+        }
+
+        private void btnPerspective_Click(object sender, RoutedEventArgs e)
+        {
+            string tag = ((Button)sender).Tag.ToString();
+            bool altDir = Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.LeftShift);
+            SetSpecialCameraDirection(tag, altDir);
+
+        }
+
+        private void btnPerspective_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            string tag = ((Button)sender).Tag.ToString();
+            SetSpecialCameraDirection(tag, true);
+        }
+
+        private void SetSpecialCameraDirection(string buttonTag, bool altDir)
+        {
+            View3D.CameraPositionEnum cameraDirection = View3D.CameraPositionEnum.Current;
+
+            switch (buttonTag)
+            {
+                case "Up":
+                    cameraDirection = View3D.CameraPositionEnum.Up; break;
+                case "Front":
+                    cameraDirection = altDir ? View3D.CameraPositionEnum.Back : View3D.CameraPositionEnum.Front; break;
+                case "Side":
+                    cameraDirection = altDir ? View3D.CameraPositionEnum.OtherSide : View3D.CameraPositionEnum.Side; break;
+            }
+
+            view3d.ResetCamera(cameraDirection);
         }
     }
 
