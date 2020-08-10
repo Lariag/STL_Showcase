@@ -44,6 +44,7 @@ namespace STL_Showcase.Presentation.UI.Clases
 
         Point3D _originalCameraPosition;
         Point3D _modelCameraPosition;
+        float _modelHeightPosition;
 
         public RenderAspectEnum OptionRenderStyle { get; set; }
 
@@ -60,12 +61,25 @@ namespace STL_Showcase.Presentation.UI.Clases
 
         private Task _modelLoadingTask;
 
+        private CameraPositionEnum _CurrentCameraPosition = CameraPositionEnum.Default;
+        public enum CameraPositionEnum
+        {
+            Current,
+            Default,
+            Up,
+            Front,
+            Back,
+            Side,
+            OtherSide,
+        }
+
         public View3D(HelixViewport3D viewport)
         {
             this.Viewport = viewport;
 
             _originalCameraPosition = new Point3D(100f, -100f, 135f);
             _modelCameraPosition = _originalCameraPosition;
+            _modelHeightPosition = (float)(_originalCameraPosition.Z / 2d);
 
             viewport.Camera.UpDirection = new Vector3D(0, 0, 1);
             viewport.Camera.Position = _originalCameraPosition;
@@ -92,8 +106,9 @@ namespace STL_Showcase.Presentation.UI.Clases
             Viewport.RotationSensitivity = 1;
             Viewport.ClipToBounds = true;
 
-            Viewport.LimitFPS = false;
-            Viewport.ShowFrameRate = true;
+            Viewport.LimitFPS = true;
+            Viewport.ShowFrameRate = false;
+            Viewport.SubTitleSize = 18d;
 
             ModelAutoRotationEnabled = true;
 
@@ -250,7 +265,6 @@ namespace STL_Showcase.Presentation.UI.Clases
                     this.ModelData = newModelData;
                     Viewport.SubTitle = modelData.FileName;
 
-
                     newModelData.LoadBasicFileData();
 
                     if (userSettings.GetSettingBool(UserSettingEnum.EnableMaxSizeMBToLoadMeshInView) && modelData.FileSizeMB > userSettings.GetSettingInt(UserSettingEnum.MaxSizeMBToLoadMeshInView))
@@ -313,6 +327,7 @@ namespace STL_Showcase.Presentation.UI.Clases
                     modelGroup.Children.Add(geometryModel);
                     modelGroup.Freeze();
 
+                    _modelHeightPosition = newModelData.Mesh.Height * modelScaleMultiply;
                     newModelData.ReleaseData(true, true);
 
                     // Animation 
@@ -329,14 +344,23 @@ namespace STL_Showcase.Presentation.UI.Clases
                     }
 
                     // Camera animation
-                    var normalizedPosition = Viewport.Camera.Position.ToVector3D();
-                    normalizedPosition.Normalize();
                     var nomalizedOriginalPosition = _originalCameraPosition.ToVector3D();
                     nomalizedOriginalPosition.Normalize();
                     _modelCameraPosition = new Point3D(nomalizedOriginalPosition.X / modelScale * modelScaleMultiply, nomalizedOriginalPosition.Y / modelScale * modelScaleMultiply, nomalizedOriginalPosition.Z / modelScale * modelScaleMultiply);
 
-                    Point3D targetCameraPosition = new Point3D(normalizedPosition.X / modelScale * modelScaleMultiply, normalizedPosition.Y / modelScale * modelScaleMultiply, normalizedPosition.Z / modelScale * modelScaleMultiply);
-                    Viewport.Camera.AnimateTo(targetCameraPosition, Viewport.Camera.LookDirection, Viewport.Camera.UpDirection, 500d);
+                    Point3D targetCameraPosition = _modelCameraPosition;
+                    if (_CurrentCameraPosition == CameraPositionEnum.Default)
+                    {
+                        var normalizedPosition = Viewport.Camera.Position.ToVector3D();
+                        normalizedPosition.Normalize();
+                        targetCameraPosition = new Point3D(normalizedPosition.X / modelScale * modelScaleMultiply, normalizedPosition.Y / modelScale * modelScaleMultiply, normalizedPosition.Z / modelScale * modelScaleMultiply);
+
+                        Viewport.Camera.AnimateTo(targetCameraPosition, Viewport.Camera.LookDirection, Viewport.Camera.UpDirection, 500d);
+                    }
+                    else
+                    {
+                        ResetCamera(CameraPositionEnum.Current);
+                    }
 
                     minZoom = targetCameraPosition.Multiply(0.5d).DistanceTo(new Point3D());
                     maxZoom = minZoom * 4d;
@@ -361,8 +385,9 @@ namespace STL_Showcase.Presentation.UI.Clases
             if (modelData == null)
             {
                 _modelCameraPosition = _originalCameraPosition;
-                ResetCamera(true);
+                ResetCamera(CameraPositionEnum.Default, true);
                 LoadModelInfoAvailableEvent?.Invoke("", 0, 0, 0);
+                _modelHeightPosition = (float)(_originalCameraPosition.Z / 2d);
                 Viewport.SubTitle = string.Empty;
             }
             GC.Collect();
@@ -395,11 +420,43 @@ namespace STL_Showcase.Presentation.UI.Clases
             CurrentLightsVisual = modelVisual;
         }
 
-        public void ResetCamera(bool lockZoom = false)
+        public void ResetCamera(CameraPositionEnum cameraPosition, bool lockZoom = false)
         {
-            Viewport.Camera.AnimateTo(_modelCameraPosition, new Vector3D(-1, 1, -1), new Vector3D(0, 0, 1), 500d);
+            if (cameraPosition == CameraPositionEnum.Current)
+                cameraPosition = _CurrentCameraPosition;
+
+            Viewport.FixedRotationPoint = new Point3D(0f, 0f, _modelHeightPosition / 2f);
+
+            double dirMult = cameraPosition == CameraPositionEnum.Back || cameraPosition == CameraPositionEnum.OtherSide ? -1 : 1;
+
+            switch (cameraPosition)
+            {
+                default:
+                case CameraPositionEnum.Default:
+                    Viewport.FixedRotationPoint = new Point3D(0f, 0f, _modelHeightPosition / 5f);
+                    Viewport.Camera.AnimateTo(_modelCameraPosition, new Vector3D(-1, 1, -1), new Vector3D(0, 0, 1), 500d);
+                    break;
+
+                case CameraPositionEnum.Up:
+                    Viewport.Camera.AnimateTo(new Point3D(0, 0, _modelCameraPosition.Z * 2),
+                        new Vector3D(_CurrentCameraPosition == CameraPositionEnum.Front ? -0.01 * dirMult : 0, _CurrentCameraPosition != CameraPositionEnum.Front ? -0.01 * dirMult : 0, -1), new Vector3D(0, 0, 1f), 500d);
+                    break;
+
+                case CameraPositionEnum.Front:
+                case CameraPositionEnum.Back:
+                    Viewport.Camera.AnimateTo(new Point3D(0, _modelCameraPosition.Y * 2 * dirMult, _modelHeightPosition / 2d), new Vector3D(0, 1 * dirMult, 0), new Vector3D(0, 0, 1f), 500d);
+                    break;
+
+                case CameraPositionEnum.Side:
+                case CameraPositionEnum.OtherSide:
+                    Viewport.Camera.AnimateTo(new Point3D(_modelCameraPosition.X * 2 * dirMult, 0, _modelHeightPosition / 2d), new Vector3D(-1 * dirMult, 0, 0), new Vector3D(0, 0, 1f), 500d);
+                    break;
+            }
+
             if (CurrentModelVisual == null)
                 minZoom = maxZoom = _modelCameraPosition.DistanceTo(new Point3D());
+
+            _CurrentCameraPosition = cameraPosition;
         }
         public void SetCameraRotationMode(bool enableAutoRotation)
         {

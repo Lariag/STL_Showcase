@@ -125,3 +125,8 @@ ErrorSavingCacheFile Error saving rendered cache files
 OpenLogsFolder Open logs folder
 LogsFolderDontExists The logs folder doesn't exists yet.
 ErrorOpeningLogsFolder There was an error when trying to open the debug logs folder.\nCheck the debug logs for more info (good luck with that).
+tooltipButtonReset3DCamera Reset View
+tooltipEnableModelAutoRotation Toggle model auto-rotation
+NumberTriangles {0:0} Triangles
+NumberVertices {0:0} Vertices
+DeselectModelFrom3DView Deselect

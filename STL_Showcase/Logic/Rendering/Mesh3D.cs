@@ -23,6 +23,8 @@ namespace STL_Showcase.Logic.Rendering
         public float OffsetY { get; protected set; }
         public float OffsetZ { get; protected set; }
         public float OffsetZCentered { get; protected set; }
+        public float Height { get; protected set; }
+
 
         protected bool _centered = false;
 
@@ -71,11 +73,12 @@ namespace STL_Showcase.Logic.Rendering
             OffsetX = 0f;
             OffsetY = 0f;
             OffsetZ = 0f;
+            Height = 0f;
 
             float minX = float.MaxValue, minY = float.MaxValue, minZ = float.MaxValue, maxX = float.MinValue, maxY = float.MinValue, maxZ = float.MinValue;
 
             int triangleSkip = (int)(TriangleCount > _RepresentativeSalmpleTriangles ? TriangleCount / _RepresentativeSalmpleTriangles : 0);
-            
+
             for (int i = 0; i < Triangles.Length; i++)
             {
                 if (_Vertices[Triangles[i]].x < minX) minX = _Vertices[Triangles[i]].x;
@@ -93,6 +96,7 @@ namespace STL_Showcase.Logic.Rendering
             OffsetY = (maxY + minY) / 2f;
             OffsetZ = minZ; // Set on the floor (Z = 0).
             OffsetZCentered = (maxZ + minZ) / 2f; // Set center of the object on the floor.
+            Height = maxZ - minZ;
             _centered = true;
         }
 

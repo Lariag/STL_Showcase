@@ -125,3 +125,8 @@ ErrorSavingCacheFile Error almacenando las imágenes en la cache
 OpenLogsFolder Abrir carpeta de logs
 LogsFolderDontExists La carpeta de logs no existe todavía
 ErrorOpeningLogsFolder Ocurrió un error al intentar abrir la carpeta de logs.\nPara más información, revisa los logs (buena suerte intentándolo).
+tooltipButtonReset3DCamera Resetear Vista
+tooltipEnableModelAutoRotation Habilitar auto-rotación del modelo
+NumberTriangles {0:0} Triángulos
+NumberVertices {0:0} Vértices
+DeselectModelFrom3DView Deseleccionar

@@ -1,4 +1,5 @@
-﻿using STL_Showcase.Shared.Enums;
+﻿using STL_Showcase.Logic.Localization;
+using STL_Showcase.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,34 +19,39 @@ namespace STL_Showcase.Presentation.UI.Clases
         public string ModelTris { get; private set; }
         public string ModelVerts { get; private set; }
         public string ModelSizeKB { get; private set; }
+        public bool IsLoaded { get; private set; }
 
         private int MaxNameLength = 20;
 
         public Model3DViewInfo()
         {
             RenderAspectList = new ObservableCollection<RenderAspectItem>(((IEnumerable<int>)Enum.GetValues(typeof(RenderAspectEnum))).Select(en => new RenderAspectItem(en)));
+            SetData(string.Empty, 0, 0, 0);
         }
         public void SetData(string name, int tris, int verts, int sizeKB)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                ModelName = "No model selected";
-                ModelTris = "- Triangles";
-                ModelVerts = "- Vertices";
-                ModelSizeKB = "- KB";
+                ModelName = Loc.GetText("NoModelSelected");
+                ModelTris = Loc.GetTextFormatted("NumberTriangles", "-");
+                ModelVerts = Loc.GetTextFormatted("NumberVertices", "-");
+                ModelSizeKB = Loc.GetTextFormatted("NumberKB", "-");
+                IsLoaded = false;
             }
             else
             {
-                ModelName = name.Length > MaxNameLength ? name.Remove(MaxNameLength - 3, name.Length - MaxNameLength).Insert(MaxNameLength - 3, "...") : name;
-                ModelTris = $"{tris} Triangles";
-                ModelVerts = $"{verts} Vertices";
-                ModelSizeKB = $"{sizeKB} KB";
+                ModelName = name;
+                ModelTris = Loc.GetTextFormatted("NumberTriangles", tris);
+                ModelVerts = Loc.GetTextFormatted("NumberVertices", verts);
+                ModelSizeKB = Loc.GetTextFormatted("NumberKB", sizeKB);
+                IsLoaded = true;
             }
 
             NotifyPropertyChanged(nameof(ModelName));
             NotifyPropertyChanged(nameof(ModelTris));
             NotifyPropertyChanged(nameof(ModelVerts));
             NotifyPropertyChanged(nameof(ModelSizeKB));
+            NotifyPropertyChanged(nameof(IsLoaded));
         }
         public void NotifyPropertyChanged(string propertyName)
         {
