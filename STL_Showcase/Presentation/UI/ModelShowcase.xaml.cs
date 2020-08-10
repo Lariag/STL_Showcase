@@ -415,7 +415,8 @@ namespace STL_Showcase.Presentation.UI
 
         private void DirectoryReloadAll_Click(object sender, RoutedEventArgs e)
         {
-            ReloadDirectories();
+            if (!CancelCurrentDirectoryLoading())
+                ReloadDirectories();
         }
 
         private void DirectoryAddOneMore_Click(object sender, RoutedEventArgs e)
@@ -600,17 +601,14 @@ namespace STL_Showcase.Presentation.UI
 
         private void UnloadDirectory(string path)
         {
-            if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
-                CurrentDirectoryLoader.CancelOperation();
-
+            CancelCurrentDirectoryLoading();
             _ModelItemListData.RemoveDirectoryLoaded(path);
             ReloadDirectories();
         }
 
         private void UnloadDirectories()
         {
-            if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
-                CurrentDirectoryLoader.CancelOperation();
+            CancelCurrentDirectoryLoading();
             _ModelItemListData.Reset();
             ImageListControl.ItemsSource = _ModelItemListData.ModelListFiltered;
             ImageTreeControl.ItemsSource = _ModelItemListData.ModelTreeRoot;
@@ -619,8 +617,7 @@ namespace STL_Showcase.Presentation.UI
 
         private void ReloadDirectories()
         {
-            if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
-                CurrentDirectoryLoader.CancelOperation();
+            CancelCurrentDirectoryLoading();
 
             var loadedDirectories = _ModelItemListData.GetDirectoriesLoaded();
             _ModelItemListData.Reset();
@@ -694,7 +691,27 @@ namespace STL_Showcase.Presentation.UI
         {
             LoadDirectories(new string[] { directories });
         }
+        private bool CancelCurrentDirectoryLoading()
+        {
+            bool wasLoading = false;
+            if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
+            {
+                CurrentDirectoryLoader.FileReadyEvent -= LoadDirectoryFileReady;
+                CurrentDirectoryLoader.ReportProgressEvent -= LoadDirectoryReportProgress;
+                CurrentDirectoryLoader.ProcessCanceledEvent -= LoadDirectoryCancelled;
+                CurrentDirectoryLoader.CancelOperation();
+                CurrentDirectoryLoader = null;
+                wasLoading = true;
+            }
 
+            this.Dispatcher.Invoke(() =>
+            {
+                _ModelProgressBarData.CurrentProgress = 0;
+                _ModelProgressBarData.IsLoading = false;
+            });
+
+            return wasLoading;
+        }
         private void LoadDirectories(IEnumerable<string> directories)
         {
             CancellationTokenSource source = new CancellationTokenSource();
@@ -710,17 +727,8 @@ namespace STL_Showcase.Presentation.UI
             LoadingDialog loading = new LoadingDialog(Loc.GetTextFormatted("LookingForFilesAtDir", string.Join("\", \"", directories)), Loc.GetText("LoadDirectory"), Loc.GetText("Cancel"), () => source.Cancel(false));
             Task loadingTask = loading.ShowAsync();
 
-            if (CurrentDirectoryLoader != null && CurrentDirectoryLoader.IsLoading)
-            {
-                // Cancel current loading, if any
-                CurrentDirectoryLoader.FileReadyEvent -= LoadDirectoryFileReady;
-                CurrentDirectoryLoader.ReportProgressEvent -= LoadDirectoryReportProgress;
-                CurrentDirectoryLoader.ProcessCanceledEvent -= LoadDirectoryCancelled;
-                CurrentDirectoryLoader.CancelOperation();
-
-                _ModelProgressBarData.CurrentProgress = 0;
-                _ModelProgressBarData.IsLoading = false;
-            }
+            // Cancel current loading, if any
+            CancelCurrentDirectoryLoading();
 
             CurrentDirectoryLoader = new DirectoryLoadingAsync();
 

@@ -152,7 +152,7 @@ namespace STL_Showcase.Data.Cache
         {
             Tuple<int, BitmapSource>[] loadedFiles = new Tuple<int, BitmapSource>[0];
             string cachePath = GetCachePath();
-            string filesNameForFilter = GetComposedFileNameForFilter(fileName, renderType);
+            string filesNameForFilter = GetComposedFileNameForFilter(fileName, filePath, renderType);
 
             try
             {
@@ -188,7 +188,7 @@ namespace STL_Showcase.Data.Cache
         {
             BitmapSource loadedFile = null;
             string cachePath = GetCachePath(thumbnailSize);
-            string thumbnailFileName = ComposeFileName(fileName, renderType, thumbnailSize);
+            string thumbnailFileName = ComposeFileName(fileName, filePath, renderType, thumbnailSize);
             string fullThumbnailFilePath = Path.Combine(cachePath, thumbnailFileName);
             try
             {
@@ -217,7 +217,7 @@ namespace STL_Showcase.Data.Cache
         {
             Tuple<int, string>[] foundFiles = null;
             string cachePath = GetCachePath();
-            string filesNameForFilter = GetComposedFileNameForFilter(fileName, renderType);
+            string filesNameForFilter = GetComposedFileNameForFilter(fileName, filePath, renderType);
 
             try
             {
@@ -245,7 +245,7 @@ namespace STL_Showcase.Data.Cache
         {
             bool updated = true;
             string cachePath = GetCachePath(size);
-            string cachedFileName = ComposeFileName(fileName, renderType, size);
+            string cachedFileName = ComposeFileName(fileName, filePath, renderType, size);
             string fullCachedFilePath = Path.Combine(cachePath, cachedFileName);
 
             try
@@ -335,7 +335,7 @@ namespace STL_Showcase.Data.Cache
         public bool CheckThumbnailExists(string filePath, string fileName, RenderAspectEnum renderType, int thumbnailSize)
         {
             string cachePath = GetCachePath();
-            string thumbnailFileName = ComposeFileName(fileName, renderType, thumbnailSize);
+            string thumbnailFileName = ComposeFileName(fileName, filePath, renderType, thumbnailSize);
 
             try
             {
@@ -393,13 +393,13 @@ namespace STL_Showcase.Data.Cache
             return cachePath;
         }
 
-        private string ComposeFileName(string fileName, RenderAspectEnum renderType, int size)
+        private string ComposeFileName(string fileName, string filePath, RenderAspectEnum renderType, int size)
         {
-            return string.Format($"{fileName}.cached.{(int)renderType}.{size}.png");
+            return string.Format($"{fileName}{(uint)filePath.GetHashCode()}.cached.{(int)renderType}.{size}.png");
         }
-        private string GetComposedFileNameForFilter(string fileName, RenderAspectEnum renderType)
+        private string GetComposedFileNameForFilter(string fileName, string filePath, RenderAspectEnum renderType)
         {
-            return string.Format($"{fileName}.cached.{(int)renderType}.*.png");
+            return string.Format($"{fileName}{(uint)filePath.GetHashCode()}.cached.{(int)renderType}.*.png");
         }
         private int GetFileSizeFromFileName(string fileName)
         {
