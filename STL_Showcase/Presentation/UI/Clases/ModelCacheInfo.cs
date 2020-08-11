@@ -41,6 +41,7 @@ namespace STL_Showcase.Presentation.UI.Clases
             if (!processingCacheSize)
             {
                 processingCacheSize = true;
+                CacheSize = Loc.GetText("Calculating...");
                 Task.Factory.StartNew(new Action(() =>
               {
                   var size = cacheObject.CacheSize();
