@@ -370,6 +370,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="OpenTK.dll.config" />
+    <None Include="Presentation\UI\Styles\Resources\SelectedImageEffect.ps" />
     <None Include="STL_Showcase_TemporaryKey.pfx" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseIconFaded.ico" />
     <Resource Include="Presentation\UI\Styles\Resources\MissingImageModel.png" />

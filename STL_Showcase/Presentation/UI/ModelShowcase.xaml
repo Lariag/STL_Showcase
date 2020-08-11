@@ -383,7 +383,7 @@
                                                                 <Border BorderBrush="White" Background="Transparent" BorderThickness="2" CornerRadius="3" ClipToBounds="True"
                                                                 Height="{Binding DataContext.ModelListItemBorderSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}"
                                                                 Width="{Binding DataContext.ModelListItemBorderSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}">
-                                                                    <StackPanel Margin="2" Background="White" Orientation="Vertical"
+                                                                    <StackPanel Margin="2" Background="{Binding BackgroundBrush}" Orientation="Vertical"
                                                                     MaxHeight="{Binding DataContext.ModelListItemContentSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}"
                                                                     MaxWidth="{Binding DataContext.ModelListItemContentSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}">
                                                                         <Image Source="{Binding Image}" RenderOptions.BitmapScalingMode="{Binding ScalingMode}" RenderOptions.EdgeMode="Unspecified"/>
