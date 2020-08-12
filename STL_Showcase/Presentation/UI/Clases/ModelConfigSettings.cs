@@ -19,6 +19,10 @@ namespace STL_Showcase.Presentation.UI.Clases
         public bool EnableDebugLogs { get; set; }
         public RenderAspectEnum SelectedThumbnailRenderAspec { get; set; }
 
+        public bool EnableThumnailColorsByShaders { get; set; }
+
+        public bool EnableChangingViewColorChangesThumnailColor { get; set; }
+
         public CacheEnums.CachePathType CachePath { get; set; }
 
         #endregion General settings
@@ -51,6 +55,8 @@ namespace STL_Showcase.Presentation.UI.Clases
             EnableDebugLogs = userSettings.GetSettingBool(UserSettingEnum.EnableDebugLogs);
             CachePath = (CacheEnums.CachePathType)userSettings.GetSettingInt(UserSettingEnum.PreferredCachePath);
             SelectedThumbnailRenderAspec = (RenderAspectEnum)userSettings.GetSettingInt(UserSettingEnum.Thumbnails3DAspect);
+            EnableThumnailColorsByShaders = userSettings.GetSettingBool(UserSettingEnum.EnableThumnailColorsByShaders);
+            EnableChangingViewColorChangesThumnailColor = userSettings.GetSettingBool(UserSettingEnum.EnableChangingViewColorChangesThumnailColor);
 
             EnableMeshDecimation = userSettings.GetSettingBool(UserSettingEnum.EnableMeshDecimation);
             MinTrianglesForMeshDecimation = userSettings.GetSettingInt(UserSettingEnum.MinTrianglesForMeshDecimation);
@@ -65,6 +71,8 @@ namespace STL_Showcase.Presentation.UI.Clases
             NotifyPropertyChanged(nameof(EnableDebugLogs));
             NotifyPropertyChanged(nameof(CachePath));
             NotifyPropertyChanged(nameof(SelectedThumbnailRenderAspec));
+            NotifyPropertyChanged(nameof(EnableThumnailColorsByShaders));
+            NotifyPropertyChanged(nameof(EnableChangingViewColorChangesThumnailColor));
             NotifyPropertyChanged(nameof(EnableMeshDecimation));
             NotifyPropertyChanged(nameof(MinTrianglesForMeshDecimation));
             NotifyPropertyChanged(nameof(EnableMaxSizeMBToLoadMeshInView));
@@ -81,6 +89,8 @@ namespace STL_Showcase.Presentation.UI.Clases
             userSettings.SetSettingBool(UserSettingEnum.EnableDebugLogs, EnableDebugLogs);
             userSettings.SetSettingInt(UserSettingEnum.PreferredCachePath, (int)CachePath);
             userSettings.SetSettingInt(UserSettingEnum.Thumbnails3DAspect, (int)SelectedThumbnailRenderAspec);
+            userSettings.SetSettingBool(UserSettingEnum.EnableThumnailColorsByShaders, EnableThumnailColorsByShaders); 
+            userSettings.SetSettingBool(UserSettingEnum.EnableChangingViewColorChangesThumnailColor, EnableChangingViewColorChangesThumnailColor); 
 
             userSettings.SetSettingBool(UserSettingEnum.EnableMeshDecimation, EnableMeshDecimation);
             userSettings.SetSettingInt(UserSettingEnum.MinTrianglesForMeshDecimation, MinTrianglesForMeshDecimation);

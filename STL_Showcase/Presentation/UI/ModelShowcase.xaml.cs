@@ -106,6 +106,7 @@ namespace STL_Showcase.Presentation.UI
 
             listFilterCancellationTokenSource = new CancellationTokenSource();
 
+            ModelListItem.SetListItemColoring((RenderAspectEnum)userSettings.GetSettingInt(UserSettingEnum.Thumbnails3DAspect));
 
             _CacheInfo = new ModelCacheInfo();
             MenuCacheMain.DataContext = _CacheInfo;
@@ -267,8 +268,21 @@ namespace STL_Showcase.Presentation.UI
                 if (settingsOriginal.CachePath != settingsSettingsModified.CachePath)
                     SetThumnailCacheFolder(settingsOriginal.CachePath, settingsSettingsModified.CachePath);
 
-                if (settingsOriginal.SelectedThumbnailRenderAspec != settingsSettingsModified.SelectedThumbnailRenderAspec ||
-                settingsOriginal.EnableReduceThumbnailResolution != settingsSettingsModified.EnableReduceThumbnailResolution)
+
+                bool changedRenderAspect = settingsOriginal.SelectedThumbnailRenderAspec != settingsSettingsModified.SelectedThumbnailRenderAspec;
+                bool changedUseShaders = settingsOriginal.EnableThumnailColorsByShaders != settingsSettingsModified.EnableThumnailColorsByShaders;
+                bool enableShaders = settingsSettingsModified.EnableThumnailColorsByShaders;
+                if (changedRenderAspect || changedUseShaders && enableShaders)
+                {
+                    ModelListItem.SetListItemColoring(settingsSettingsModified.SelectedThumbnailRenderAspec);
+                    if (enableShaders)
+                    {
+                        _ModelItemListData.SelectedListItem = _ModelItemListData.SelectedListItem;
+                        ModelItemListScrollPanel.UpdateDefaultStyle();
+                    }
+                }
+
+                if ((changedRenderAspect && !enableShaders) || changedUseShaders)
                     ReloadDirectories();
             }
         }
@@ -646,6 +660,12 @@ namespace STL_Showcase.Presentation.UI
                               {
                                   images = DefaultImageErrorModelArray;
                                   listItem.ErrorMessage = Loc.GetText(result.ToString());
+                                  listItem.EnableShaderImageEffect(false);
+
+                              }
+                              else
+                              {
+                                  listItem.EnableShaderImageEffect(userSettings.GetSettingBool(UserSettingEnum.EnableThumnailColorsByShaders));
                               }
                               listItem.SetImages(images);
                           }
@@ -992,6 +1012,14 @@ namespace STL_Showcase.Presentation.UI
             this.userSettings.SetSettingInt(UserSettingEnum.CurrentView3DAspect, renderAspectInt);
             view3d.OptionRenderStyle = (RenderAspectEnum)renderAspectInt;
             view3d.UpdateLights();
+
+            if (userSettings.GetSettingBool(UserSettingEnum.EnableThumnailColorsByShaders) && userSettings.GetSettingBool(UserSettingEnum.EnableChangingViewColorChangesThumnailColor))
+            {
+                userSettings.SetSettingInt(Shared.Enums.UserSettingEnum.Thumbnails3DAspect, renderAspectInt);
+                ModelListItem.SetListItemColoring((RenderAspectEnum)renderAspectInt);
+                _ModelItemListData.SelectedListItem = _ModelItemListData.SelectedListItem;
+                ImageListControl.UpdateDefaultStyle();
+            }
         }
 
 

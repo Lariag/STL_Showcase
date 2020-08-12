@@ -395,16 +395,26 @@ namespace STL_Showcase.Data.Cache
 
         private string ComposeFileName(string fileName, string filePath, RenderAspectEnum renderType, int size)
         {
-            return string.Format($"{fileName}{(uint)filePath.GetHashCode()}.cached.{(int)renderType}.{size}.png");
+            bool useNormalMap = DefaultFactory.GetDefaultUserSettings().GetSettingBool(UserSettingEnum.EnableThumnailColorsByShaders);
+            return string.Format($"{fileName}{(uint)filePath.GetHashCode()}.cached.{(useNormalMap ? "N" : ((int)renderType).ToString())}.{size}.png");
         }
         private string GetComposedFileNameForFilter(string fileName, string filePath, RenderAspectEnum renderType)
         {
-            return string.Format($"{fileName}{(uint)filePath.GetHashCode()}.cached.{(int)renderType}.*.png");
+            bool useNormalMap = DefaultFactory.GetDefaultUserSettings().GetSettingBool(UserSettingEnum.EnableThumnailColorsByShaders);
+            return string.Format($"{fileName}{(uint)filePath.GetHashCode()}.cached.{(useNormalMap ? "N" : ((int)renderType).ToString())}.*.png");
         }
         private int GetFileSizeFromFileName(string fileName)
         {
-            if (int.TryParse(Regex.Match(fileName, @"\.\d+\.(\d+)\.png*").Groups[1].Value, out int matched))
-                return matched;
+            if (DefaultFactory.GetDefaultUserSettings().GetSettingBool(UserSettingEnum.EnableThumnailColorsByShaders))
+            {
+                if (int.TryParse(Regex.Match(fileName, @"\.N\.(\d+)\.png*").Groups[1].Value, out int matched))
+                    return matched;
+            }
+            else
+            {
+                if (int.TryParse(Regex.Match(fileName, @"\.\d+\.(\d+)\.png*").Groups[1].Value, out int matched))
+                    return matched;
+            }
             return 0;
         }
 

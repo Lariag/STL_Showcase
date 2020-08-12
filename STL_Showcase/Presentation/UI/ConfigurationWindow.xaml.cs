@@ -83,6 +83,10 @@ namespace STL_Showcase.Presentation.UI
                 tbEnableDebugLogs.Text = Loc.GetText("EnableDebugLogs");
                 btnOpenLogsFolder.Content = $"   {Loc.GetText("OpenLogsFolder")}   ";
                 tbThumnailStyle.Text = Loc.GetText("ThumbnailStyle");
+                chkEnableThumnailColorsByShaders.Content = Loc.GetText("EnableThumnailColorsByShaders");
+                chkEnableThumnailColorsByShaders.ToolTip = Loc.GetText("tooltipEnableThumnailColorsByShaders");
+                chkEnableChangingViewColorChangesThumnailColor.Content = Loc.GetText("EnableChangingViewChangesThumnails");
+                chkEnableChangingViewColorChangesThumnailColor.ToolTip = Loc.GetText("tooltipEnableChangingViewChangesThumnails");
             }
 
             {
@@ -142,6 +146,9 @@ namespace STL_Showcase.Presentation.UI
 
                 RenderTypeScrollItemContainer.DataContext = _model3DViewInfo;
                 RenderTypeScrollItemContainer.UpdateLayout();
+
+                chkEnableThumnailColorsByShaders.DataContext = _modelConfigSettings;
+                chkEnableChangingViewColorChangesThumnailColor.DataContext = _modelConfigSettings;
                 // TODO: Set the checked item, somehow.
                 //RenderTypeScrollItemContainer.ItemContainerGenerator.StatusChanged += (sender, e) =>
                 //{

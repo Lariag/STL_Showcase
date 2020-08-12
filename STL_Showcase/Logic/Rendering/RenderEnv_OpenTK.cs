@@ -20,6 +20,7 @@ using SDPixelFormat = System.Drawing.Imaging.PixelFormat;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 using OpenTK;
 using STL_Showcase.Shared.Util;
+using STL_Showcase.Shared.Main;
 
 namespace STL_Showcase.Logic.Rendering
 {
@@ -88,101 +89,113 @@ namespace STL_Showcase.Logic.Rendering
                 mat_diffuse3 = null;
                 mat_diffuse4 = null;
 
-                if (renderAspect == RenderAspectEnum.VioletBlue)
+                if (DefaultFactory.GetDefaultUserSettings().GetSettingBool(UserSettingEnum.EnableThumnailColorsByShaders))
                 {
-                    mat_diffuse1 = new float[] { Colors.Violet.R / 256f, Colors.Violet.G / 256f, Colors.Violet.B / 256f };
-                    light_position1 = new float[] { 0.5f, -1f, 0.5f, 0f };
-
-                    mat_diffuse2 = new float[] { Colors.Blue.R / 256f, Colors.Blue.G / 256f, Colors.Blue.B / 256f };
-                    light_position2 = new float[] { 1f, -0.5f, 0.5f, 0f };
-                }
-                else if (renderAspect == RenderAspectEnum.RedOrangeYellow)
-                {
-                    mat_diffuse1 = new float[] { 1f, 0f, 0f };
+                    mat_diffuse1 = new float[] { 0f, 1f, 0f };
                     light_position1 = new float[] { 1f, 0f, 0f, 0f };
 
-                    mat_diffuse2 = new float[] { 1, 1f, 0f };
-                    light_position2 = new float[] { -0f, -1f, 0f, 0f };
+                    mat_diffuse2 = new float[] { 0f, 0f, 1f };
+                    light_position2 = new float[] { 0f, 0f, 1f, 0f };
 
-                    mat_diffuse3 = new float[] { Colors.Orange.R / 256f, Colors.Orange.G / 256f, Colors.Orange.B / 256f };
-                    light_position3 = new float[] { 0f, 0f, 1f, 0f };
-                }
-                else if (renderAspect == RenderAspectEnum.GreenLimeYellow)
-                {
-                    mat_diffuse1 = new float[] { 0f, 0.5f, 0f };
-                    light_position1 = new float[] { 1f, 0f, 0f, 0f };
-
-                    mat_diffuse2 = new float[] { 1, 1f, 0f };
-                    light_position2 = new float[] { -0f, -1f, 0f, 0f };
-
-                    mat_diffuse3 = new float[] { Colors.LimeGreen.R / 256f, Colors.LimeGreen.G / 256f, Colors.LimeGreen.B / 256f };
-                    light_position3 = new float[] { 0f, 0f, 1f, 0f };
-                }
-                else if (renderAspect == RenderAspectEnum.PinkFucsiaViolet)
-                {
-                    mat_diffuse1 = new float[] { 1f, 0.75f, 0.795f };
-                    light_position1 = new float[] { 1f, 0f, 0f, 0f };
-
-                    mat_diffuse2 = new float[] { 0.58f, 0.155f, 0.31f };
-                    light_position2 = new float[] { -0f, -1f, 0f, 0f };
-
-                    mat_diffuse3 = new float[] { 0.93f, 0.51f, 0.93f };
-                    light_position3 = new float[] { 0f, 0f, 1f, 0f };
-                }
-                else if (renderAspect == RenderAspectEnum.CyanBlue)
-                {
-                    mat_diffuse1 = new float[] { 0f, 0f, 1f };
-                    light_position1 = new float[] { 1f, 0f, 0f, 0f };
-
-                    mat_diffuse2 = new float[] { 0.39f, 0.58f, 0.92f };
-                    light_position2 = new float[] { -0f, -1f, 0f, 0f };
-
-                    mat_diffuse3 = new float[] { 0f, 1f, 1f };
-                    light_position3 = new float[] { 0f, 0f, 1f, 0f };
-                }
-                else if (renderAspect == RenderAspectEnum.RedRedish)
-                {
-                    mat_diffuse1 = new float[] { 1f, 0f, 0f };
-                    light_position1 = new float[] { 1f, 0f, 0f, 0f };
-
-                    mat_diffuse2 = new float[] { 0.5f, 0f, 0f };
-                    light_position2 = new float[] { -0f, -1f, 0f, 0f };
-
-                    mat_diffuse3 = new float[] { 0.85f, 0.44f, 0.57f };
-                    light_position3 = new float[] { 0f, 0f, 1f, 0f };
-                }
-                else if (renderAspect == RenderAspectEnum.Yellow)
-                {
-                    mat_diffuse1 = new float[] { 1f, 1f, 0f };
-                    light_position1 = new float[] { 1f, 0f, 0f, 0f };
-
-                    mat_diffuse2 = new float[] { 0.6f, 0.8f, 0.195f };
-                    light_position2 = new float[] { -0f, -1f, 0f, 0f };
-
-                    mat_diffuse3 = new float[] { 1f, 1f, 0.87f };
-                    light_position3 = new float[] { 0f, 0f, 1f, 0f };
+                    mat_diffuse3 = new float[] { 1f, 0f, 0f };
+                    light_position3 = new float[] { 0f, -1f, 0f, 0f };
                 }
                 else
                 {
-                    if (renderAspect == RenderAspectEnum.PerNormal)
+
+                    if (renderAspect == RenderAspectEnum.VioletBlue)
                     {
-                        mat_diffuse1 = new float[] { 0f, 0.39f, 0f };
+                        mat_diffuse1 = new float[] { Colors.Violet.R / 256f, Colors.Violet.G / 256f, Colors.Violet.B / 256f };
+                        light_position1 = new float[] { 0.5f, -1f, 0.5f, 0f };
+
+                        mat_diffuse2 = new float[] { Colors.Blue.R / 256f, Colors.Blue.G / 256f, Colors.Blue.B / 256f };
+                        light_position2 = new float[] { 1f, -0.5f, 0.5f, 0f };
+                    }
+                    else if (renderAspect == RenderAspectEnum.RedOrangeYellow)
+                    {
+                        mat_diffuse1 = new float[] { 1f, 0f, 0f };
                         light_position1 = new float[] { 1f, 0f, 0f, 0f };
 
-                        mat_diffuse2 = new float[] { 0f, 0f, 0.54f };
-                        light_position2 = new float[] { 0f, 0f, 1f, 0f };
+                        mat_diffuse2 = new float[] { 1, 1f, 0f };
+                        light_position2 = new float[] { -0f, -1f, 0f, 0f };
 
-                        mat_diffuse3 = new float[] { 0.54f, 0f, 0f };
-                        light_position3 = new float[] { 0f, -1f, 0f, 0f };
+                        mat_diffuse3 = new float[] { Colors.Orange.R / 256f, Colors.Orange.G / 256f, Colors.Orange.B / 256f };
+                        light_position3 = new float[] { 0f, 0f, 1f, 0f };
                     }
+                    else if (renderAspect == RenderAspectEnum.GreenLimeYellow)
+                    {
+                        mat_diffuse1 = new float[] { 0f, 0.5f, 0f };
+                        light_position1 = new float[] { 1f, 0f, 0f, 0f };
 
-                    mat_diffuse4 = new float[] { highLight, highLight, highLight };
-                    light_position4 = new float[] { 1f, -1f, 1f, 0f };
+                        mat_diffuse2 = new float[] { 1, 1f, 0f };
+                        light_position2 = new float[] { -0f, -1f, 0f, 0f };
+
+                        mat_diffuse3 = new float[] { Colors.LimeGreen.R / 256f, Colors.LimeGreen.G / 256f, Colors.LimeGreen.B / 256f };
+                        light_position3 = new float[] { 0f, 0f, 1f, 0f };
+                    }
+                    else if (renderAspect == RenderAspectEnum.PinkFucsiaViolet)
+                    {
+                        mat_diffuse1 = new float[] { 1f, 0.75f, 0.795f };
+                        light_position1 = new float[] { 1f, 0f, 0f, 0f };
+
+                        mat_diffuse2 = new float[] { 0.58f, 0.155f, 0.31f };
+                        light_position2 = new float[] { -0f, -1f, 0f, 0f };
+
+                        mat_diffuse3 = new float[] { 0.93f, 0.51f, 0.93f };
+                        light_position3 = new float[] { 0f, 0f, 1f, 0f };
+                    }
+                    else if (renderAspect == RenderAspectEnum.CyanBlue)
+                    {
+                        mat_diffuse1 = new float[] { 0f, 0f, 1f };
+                        light_position1 = new float[] { 1f, 0f, 0f, 0f };
+
+                        mat_diffuse2 = new float[] { 0.39f, 0.58f, 0.92f };
+                        light_position2 = new float[] { -0f, -1f, 0f, 0f };
+
+                        mat_diffuse3 = new float[] { 0f, 1f, 1f };
+                        light_position3 = new float[] { 0f, 0f, 1f, 0f };
+                    }
+                    else if (renderAspect == RenderAspectEnum.RedRedish)
+                    {
+                        mat_diffuse1 = new float[] { 1f, 0f, 0f };
+                        light_position1 = new float[] { 1f, 0f, 0f, 0f };
+
+                        mat_diffuse2 = new float[] { 0.5f, 0f, 0f };
+                        light_position2 = new float[] { -0f, -1f, 0f, 0f };
+
+                        mat_diffuse3 = new float[] { 0.85f, 0.44f, 0.57f };
+                        light_position3 = new float[] { 0f, 0f, 1f, 0f };
+                    }
+                    else if (renderAspect == RenderAspectEnum.Yellow)
+                    {
+                        mat_diffuse1 = new float[] { 1f, 1f, 0f };
+                        light_position1 = new float[] { 1f, 0f, 0f, 0f };
+
+                        mat_diffuse2 = new float[] { 0.6f, 0.8f, 0.195f };
+                        light_position2 = new float[] { -0f, -1f, 0f, 0f };
+
+                        mat_diffuse3 = new float[] { 1f, 1f, 0.87f };
+                        light_position3 = new float[] { 0f, 0f, 1f, 0f };
+                    }
+                    else
+                    {
+                        if (renderAspect == RenderAspectEnum.PerNormal)
+                        {
+                            mat_diffuse1 = new float[] { 0f, 0.39f, 0f };
+                            light_position1 = new float[] { 1f, 0f, 0f, 0f };
+
+                            mat_diffuse2 = new float[] { 0f, 0f, 0.54f };
+                            light_position2 = new float[] { 0f, 0f, 1f, 0f };
+
+                            mat_diffuse3 = new float[] { 0.54f, 0f, 0f };
+                            light_position3 = new float[] { 0f, -1f, 0f, 0f };
+                        }
+
+                        mat_diffuse4 = new float[] { highLight, highLight, highLight };
+                        light_position4 = new float[] { 1f, -1f, 1f, 0f };
+                    }
                 }
-
-
             }
-
         }
         public void SetModel(Mesh3D mesh)
         {

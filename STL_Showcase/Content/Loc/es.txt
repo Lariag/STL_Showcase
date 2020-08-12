@@ -127,6 +127,11 @@ LogsFolderDontExists La carpeta de logs no existe todavía
 ErrorOpeningLogsFolder Ocurrió un error al intentar abrir la carpeta de logs.\nPara más información, revisa los logs (buena suerte intentándolo).
 tooltipButtonReset3DCamera Resetear Vista
 tooltipEnableModelAutoRotation Habilitar auto-rotación del modelo
+NoModelSelected No model selected
 NumberTriangles {0:0} Triángulos
 NumberVertices {0:0} Vértices
 DeselectModelFrom3DView Deseleccionar
+EnableChangingViewChangesThumnails Cambiar el color de vista 3D cambia el de las miniaturas.
+tooltipEnableChangingViewChangesThumnails Cambiar el color de la vista 3D cambiará también el color de las miniaturas.
+EnableThumnailColorsByShaders Cambio de color rápido
+tooltipEnableThumnailColorsByShaders Las miniaturas cambiarán de color sin ninguna recarga ni procesamiento.\nPero el listado tendrá menos rendimiento ya que el coloreado se realizará al vuelo.

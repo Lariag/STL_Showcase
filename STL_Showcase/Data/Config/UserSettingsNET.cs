@@ -44,7 +44,8 @@ namespace STL_Showcase.Data.Config
             , false             // EnableReduceThumbnailResolution
             , false             // EnableReduceThumbnailQuality
             , true              // EnableViewModelAutoRotation
-
+            , true              // EnableThumnailColorsByShaders
+            , true              // EnableChangingViewColorChangesThumnailColor
         };
 
         #endregion Properties

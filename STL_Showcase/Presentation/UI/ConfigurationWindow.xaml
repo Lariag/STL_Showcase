@@ -54,6 +54,7 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
                     <TextBlock x:Name="tbLanguageSetting" Text="Language" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
@@ -70,7 +71,7 @@
                     </CheckBox>
 
                     <TextBlock x:Name="tbThumnailStyle" Text="Thumbnail Style" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <DockPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
+                    <DockPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 0 0 10">
                         <Border Style="{StaticResource BorderSeparatorStyleVertical}" DockPanel.Dock="Left"/>
                         <Border Style="{StaticResource BorderSeparatorStyleVertical}" DockPanel.Dock="Right"/>
                         <ScrollViewer x:Name="RenderTypeScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0 0 0 -8" PreviewMouseWheel="RenderTypeScrollViewer_PreviewMouseWheel" >
@@ -89,8 +90,11 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </ScrollViewer>
-
                     </DockPanel>
+
+                    <CheckBox x:Name="chkEnableThumnailColorsByShaders" Grid.Row="5" Grid.Column="0" Content="Fast color change" IsChecked="{Binding EnableThumnailColorsByShaders}" VerticalContentAlignment="Center"/>
+                    <CheckBox x:Name="chkEnableChangingViewColorChangesThumnailColor" Grid.Row="5" Grid.Column="1" Content="Changing 3D view color changes thumbnail color" 
+                              IsChecked="{Binding EnableChangingViewColorChangesThumnailColor}" IsEnabled="{Binding ElementName=chkEnableThumnailColorsByShaders, Path=IsChecked}" VerticalContentAlignment="Center"/>
 
                 </Grid>
             </TabItem>

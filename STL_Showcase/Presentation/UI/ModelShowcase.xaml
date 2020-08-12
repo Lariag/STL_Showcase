@@ -11,6 +11,7 @@
       xmlns:ui="http://schemas.modernwpf.com/2019"
       xmlns:h="http://helix-toolkit.org/wpf"
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+      xmlns:s="clr-namespace:STL_Showcase.Presentation.UI.Clases"
       >
 
     <Page.Resources>
@@ -205,7 +206,7 @@
                                         </Border.Effect>
                                     </Border>
                                     <Border Height="32" VerticalAlignment="Center" Grid.Column="0" Background="Transparent" BorderThickness="1" BorderBrush="White" CornerRadius="2" Margin="0 0 15 0">
-                                        <Image Source="{Binding Path=Image}" Stretch="Uniform"/>
+                                        <Image Source="{Binding Path=Image}" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform"  Effect="{Binding Path=Data.ImageEffect}"/>
                                     </Border>
                                     <TextBlock VerticalAlignment="Center" Grid.Column="1" Text="{Binding Path=Text}" />
                                     <Grid.ToolTip>
@@ -273,7 +274,7 @@
                                                         </Border>
                                                         <Border BorderBrush="White" Background="Transparent" BorderThickness="2" CornerRadius="3" ClipToBounds="True" Width="120" Height="120">
                                                             <StackPanel Margin="2" Background="White" Orientation="Vertical">
-                                                                <Image Source="{Binding Data.Image}" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified" Width="110" Height="110"/>
+                                                                <Image Source="{Binding Data.Image}" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified" Width="110" Height="110"  Effect="{Binding Data.ImageEffect}"/>
                                                             </StackPanel>
                                                         </Border>
                                                     </Grid>
@@ -386,7 +387,7 @@
                                                                     <StackPanel Margin="2" Background="{Binding BackgroundBrush}" Orientation="Vertical"
                                                                     MaxHeight="{Binding DataContext.ModelListItemContentSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}"
                                                                     MaxWidth="{Binding DataContext.ModelListItemContentSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}">
-                                                                        <Image Source="{Binding Image}" RenderOptions.BitmapScalingMode="{Binding ScalingMode}" RenderOptions.EdgeMode="Unspecified"/>
+                                                                        <Image Source="{Binding Image}" RenderOptions.BitmapScalingMode="{Binding ScalingMode}" RenderOptions.EdgeMode="Unspecified" Effect="{Binding ImageEffect}" />
                                                                         <!--<TextBlock Name="FileName" Text="{Binding Text}" Height="18" TextAlignment="Center" VerticalAlignment="Center"/>-->
                                                                     </StackPanel>
                                                                 </Border>
@@ -402,7 +403,7 @@
                                                                 </Trigger>
 
                                                                 <DataTrigger   Binding="{Binding IsSelected}" Value="True">
-                                                                    <Setter TargetName="ShadowBorder" Property="BorderBrush" Value="Red" />
+                                                                    <Setter TargetName="ShadowBorder" Property="BorderBrush" Value="#00FFFF" />
                                                                     <Setter Property="Effect" TargetName="ShadowBorder" >
                                                                         <Setter.Value>
                                                                             <BlurEffect KernelType="Gaussian"  Radius="8" RenderingBias="Quality" />
@@ -546,41 +547,11 @@
                                         <DataTemplate>
                                             <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="70" Width="70" GroupName="RenderType" Click="RenderTypeButton_Click" Tag="{Binding Index}"
                                                          IsChecked="{Binding SelectedRenderAspect, Converter={StaticResource radioBoolToStringConverter}}">
-                                                <Image Source="{Binding Index, Converter={StaticResource stringToUriConverter}, ConverterParameter='Styles/Resources/RenderModes/Icosphere/RenderMode{0}.png'}" Margin="4"/>
+                                                <Image Source="{Binding Index, Converter={StaticResource stringToUriConverter}, ConverterParameter='Styles/Resources/RenderModes/Icosphere/RenderMode{0}.png'}" Margin="4" RenderOptions.BitmapScalingMode="HighQuality"/>
                                             </RadioButton>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                                <!--<ui:SimpleStackPanel x:Name="RenderTypeScrollStackPanel"  Orientation="Horizontal" VerticalAlignment="Stretch">
-
-                                    <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="70" Width="70" IsChecked="True" GroupName="RenderType" Click="RenderTypeButton_Click" Tag="0">
-                                        <Image Source="Styles/Resources/RenderModes/RenderMode0.png" Margin="4"/>
-                                    </RadioButton>
-                                    <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="70" Width="70" GroupName="RenderType"  Click="RenderTypeButton_Click" Tag="4">
-                                        <Image Source="Styles/Resources/RenderModes/RenderMode4.png" Margin="4"/>
-                                    </RadioButton>
-                                    <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="70" Width="70" GroupName="RenderType"  Click="RenderTypeButton_Click" Tag="6">
-                                        <Image Source="Styles/Resources/RenderModes/RenderMode6.png" Margin="4"/>
-                                    </RadioButton>
-                                    <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="70" Width="70" GroupName="RenderType"  Click="RenderTypeButton_Click" Tag="2">
-                                        <Image Source="Styles/Resources/RenderModes/RenderMode2.png" Margin="4"/>
-                                    </RadioButton>
-                                    <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="70" Width="70" GroupName="RenderType"  Click="RenderTypeButton_Click" Tag="3">
-                                        <Image Source="Styles/Resources/RenderModes/RenderMode3.png" Margin="4"/>
-                                    </RadioButton>
-                                    <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="70" Width="70" GroupName="RenderType"  Click="RenderTypeButton_Click" Tag="8">
-                                        <Image Source="Styles/Resources/RenderModes/RenderMode8.png" Margin="4"/>
-                                    </RadioButton>
-                                    <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="70" Width="70" GroupName="RenderType"  Click="RenderTypeButton_Click" Tag="7">
-                                        <Image Source="Styles/Resources/RenderModes/RenderMode7.png" Margin="4"/>
-                                    </RadioButton>
-                                    <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="70" Width="70" GroupName="RenderType"  Click="RenderTypeButton_Click" Tag="5">
-                                        <Image Source="Styles/Resources/RenderModes/RenderMode5.png" Margin="4"/>
-                                    </RadioButton>
-                                    <RadioButton Style="{StaticResource OnlyImageRadioButtonStyle}" Height="70" Width="70" GroupName="RenderType"  Click="RenderTypeButton_Click" Tag="1">
-                                        <Image Source="Styles/Resources/RenderModes/RenderMode1.png" Margin="4"/>
-                                    </RadioButton>
-                                </ui:SimpleStackPanel>-->
                             </ScrollViewer>
                         </DockPanel>
                     </Grid>
