@@ -282,38 +282,55 @@ namespace STL_Showcase.Presentation.UI
             string programsFolder2 = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string programsFolder3 = Environment.GetFolderPath(Environment.SpecialFolder.Favorites);
             string programsFolder4 = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar");
+            string[] allProgramsFolder = { programsFolder1, programsFolder2, programsFolder3, programsFolder4 };
 
             WshShell shell = new WshShell();
             List<string> addedPrograms = new List<string>();
 
-            var allShortcutsFound = new string[] { programsFolder1, programsFolder2, programsFolder3, programsFolder4 }.SelectMany(dir => UtilMethods.EnumerateFiles(dir, "*.lnk", SearchOption.AllDirectories));
-
-            foreach (string shortcutFound in allShortcutsFound)
+            foreach (string programFolder in allProgramsFolder)
             {
-                IWshShortcut link = (IWshShortcut)shell.CreateShortcut(shortcutFound);
-
-                string exeFileName = System.IO.Path.GetFileNameWithoutExtension(link.TargetPath);
-                if (recognicedProgramsNames.Any(p => string.Equals(p, exeFileName, StringComparison.InvariantCultureIgnoreCase)))
+                try
                 {
-                    if (_modelConfigSettings.LinkedProgramsData.Any(p => p.ProgramFullPath == link.TargetPath))
-                        continue;
+                    var allShortcutsFound = UtilMethods.EnumerateFiles(programFolder, "*.lnk", SearchOption.AllDirectories);
 
-                    var newRow = new Data.DataObjects.LinkedProgramData()
+                    foreach (string shortcutFound in allShortcutsFound)
                     {
-                        ProgramName = System.IO.Path.GetFileNameWithoutExtension(shortcutFound),
-                        ProgramFullPath = link.TargetPath,
-                        SupportSTL = true,
-                    };
+                        try
+                        {
+                            IWshShortcut link = (IWshShortcut)shell.CreateShortcut(shortcutFound);
 
-                    await this.Dispatcher.BeginInvoke(() =>
-                   {
-                       _modelConfigSettings.LinkedProgramsData.Add(newRow);
-                   });
+                            string exeFileName = System.IO.Path.GetFileNameWithoutExtension(link.TargetPath);
+                            if (recognicedProgramsNames.Any(p => string.Equals(p, exeFileName, StringComparison.InvariantCultureIgnoreCase)))
+                            {
+                                if (_modelConfigSettings.LinkedProgramsData.Any(p => p.ProgramFullPath == link.TargetPath))
+                                    continue;
 
-                    addedPrograms.Add(newRow.ProgramName);
+                                var newRow = new Data.DataObjects.LinkedProgramData()
+                                {
+                                    ProgramName = System.IO.Path.GetFileNameWithoutExtension(shortcutFound),
+                                    ProgramFullPath = link.TargetPath,
+                                    SupportSTL = true,
+                                };
+
+                                await this.Dispatcher.BeginInvoke(() =>
+                               {
+                                   _modelConfigSettings.LinkedProgramsData.Add(newRow);
+                               });
+
+                                addedPrograms.Add(newRow.ProgramName);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Debug(ex, "Settings window: AutoFillProgramsTableAsync: Exception when processing shortcut '{0}'", shortcutFound);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Debug(ex, "Settings window: AutoFillProgramsTableAsync: Exception when processing programs folder '{0}'", programFolder);
                 }
             }
-
             return addedPrograms;
         }
 
