@@ -286,5 +286,29 @@ namespace STL_Showcase.Properties {
                 this["EnableViewModelAutoRotation"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableThumnailColorsByShaders {
+            get {
+                return ((bool)(this["EnableThumnailColorsByShaders"]));
+            }
+            set {
+                this["EnableThumnailColorsByShaders"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SettingEnableChangingViewColorChangesThumnailColor {
+            get {
+                return ((bool)(this["SettingEnableChangingViewColorChangesThumnailColor"]));
+            }
+            set {
+                this["SettingEnableChangingViewColorChangesThumnailColor"] = value;
+            }
+        }
     }
 }

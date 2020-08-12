@@ -213,6 +213,7 @@
     <Compile Include="Presentation\UI\Clases\ModelProgressBarData.cs" />
     <Compile Include="Presentation\UI\Clases\ModelTreeItem.cs" />
     <Compile Include="Presentation\UI\Clases\ProgresBarAnimateBehavior.cs" />
+    <Compile Include="Presentation\UI\Clases\ShaderEffects.cs" />
     <Compile Include="Presentation\UI\Clases\Utility\GridLengthAnimation.cs" />
     <Compile Include="Presentation\UI\Clases\Utility\UtilWPF.cs" />
     <Compile Include="Presentation\UI\Clases\View3D.cs" />
@@ -318,6 +319,8 @@
     <Content Include="Content\Loc\es.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Presentation\UI\Styles\Shaders\NormalAsColors.hlsl" />
+    <Content Include="Presentation\UI\Styles\Shaders\ShaderInvertColor.hlsl" />
     <Resource Include="Presentation\UI\Styles\Resources\EyeFront.png" />
     <Resource Include="Presentation\UI\Styles\Resources\EyeSide.png" />
     <Resource Include="Presentation\UI\Styles\Resources\EyeUp.png" />
@@ -371,6 +374,8 @@
     </None>
     <None Include="OpenTK.dll.config" />
     <None Include="Presentation\UI\Styles\Resources\SelectedImageEffect.ps" />
+    <Resource Include="Presentation\UI\Styles\Shaders\ShaderInvertColor.ps" />
+    <Resource Include="Presentation\UI\Styles\Shaders\NormalAsColors.ps" />
     <None Include="STL_Showcase_TemporaryKey.pfx" />
     <Resource Include="Presentation\UI\Styles\Resources\STLShowcaseIconFaded.ico" />
     <Resource Include="Presentation\UI\Styles\Resources\MissingImageModel.png" />

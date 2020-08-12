@@ -127,6 +127,11 @@ LogsFolderDontExists The logs folder doesn't exists yet.
 ErrorOpeningLogsFolder There was an error when trying to open the debug logs folder.\nCheck the debug logs for more info (good luck with that).
 tooltipButtonReset3DCamera Reset View
 tooltipEnableModelAutoRotation Toggle model auto-rotation
+NoModelSelected No model selected
 NumberTriangles {0:0} Triangles
 NumberVertices {0:0} Vertices
 DeselectModelFrom3DView Deselect
+EnableChangingViewChangesThumnails Changing 3D view color changes thumbnail color
+tooltipEnableChangingViewChangesThumnails Changing the 3D view colors will also change the thumnails color.
+EnableThumnailColorsByShaders Fast color change
+tooltipEnableThumnailColorsByShaders When enabled, thumnails will change colors without any reload or processing.\nBut the list will have less performance because the coloring is done on the fly.

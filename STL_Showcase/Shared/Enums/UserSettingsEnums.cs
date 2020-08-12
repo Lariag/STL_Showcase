@@ -30,6 +30,8 @@ namespace STL_Showcase.Shared.Enums
         , EnableReduceThumbnailResolution
         , EnableReduceThumbnailQuality
         , EnableViewModelAutoRotation
+        , EnableThumnailColorsByShaders
+        , EnableChangingViewColorChangesThumnailColor
     }
 
 }
