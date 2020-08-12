@@ -29,6 +29,7 @@
             <Button Name="MinimizeButton"  Content="Close" Style="{StaticResource MinimizeButtonStyle}" Click="MinimizeButton_Click"/>
             <Button Name="MaximizeButton" Content="Close" Style="{StaticResource MaximizeButtonStyle}" Click="MaximizeButton_Click"/>
             <Button Name="CloseButton" Content="Close" Style="{StaticResource CloseButtonStyle}" Click="CloseButton_Click"/>
+            <TextBlock Name="HiddenSeparator"/>
         </ui:SimpleStackPanel>
 
     </Grid>

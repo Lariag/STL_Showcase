@@ -87,10 +87,28 @@ namespace STL_Showcase.Presentation.UI
             if (this.WindowState == WindowState.Normal)
             {
                 Pages.Margin = defaultPageMargin;
+                HiddenSeparator.Visibility = Visibility.Collapsed;
+                WindowButtons.Margin = new Thickness(-10);
             }
             else
             {
-                Pages.Margin = new Thickness(defaultPageMargin.Left, defaultPageMargin.Top, defaultPageMargin.Right, SystemParameters.PrimaryScreenHeight - SystemParameters.MaximizedPrimaryScreenHeight + 15d);
+                Rect workArea = SystemParameters.WorkArea;
+                double marginLeft = workArea.Left;
+                double marginTop = workArea.Top;
+                double marginRight = workArea.Right < SystemParameters.PrimaryScreenWidth ? SystemParameters.PrimaryScreenWidth - workArea.Right : defaultPageMargin.Right;
+                double marginBottom = workArea.Bottom < SystemParameters.PrimaryScreenHeight ? SystemParameters.PrimaryScreenHeight - workArea.Bottom : defaultPageMargin.Bottom;
+
+                Pages.Margin = new Thickness(
+                    marginLeft + defaultPageMargin.Left,
+                    marginTop + defaultPageMargin.Top,
+                    marginRight + defaultPageMargin.Right,
+                    marginBottom + defaultPageMargin.Bottom);
+
+                WindowButtons.Margin = new Thickness(-10, marginTop - 8, -10, -10);
+
+                HiddenSeparator.Width = marginRight + 2;
+                HiddenSeparator.Visibility = Visibility.Hidden;
+                
             }
         }
 
