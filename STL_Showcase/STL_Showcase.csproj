@@ -126,31 +126,40 @@
   <ItemGroup>
     <Reference Include="HelixToolkit, Version=2.12.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.2.12.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HelixToolkit.Wpf, Version=2.12.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.Wpf.2.12.0\lib\net45\HelixToolkit.Wpf.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="ModernWpf, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ModernWpfUI.0.9.1\lib\net462\ModernWpf.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ModernWpf.Controls, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ModernWpfUI.0.9.1\lib\net462\ModernWpf.Controls.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="MoreLinq, Version=3.3.2.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
       <HintPath>..\packages\morelinq.3.3.2\lib\net451\MoreLinq.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL">
       <HintPath>..\packages\Ookii.Dialogs.1.0\lib\net35\Ookii.Dialogs.Wpf.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="OpenTK, Version=3.2.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.3.2\lib\net20\OpenTK.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -162,10 +171,11 @@
     <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Expression.Blend.Sdk.1.0.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -176,7 +186,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsBase">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
@@ -326,6 +338,32 @@
     <Content Include="Content\Loc\es.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="DLLs\HelixToolkit.dll" />
+    <EmbeddedResource Include="DLLs\HelixToolkit.Wpf.dll" />
+    <EmbeddedResource Include="DLLs\HelixToolkit.Wpf.xml" />
+    <EmbeddedResource Include="DLLs\HelixToolkit.xml" />
+    <EmbeddedResource Include="DLLs\MeshDecimator.dll" />
+    <EmbeddedResource Include="DLLs\MeshDecimator.pdb" />
+    <EmbeddedResource Include="DLLs\MeshDecimator.xml" />
+    <EmbeddedResource Include="DLLs\ModernWpf.Controls.dll" />
+    <EmbeddedResource Include="DLLs\ModernWpf.Controls.xml" />
+    <EmbeddedResource Include="DLLs\ModernWpf.dll" />
+    <EmbeddedResource Include="DLLs\ModernWpf.xml" />
+    <EmbeddedResource Include="DLLs\MoreLinq.dll" />
+    <EmbeddedResource Include="DLLs\MoreLinq.pdb" />
+    <EmbeddedResource Include="DLLs\MoreLinq.xml" />
+    <EmbeddedResource Include="DLLs\Newtonsoft.Json.dll" />
+    <EmbeddedResource Include="DLLs\Newtonsoft.Json.xml" />
+    <EmbeddedResource Include="DLLs\NLog.dll" />
+    <EmbeddedResource Include="DLLs\NLog.xml" />
+    <EmbeddedResource Include="DLLs\Ookii.Dialogs.Wpf.dll" />
+    <EmbeddedResource Include="DLLs\Ookii.Dialogs.Wpf.xml" />
+    <EmbeddedResource Include="DLLs\OpenTK.dll" />
+    <EmbeddedResource Include="DLLs\OpenTK.pdb" />
+    <EmbeddedResource Include="DLLs\OpenTK.xml" />
+    <EmbeddedResource Include="DLLs\System.ValueTuple.dll" />
+    <EmbeddedResource Include="DLLs\System.ValueTuple.xml" />
+    <EmbeddedResource Include="DLLs\System.Windows.Interactivity.dll" />
     <Content Include="Presentation\UI\Styles\Shaders\NormalAsColors.hlsl" />
     <Content Include="Presentation\UI\Styles\Shaders\ShaderInvertColor.hlsl" />
     <Resource Include="Presentation\UI\Styles\Resources\EyeFront.png" />
@@ -376,6 +414,7 @@
     <Resource Include="Presentation\UI\Styles\Resources\FadedColorBar.png" />
     <Resource Include="Presentation\UI\Styles\Resources\STL_Error.png" />
     <Resource Include="Presentation\UI\Styles\Resources\STL_Loading.png" />
+    <EmbeddedResource Include="DLLs\NLog.config" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -442,6 +481,7 @@
     <ProjectReference Include="..\MeshDecimator\MeshDecimator.csproj">
       <Project>{F49D5D98-DF95-4A31-A42F-DA6D92C242DD}</Project>
       <Name>MeshDecimator</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -451,6 +491,13 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\System.Runtime.WindowsRuntime.4.7.0\build\net461\System.Runtime.WindowsRuntime.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Runtime.WindowsRuntime.4.7.0\build\net461\System.Runtime.WindowsRuntime.targets'))" />
+  </Target>
+  <Target Name="AfterResolveReferences">
+    <ItemGroup>
+      <EmbeddedResource Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.Extension)' == '.dll'">
+        <LogicalName>%(ReferenceCopyLocalPaths.DestinationSubDirectory)%(ReferenceCopyLocalPaths.Filename)%(ReferenceCopyLocalPaths.Extension)</LogicalName>
+      </EmbeddedResource>
+    </ItemGroup>
   </Target>
   <PropertyGroup>
     <PreBuildEvent>
