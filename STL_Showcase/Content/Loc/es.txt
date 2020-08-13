@@ -139,7 +139,7 @@ Format3mfNotSupported El formato 3MF solo está soportado en la versión x64 de ST
 About_MainDescription El propósito de este programa es visualizar archivos 3D de un vistazo.\n\nPuede que haya algunos bugs, conocidos o desconocidos. Características que faltan, unas planeadas y otras no.\n\nSi conoces alguna característica que pudiera ser añadida al programa o encuentras un bug, puedes reportarlo en el link de "Issues".
 Version Versión
 Format3mfNotSupported Soporte para 3MF
-CodePlatformName Github
+CodePlatformName GitHub
 CodePlatformIssues Issues
  
  
