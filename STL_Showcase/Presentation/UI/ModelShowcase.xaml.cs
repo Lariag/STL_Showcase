@@ -81,6 +81,7 @@ namespace STL_Showcase.Presentation.UI
             userSettings = DefaultFactory.GetDefaultUserSettings();
 
             SetLoggingEnabled(userSettings.GetSettingBool(UserSettingEnum.EnableDebugLogs));
+            mainLogger.Info("App started. Version: {0}", App.AppVersion);
 
             InitializeVisibilityMenuItemsCheckedState();
             UpdateVisibilityMenuItemsCheckedState();
@@ -346,8 +347,7 @@ namespace STL_Showcase.Presentation.UI
 
         private async void MenuAbout_Click(object sender, RoutedEventArgs e)
         {
-            string message = Loc.GetText("InformationAboutTheProgram");
-            ContentDialog dialog = new MessageDialog(message, $"{Loc.GetText("About")} {Loc.GetText("AppName")}", Loc.GetText("OK"), "", "");
+            AboutDialog dialog = new AboutDialog();
             await dialog.ShowAsync();
         }
         #endregion
@@ -439,6 +439,14 @@ namespace STL_Showcase.Presentation.UI
         }
         private void FileTypeFilterToggleButton_Click(object sender, RoutedEventArgs e)
         {
+#if !X64
+            object tag = ((Control)sender).Tag;
+            if (tag != null && (string)tag == "3MF")
+            {
+                new MessageDialog(Loc.GetText("Format3mfNotSupported"), Loc.GetText("Format3mfNotSupported"), Loc.GetText("OK"), "", "").ShowAsync();
+                return;
+            }
+#endif
             this._ModelItemListData.ApplyFilterToTree();
             userSettings.SetSettingBool(UserSettingEnum.EnableTreeOnlyFolders, this._ModelItemListData.FileOnlyFoldersFilter);
             ImageListControl.ItemsSource = this._ModelItemListData.ModelListFiltered;
