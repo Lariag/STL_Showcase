@@ -8,7 +8,7 @@
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" WindowState="Normal"
-        Title="STL Showcase Configuration" Height="700" Width="700"
+        Title="STL Showcase Configuration" Height="550" Width="700"
         Icon="Styles/Resources/STLShowcaseIconFadedMix_Settings.ico"
         Style="{StaticResource MainWindowStyle}"
         Closed="Window_Closed"

@@ -95,7 +95,11 @@ namespace STL_Showcase.Presentation.UI.Clases
         private bool _FileTypeFilterOBJ;
         public bool FileTypeFilterOBJ { get { return _FileTypeFilterOBJ; } set { _FileTypeFilterOBJ = value; NotifyPropertyChanged(nameof(FileTypeFilterOBJ)); } }
         private bool _FileTypeFilter3MF;
+#if X64
         public bool FileTypeFilter3MF { get { return _FileTypeFilter3MF; } set { _FileTypeFilter3MF = value; NotifyPropertyChanged(nameof(FileTypeFilter3MF)); } }
+#else
+        public bool FileTypeFilter3MF { get { return false; } set { _FileTypeFilter3MF = false; NotifyPropertyChanged(nameof(FileTypeFilter3MF)); } }
+#endif
         private bool _FileOnlyFoldersFilter;
         public bool FileOnlyFoldersFilter { get { return _FileOnlyFoldersFilter; } set { _FileOnlyFoldersFilter = value; NotifyPropertyChanged(nameof(FileOnlyFoldersFilter)); } }
         private bool _FileCollectionMode;

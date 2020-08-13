@@ -114,7 +114,7 @@
                             <ToggleButton FontSize="12" Style="{StaticResource ToggleButtonStyle}" Click="FileTypeFilterToggleButton_Click"
                                 IsChecked="{Binding Path=DataContext.FileTypeFilterOBJ, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}">OBJ</ToggleButton>
                             <ToggleButton FontSize="12" Style="{StaticResource ToggleButtonStyle}" Click="FileTypeFilterToggleButton_Click"
-                                IsChecked="{Binding Path=DataContext.FileTypeFilter3MF, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}">3MF</ToggleButton>
+                                IsChecked="{Binding Path=DataContext.FileTypeFilter3MF, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}" Tag="3MF">3MF</ToggleButton>
                             <ToggleButton Name="btnFilterTypeOnlyFolders" FontSize="12" Style="{StaticResource ToggleButtonStyle}" Click="FileTypeFilterToggleButton_Click"
                                 IsChecked="{Binding Path=DataContext.FileOnlyFoldersFilter, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:SimpleStackPanel}}}"/>
                             <ToggleButton Name="btnFilterTypeCollectionMode" FontSize="12" Style="{StaticResource ToggleButtonStyle}" Click="btnFilterTypeCollectionMode_Click"

@@ -135,3 +135,9 @@ EnableChangingViewChangesThumnails Changing 3D view color changes thumbnail colo
 tooltipEnableChangingViewChangesThumnails Changing the 3D view colors will also change the thumnails color.
 EnableThumnailColorsByShaders Fast color change
 tooltipEnableThumnailColorsByShaders When enabled, thumnails will change colors without any reload or processing.\nBut the list will have less performance because the coloring is done on the fly.
+Format3mfNotSupported The 3MF format is only supported on the x64 version of STL Showcase.
+About_MainDescription The propouse of this software is to visualize 3D files at a glance.\n\nThere may be some known or unknown bugs. Missing features, some planned and some not.\n\nIf you know of a feature that could be added to the program or you find a bug, you're welcome to report it in the issues link.
+Version Version
+Format3mfNotSupported Support for 3MF
+CodePlatformName Github
+CodePlatformIssues Issues

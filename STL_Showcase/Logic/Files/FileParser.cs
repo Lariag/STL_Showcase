@@ -289,6 +289,12 @@ namespace STL_Showcase.Logic.Files
 
         static Mesh3D Parse3MF(ModelFileData filedData)
         {
+#if !X64
+            // The library is not supported for no x64 builds.
+            return null;
+#else
+
+
             // 3MF (3D Manufacturing Format): https://github.com/3MFConsortium/spec_core/blob/master/3MF%20Core%20Specification.md
             // File loading using Lib3MF: https://github.com/3MFConsortium/lib3mf
 
@@ -349,6 +355,7 @@ namespace STL_Showcase.Logic.Files
                 trianglesArray[i] = trianglesList[i];
 
             return new Mesh3D(verticesArray, trianglesArray);
+#endif
         }
     }
 }
