@@ -124,9 +124,6 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GenericStl, Version=0.9.18.0, Culture=neutral, PublicKeyToken=3dc10763449940eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\GenericStl.0.9.18\lib\net40\GenericStl.dll</HintPath>
-    </Reference>
     <Reference Include="HelixToolkit, Version=2.12.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.2.12.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>
     </Reference>
