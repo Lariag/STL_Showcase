@@ -1,0 +1,27 @@
+Sub ExportAllToTxt
+' Export all sheets as text documents.
+
+	document = ThisComponent
+ 
+	GlobalScope.BasicLibraries.loadLibrary("Tools")
+	DocPath = DirectoryNameoutofPath(ThisComponent.getURL(),"/")
+ 
+	Sheets = document.Sheets
+	NumSheets = Sheets.Count - 1
+ 
+	Dim Propval(1) as New com.sun.star.beans.PropertyValue
+	Propval(0).Name = "FilterName"
+	Propval(0).Value = "Text - txt - csv (StarCalc)"
+	Propval(1).Name = "FilterOptions"
+	Propval(1).Value ="32,0,0,1,1"   'ASCII  59 = ;  34 = " 32 = space
+		
+	For I = 0 to NumSheets
+		SheetName = Sheets(I).Name
+		document.getCurrentController.setActiveSheet(Sheets(I))		
+		Filename = SheetName + ".txt"
+		FileURL = DocPath + "/STL_Showcase/Content/Loc/" + Filename
+		document.StoreAsURL(FileURL, Propval())
+	Next I
+ 
+	Msgbox "Files saved. Close the file."
+End Sub

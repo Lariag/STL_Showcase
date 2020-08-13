@@ -139,5 +139,5 @@ Format3mfNotSupported The 3MF format is only supported on the x64 version of STL
 About_MainDescription The propouse of this software is to visualize 3D files at a glance.\n\nThere may be some known or unknown bugs. Missing features, some planned and some not.\n\nIf you know of a feature that could be added to the program or you find a bug, you're welcome to report it in the issues link.
 Version Version
 Format3mfNotSupported Support for 3MF
-CodePlatformName Github
+CodePlatformName GitHub
 CodePlatformIssues Issues
