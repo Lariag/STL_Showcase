@@ -5,6 +5,8 @@ This software allows you to load one or more directories and visualize 3D miniat
 
 Its still in developement. Bugs are to be found and features to be added.
 
+[Download Here](https://github.com/Alriac/STL_Showcase/releases/)
+
 ### Features:
 - Supports STL, OBJ and 3MF (more can be added).
 - Filter the models by name, file type, folder, size and date.
