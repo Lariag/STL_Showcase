@@ -1,42 +1,32 @@
-﻿using Ookii.Dialogs.Wpf;
-using STL_Showcase.Data.Cache;
-using STL_Showcase.Logic.Files;
-using STL_Showcase.Logic.Rendering;
-using STL_Showcase.Presentation.UI.Clases;
-using STL_Showcase.Shared.Enums;
-using STL_Showcase.Shared.Main;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Globalization;
-using HelixToolkit.Wpf;
-using System.Windows.Media.Media3D;
-using System.Threading;
 using System.Windows.Threading;
-using System.Diagnostics;
+using HelixToolkit.Wpf;
 using ModernWpf.Controls;
-using STL_Showcase.Data.Config;
-using STL_Showcase.Logic.FilePrcessing;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media.Animation;
-using STL_Showcase.Presentation.UI.Clases.Utility;
-using STL_Showcase.Logic.Localization;
-using STL_Showcase.Data.DataObjects;
 using NLog;
+using Ookii.Dialogs.Wpf;
+using STL_Showcase.Data.Config;
+using STL_Showcase.Data.DataObjects;
+using STL_Showcase.Logic.FilePrcessing;
+using STL_Showcase.Logic.Files;
+using STL_Showcase.Logic.Localization;
+using STL_Showcase.Presentation.UI.Clases;
+using STL_Showcase.Shared.Enums;
+using STL_Showcase.Shared.Main;
 
 namespace STL_Showcase.Presentation.UI
 {
@@ -1133,7 +1123,7 @@ namespace STL_Showcase.Presentation.UI
             }
 
             // Open file with software
-            if (_LinkedProgramsData.Any())
+            if (_LinkedProgramsData != null && _LinkedProgramsData.Any())
             {
 
                 List<MenuItem> ItemsForOpenWith = new List<MenuItem>();
